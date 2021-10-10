@@ -149,6 +149,7 @@ public class PlayerBehaviour : MonoBehaviour
         movement.translation = movementVars.baseSpeed * Time.fixedDeltaTime;
         movement.translation -= Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration * Time.fixedDeltaTime;
         movement.rotation = standardInputVars.sidewaysAxis * movementVars.rotationSpeed * Time.deltaTime;
+        //movement.rotation = 1 * movementVars.rotationSpeed * Time.deltaTime;
 
         if (standardInputVars.forwardInput)
         {
@@ -205,6 +206,11 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     #region Debug
+    private void DebugCircleMovement()
+    {
+
+    }
+
     private void DebugRays()
     {
         Debug.DrawRay(playerTransform.position, playerTransform.forward, Color.green, 10, false);
