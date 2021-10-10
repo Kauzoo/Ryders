@@ -183,6 +183,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (Physics.Raycast(playerTransform.position, playerTransform.up * (-1), out RaycastHit hit, grounded.maxDistance, layerMask))
         {
             Debug.Log(hit.collider.gameObject.name);
+            Debug.Log(hit.collider.name);
         }
     }
 
