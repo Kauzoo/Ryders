@@ -8,6 +8,8 @@ public class PlayerBehaviour : MonoBehaviour
     public Transform playerTransform;
     public Rigidbody playerRigidbody;
 
+    public Transform visualPlayerTransform;
+
     private IEnumerator boostCoroutine;
 
     public TMPro.TextMeshProUGUI debugDump;
@@ -21,6 +23,8 @@ public class PlayerBehaviour : MonoBehaviour
         public KeyCode rightKey;
         public KeyCode jumpKey;
         public KeyCode boostKey;
+        public KeyCode driftKey1;
+        public KeyCode driftKey2;
         public string verticalAxis;
         public string horizontalAxis;
     }
@@ -34,6 +38,7 @@ public class PlayerBehaviour : MonoBehaviour
         public bool rightInput;
         public bool jumpInput;
         public bool boostInput;
+        public bool driftInput;
         public float forwardAxis;
         public float sidewaysAxis;
     }
@@ -63,6 +68,16 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     [System.Serializable]
+    public class Visuals
+    {
+        public float xOffset;
+        public float yRotationMultiplier;
+        public float yRotationDamping;
+        public float zRotationDamping;
+        public float zRotationMaxAngle;
+    }
+
+    [System.Serializable]
     public class GroundVars
     {
         public float maxDistance;
@@ -74,6 +89,7 @@ public class PlayerBehaviour : MonoBehaviour
     public InputVars standardInputVars = new InputVars();
     public MovementVars movementVars = new MovementVars();
     public Movement movement = new Movement();
+    public Visuals visuals = new Visuals();
     public GroundVars grounded = new GroundVars();
 
     // Start is called before the first frame update
@@ -137,6 +153,10 @@ public class PlayerBehaviour : MonoBehaviour
         {
             standardInputVars.boostInput = true;
         }
+        if (Input.GetKey(keyboardKeyBinds.driftKey1) || Input.GetKey(keyboardKeyBinds.driftKey2) || Input.GetKey(controllerKeyBinds.driftKey1) || Input.GetKey(controllerKeyBinds.driftKey2))
+        {
+            standardInputVars.driftInput = true;
+        }
 
         // Axis
         standardInputVars.forwardAxis = Input.GetAxis("Vertical");
@@ -144,6 +164,7 @@ public class PlayerBehaviour : MonoBehaviour
     }
     #endregion
 
+    #region Movement
     void Move()
     {
         movement.translation = movementVars.baseSpeed * Time.fixedDeltaTime;
@@ -172,12 +193,40 @@ public class PlayerBehaviour : MonoBehaviour
             boostCoroutine = BoostTimer(movementVars.boostLockTime, movementVars.boostInterval, movementVars.boostTicks);
             StartCoroutine(boostCoroutine);
         }
+        if (standardInputVars.driftInput)
+        {
+            Drift();
+        }
 
         Debug.Log($"Boost: { movement.boostTranslation }");
 
         playerTransform.Rotate(0, movement.rotation, 0);
         playerRigidbody.velocity = playerTransform.forward * (movement.translation + movement.boostTranslation);
+        //ManipulatePlayerVisuals();
     }
+
+    private void Drift()
+    {
+
+    }
+    #endregion
+
+    #region Visuals
+    private void ManipulatePlayerVisuals()
+    {
+        float xOffset = standardInputVars.sidewaysAxis * visuals.xOffset;
+        Vector3 visualPosition = new Vector3(playerTransform.position.x - xOffset, playerTransform.position.y, playerTransform.position.z);
+        visualPlayerTransform.localPosition = visualPosition;
+
+        float zTilt = standardInputVars.sidewaysAxis * visuals.zRotationMaxAngle * (-1);
+        Quaternion targetQuaternion = Quaternion.Euler(visualPlayerTransform.rotation.eulerAngles.x, visualPlayerTransform.rotation.eulerAngles.y, zTilt);
+
+        visualPlayerTransform.rotation = Quaternion.Slerp(visualPlayerTransform.rotation, targetQuaternion, visuals.zRotationDamping);
+
+        //visualPlayerTransform.rotation = Quaternion.Euler(visualPlayerTransform.rotation.eulerAngles.x, visualPlayerTransform.rotation.eulerAngles.y, zTilt);
+        visualPlayerTransform.Rotate(0, movement.rotation * visuals.yRotationMultiplier, 0, Space.World);
+    }
+    #endregion
 
     private void Grounded()
     {
