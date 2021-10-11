@@ -165,6 +165,7 @@ public class PlayerBehaviour : MonoBehaviour
         }
         if (standardInputVars.jumpInput)
         {
+            playerRigidbody.velocity = playerTransform.up * movementVars.jumpSpeed;
         }
         if (standardInputVars.boostInput && !movement.boostLock)
         {

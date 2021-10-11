@@ -10,6 +10,9 @@ public class CameraFollow : MonoBehaviour
     public float camXOffset;
     public float camYOffset;
     public float camZOffset;
+    public float camDistance;
+    public float camXAngle;
+    public float camZAngle;
     public float followDamping;
     public float rotationDamping;
 
@@ -38,11 +41,13 @@ public class CameraFollow : MonoBehaviour
 
     private void FollowPlayer()
     {
-        mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, target.position + target.forward * (-1) * 5, followDamping);
+        Vector3 targetPosition = new Vector3(target.position.x + camXOffset, target.position.y + camYOffset, target.position.z + camZOffset);
+        mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, targetPosition + target.forward * (-1) * camDistance, followDamping);
     }
 
     private void RotateCam()
     {
-        mainCam.transform.rotation = Quaternion.Lerp(mainCam.transform.rotation, target.rotation, 1);
+        Vector3 targetRotation = new Vector3(camXAngle, target.rotation.eulerAngles.y, camZAngle);
+        mainCam.transform.rotation = Quaternion.Lerp(mainCam.transform.rotation, Quaternion.Euler(targetRotation), 1);
     }
 }

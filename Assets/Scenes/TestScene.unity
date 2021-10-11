@@ -451,11 +451,11 @@ MonoBehaviour:
     verticalAxis: 
     horizontalAxis: 
   controllerKeyBinds:
-    fowardKey: 330
+    fowardKey: 0
     backwardKey: 0
     leftKey: 0
     rightKey: 0
-    jumpKey: 0
+    jumpKey: 330
     boostKey: 331
     verticalAxis: Vertical
     horizontalAxis: Horizontal
@@ -477,7 +477,7 @@ MonoBehaviour:
     boostTicks: 50
     speed: 10000
     rotationSpeed: 100
-    jumpSpeed: 0
+    jumpSpeed: 2000
   movement:
     translation: 0
     boostTranslation: 0
@@ -717,9 +717,12 @@ MonoBehaviour:
   mainCam: {fileID: 839364946}
   target: {fileID: 751309166}
   camXOffset: 0
-  camYOffset: 1
-  camZOffset: -10
-  followDamping: 0
+  camYOffset: 3
+  camZOffset: 0
+  camDistance: 10
+  camXAngle: 5
+  camZAngle: 0
+  followDamping: 0.5
   rotationDamping: 1
 --- !u!1 &918408740
 GameObject:
