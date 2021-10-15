@@ -71,8 +71,11 @@ public class PlayerBehaviour : MonoBehaviour
     public class Visuals
     {
         public float xOffset;
-        public float yRotationMultiplier;
+        public float xOffsetDamping;
+        public float xRotationDamping;
+        public float xRotationMaxAngle;
         public float yRotationDamping;
+        public float yRoationMaxAngle;
         public float zRotationDamping;
         public float zRotationMaxAngle;
     }
@@ -95,7 +98,7 @@ public class PlayerBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        visualPlayerTransform.SetParent(playerTransform);
     }
 
     // Update is called once per frame
@@ -198,16 +201,19 @@ public class PlayerBehaviour : MonoBehaviour
             Drift();
         }
 
-        Debug.Log($"Boost: { movement.boostTranslation }");
-
         playerTransform.Rotate(0, movement.rotation, 0);
         playerRigidbody.velocity = playerTransform.forward * (movement.translation + movement.boostTranslation);
-        //ManipulatePlayerVisuals();
+        ManipulatePlayerVisuals();
     }
 
     private void Drift()
     {
 
+    }
+
+    private IEnumerator SpeedRampUp()
+    {
+        yield return new WaitForSeconds(1);
     }
     #endregion
 
@@ -215,16 +221,21 @@ public class PlayerBehaviour : MonoBehaviour
     private void ManipulatePlayerVisuals()
     {
         float xOffset = standardInputVars.sidewaysAxis * visuals.xOffset;
-        Vector3 visualPosition = new Vector3(playerTransform.position.x - xOffset, playerTransform.position.y, playerTransform.position.z);
-        visualPlayerTransform.localPosition = visualPosition;
+        Vector3 visualPosition = new Vector3(0 - xOffset, 0, 0);
+        visualPlayerTransform.localPosition = Vector3.Lerp(visualPlayerTransform.localPosition, visualPosition, visuals.xOffsetDamping);
 
         float zTilt = standardInputVars.sidewaysAxis * visuals.zRotationMaxAngle * (-1);
-        Quaternion targetQuaternion = Quaternion.Euler(visualPlayerTransform.rotation.eulerAngles.x, visualPlayerTransform.rotation.eulerAngles.y, zTilt);
+        Quaternion visualZTilt = Quaternion.Euler(0, 0, zTilt);
+        visualPlayerTransform.localRotation = Quaternion.Slerp(visualPlayerTransform.localRotation, visualZTilt, visuals.zRotationDamping);
 
-        visualPlayerTransform.rotation = Quaternion.Slerp(visualPlayerTransform.rotation, targetQuaternion, visuals.zRotationDamping);
+        float yTilt = standardInputVars.sidewaysAxis * visuals.yRoationMaxAngle;
+        Quaternion visualYTilt = Quaternion.Euler(0, yTilt, 0);
+        visualPlayerTransform.localRotation = Quaternion.Slerp(visualPlayerTransform.localRotation, visualYTilt, visuals.yRotationDamping);
+    }
 
-        //visualPlayerTransform.rotation = Quaternion.Euler(visualPlayerTransform.rotation.eulerAngles.x, visualPlayerTransform.rotation.eulerAngles.y, zTilt);
-        visualPlayerTransform.Rotate(0, movement.rotation * visuals.yRotationMultiplier, 0, Space.World);
+    private void ComputeAxisFactor()
+    {
+
     }
     #endregion
 
