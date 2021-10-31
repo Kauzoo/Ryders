@@ -242,11 +242,29 @@ public class PlayerBehaviour : MonoBehaviour
     private void Grounded()
     {
         int layerMask = 1 << grounded.layerMask;
-        if (Physics.Raycast(playerTransform.position, playerTransform.up * (-1), out RaycastHit hit, grounded.maxDistance, layerMask))
+        if (Physics.Raycast(visualPlayerTransform.position, new Vector3(0, -1, 0), out RaycastHit hit, grounded.maxDistance, layerMask))
         {
             Debug.Log(hit.collider.gameObject.name);
             Debug.Log(hit.collider.name);
         }
+        Vector3 center = new Vector3(visualPlayerTransform.position.x, visualPlayerTransform.position.y, visualPlayerTransform.position.z);
+    }
+
+    private void DetectGroundAngle()
+    {
+        int layerMask = 1 << grounded.layerMask;
+        for (int i = 0; i < visualPlayerTransform.childCount; i++)
+        {
+            if (visualPlayerTransform.GetChild(i).gameObject.name.Contains("Board"))
+            {
+                visualPlayerTransform.GetChild(i);
+            }
+        }
+        if (Physics.Raycast(visualPlayerTransform.position, new Vector3(0, -1, 0), out RaycastHit hit, grounded.maxDistance, layerMask))
+        {
+           
+        }
+        Vector3 center = new Vector3(visualPlayerTransform.position.x, visualPlayerTransform.position.y, visualPlayerTransform.position.z);
     }
 
     private IEnumerator BoostTimer(float blt, float bi, int bt)
@@ -283,6 +301,13 @@ public class PlayerBehaviour : MonoBehaviour
         string text = $"Translation: { movement.translation }{ Environment.NewLine }BoostTranslation: { movement.boostTranslation }" +
                 $"{ Environment.NewLine }Rotation: { movement.rotation}{ Environment.NewLine }BoostLock: { movement.boostLock }";
         debugDump.text = text;
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = new Color(1, 0, 0, 0.5f);
+        Vector3 center = new Vector3(playerTransform.position.x, playerTransform.position.y - 1, playerTransform.position.z);
+        Gizmos.DrawWireCube(center, new Vector3(1.2f, 0.1f, 2.5f));
     }
     #endregion
 
