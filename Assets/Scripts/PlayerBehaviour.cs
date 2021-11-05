@@ -55,6 +55,7 @@ public class PlayerBehaviour : MonoBehaviour
         public float speed;
         public float rotationSpeed;
         public float jumpSpeed;
+        public float gravityMultiplier;
     }
 
     [System.Serializable]
@@ -64,6 +65,7 @@ public class PlayerBehaviour : MonoBehaviour
         public float boostTranslation = 0;
         public float rotation = 0;
         public float jump = 0;
+        public float gravity = 0;
         public bool boostLock = false;
     }
 
@@ -173,6 +175,7 @@ public class PlayerBehaviour : MonoBehaviour
         movement.translation = movementVars.baseSpeed * Time.fixedDeltaTime;
         movement.translation -= Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration * Time.fixedDeltaTime;
         movement.rotation = standardInputVars.sidewaysAxis * movementVars.rotationSpeed * Time.deltaTime;
+        movement.gravity = Gravity() * movementVars.gravityMultiplier * Time.fixedDeltaTime;
         //movement.rotation = 1 * movementVars.rotationSpeed * Time.deltaTime;
 
         if (standardInputVars.forwardInput)
@@ -201,8 +204,10 @@ public class PlayerBehaviour : MonoBehaviour
             Drift();
         }
 
-        playerTransform.Rotate(0, movement.rotation, 0);
-        playerRigidbody.velocity = playerTransform.forward * (movement.translation + movement.boostTranslation);
+        playerTransform.Rotate(0, movement.rotation, 0, Space.Self);
+        Vector3 forwardVector = playerTransform.forward * (movement.translation + movement.boostTranslation);
+        Vector3 gravityVector = playerTransform.up * (-1) * movement.gravity;
+        playerRigidbody.velocity = forwardVector + gravityVector;
         ManipulatePlayerVisuals();
     }
 
@@ -239,15 +244,30 @@ public class PlayerBehaviour : MonoBehaviour
     }
     #endregion
 
-    private void Grounded()
+    #region Gravity & Grounded
+    private bool Grounded()
     {
         int layerMask = 1 << grounded.layerMask;
         if (Physics.Raycast(visualPlayerTransform.position, new Vector3(0, -1, 0), out RaycastHit hit, grounded.maxDistance, layerMask))
         {
             Debug.Log(hit.collider.gameObject.name);
             Debug.Log(hit.collider.name);
+            return true;
         }
-        Vector3 center = new Vector3(visualPlayerTransform.position.x, visualPlayerTransform.position.y, visualPlayerTransform.position.z);
+        return false;
+        // Vector3 center = new Vector3(visualPlayerTransform.position.x, visualPlayerTransform.position.y, visualPlayerTransform.position.z);
+    }
+
+    private int Gravity()
+    {
+        if (Grounded())
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
     }
 
     private void DetectGroundAngle()
@@ -266,6 +286,7 @@ public class PlayerBehaviour : MonoBehaviour
         }
         Vector3 center = new Vector3(visualPlayerTransform.position.x, visualPlayerTransform.position.y, visualPlayerTransform.position.z);
     }
+    #endregion
 
     private IEnumerator BoostTimer(float blt, float bi, int bt)
     {
