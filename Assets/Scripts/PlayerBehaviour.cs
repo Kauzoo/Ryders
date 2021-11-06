@@ -76,7 +76,8 @@ public class PlayerBehaviour : MonoBehaviour
     [System.Serializable]
     public class Roation
     {
-        public float currentRotationAngle;
+        public float currentRotationAngleEuler;
+        public float currentRoationAngleQuaternion;
     }
 
     [System.Serializable]
@@ -237,7 +238,7 @@ public class PlayerBehaviour : MonoBehaviour
          * Handle Translation and Gravity
          */
         Vector3 forwardVector = playerTransform.forward * (movement.translation + movement.boostTranslation);
-        Vector3 gravityVector = playerTransform.up * (-1) * movement.gravity;
+        Vector3 gravityVector = Vector3.down * movement.gravity;
         playerRigidbody.velocity = forwardVector + gravityVector;
 
         /***
@@ -290,6 +291,16 @@ public class PlayerBehaviour : MonoBehaviour
             }
             movement.grounded = true;
         }
+        else if (Physics.Raycast(playerTransform.position, Vector3.down, out RaycastHit hitAlt, grounded.maxDistance, layerMask))
+        {
+            {
+                if (HasGroundChanged(hitAlt.transform.gameObject))
+                {
+                    HandleGroundChanged(hitAlt.transform.gameObject);
+                }
+                movement.grounded = true;
+            }
+        }
         else
         {
             movement.grounded = false;
@@ -328,40 +339,12 @@ public class PlayerBehaviour : MonoBehaviour
         groundInfo.currentGround = newGround;
 
         // Compute current y-Rotation Angle
-        float currentRotationAngle = Quaternion.Angle(groundInfo.previousGround.transform.rotation, playerTransform.rotation);
+        //float currentRotationAngle = Quaternion.Angle(groundInfo.previousGround.transform.rotation, playerTransform.rotation);
+        float currentRotationAngle = playerTransform.rotation.eulerAngles.y + groundInfo.previousGround.transform.rotation.eulerAngles.y;
         Vector3 currentRotationVector = new Vector3(0, currentRotationAngle, 0);
 
-        playerTransform.rotation = Quaternion.LookRotation(GetForwardDirection(), GetUpwardDirection());
+        playerTransform.rotation = Quaternion.LookRotation(groundInfo.currentGround.transform.forward, groundInfo.currentGround.transform.up);
         playerTransform.Rotate(currentRotationVector, Space.Self);
-    }
-
-    private Vector3 DetectGroundAngleInEuler()
-    {
-        int layerMask = 1 << grounded.layerMask;
-        if (Physics.Raycast(visualPlayerTransform.position, playerTransform.up * (-1), out RaycastHit hit, grounded.maxDistance, layerMask))
-        {
-            return hit.transform.rotation.eulerAngles;
-        }
-        return playerTransform.rotation.eulerAngles;
-    }
-
-    private Vector3 GetUpwardDirection()
-    {
-        Debug.Log("I am executed");
-        if(TryGetGroundObject(out GameObject groundObject))
-        {
-            return groundObject.transform.up;
-        }
-        return playerTransform.up;
-    }
-
-    private Vector3 GetForwardDirection()
-    {
-        if (TryGetGroundObject(out GameObject groundObject))
-        {
-            return groundObject.transform.forward;
-        }
-        return playerTransform.forward;
     }
 
     private bool TryGetGroundObject(out GameObject groundObject)
@@ -402,37 +385,30 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void DebugRays()
     {
-        // Debug.DrawRay(playerTransform.position, playerTransform.forward, Color.green, 10, false);
-        // Debug.DrawRay(playerTransform.position, playerTransform.up * (-1) * grounded.maxDistance, Color.yellow, 10, false);
-
-        Debug.DrawRay(playerTransform.position, GetForwardDirection(), Color.blue, 10, false);
-        Debug.DrawRay(playerTransform.position, GetUpwardDirection(), Color.green, 10, false);
-
-        Debug.DrawRay(testObject.position, testObject.forward, Color.blue, 10, false);
-        Debug.DrawRay(testObject.position, testObject.up, Color.green, 10, false);
-        Debug.DrawRay(testObject.position, testObject.right, Color.red, 10, false);
+        Debug.DrawRay(playerTransform.position, playerTransform.forward, Color.green, 10, false);
+        Debug.DrawRay(playerTransform.position, playerTransform.up * (-1) * grounded.maxDistance, Color.yellow, 10, false);
     }
 
     private void FillDebugDump()
     {
         int layerMask = 1 << grounded.layerMask;
         float angle = 0;
+        float otherAngle = 0;
         if (Physics.Raycast(playerTransform.position, playerTransform.up * (-1), out RaycastHit hit, grounded.maxDistance, layerMask))
         {
             angle = Quaternion.Angle(hit.transform.rotation, playerTransform.rotation);
+            otherAngle = playerTransform.rotation.eulerAngles.y + hit.transform.rotation.eulerAngles.y;
         }
         string text = $"Translation: { movement.translation }{ Environment.NewLine }BoostTranslation: { movement.boostTranslation }" +
                 $"{ Environment.NewLine }Rotation: { movement.rotation}{ Environment.NewLine }BoostLock: { movement.boostLock }" +
                 $"{ Environment.NewLine }Grounded: { movement.grounded} { Environment.NewLine } Gravity: { movement.gravity }" +
-                $"{ Environment.NewLine }Angle: { angle }";
+                $"{ Environment.NewLine }Angle: { angle } { Environment.NewLine } OherAngle: { otherAngle }";
         debugDump.text = text;
     }
 
     void OnDrawGizmos()
     {
-        Gizmos.color = new Color(1, 0, 0, 0.5f);
-        Vector3 center = new Vector3(playerTransform.position.x, playerTransform.position.y - 1, playerTransform.position.z);
-        Gizmos.DrawWireCube(center, new Vector3(1.2f, 0.1f, 2.5f));
+
     }
     #endregion
 
