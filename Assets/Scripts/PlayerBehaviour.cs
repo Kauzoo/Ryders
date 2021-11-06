@@ -66,6 +66,7 @@ public class PlayerBehaviour : MonoBehaviour
         public float rotation = 0;
         public float jump = 0;
         public float gravity = 0;
+        public bool grounded = false;
         public bool boostLock = false;
     }
 
@@ -109,8 +110,8 @@ public class PlayerBehaviour : MonoBehaviour
         GetInput();
         Move();
         DebugRays();
-        FillDebugDump();
         Grounded();
+        FillDebugDump();
     }
 
     private void FixedUpdate()
@@ -204,11 +205,26 @@ public class PlayerBehaviour : MonoBehaviour
             Drift();
         }
 
+        
+        playerTransform.rotation = Quaternion.LookRotation(playerTransform.forward, GetUpwardDirection());
         playerTransform.Rotate(0, movement.rotation, 0, Space.Self);
         Vector3 forwardVector = playerTransform.forward * (movement.translation + movement.boostTranslation);
         Vector3 gravityVector = playerTransform.up * (-1) * movement.gravity;
         playerRigidbody.velocity = forwardVector + gravityVector;
         ManipulatePlayerVisuals();
+    }
+
+    void Rotation()
+    {
+        if (Grounded())
+        {
+            Vector3 groundRotation = DetectGroundAngleInEuler();
+        }
+        if (TryGetGroundObject(out GameObject groundObject))
+        {
+            playerTransform.parent = groundObject.transform;
+            
+        }
     }
 
     private void Drift()
@@ -252,10 +268,11 @@ public class PlayerBehaviour : MonoBehaviour
         {
             Debug.Log(hit.collider.gameObject.name);
             Debug.Log(hit.collider.name);
+            movement.grounded = true;
             return true;
         }
+        movement.grounded = false;
         return false;
-        // Vector3 center = new Vector3(visualPlayerTransform.position.x, visualPlayerTransform.position.y, visualPlayerTransform.position.z);
     }
 
     private int Gravity()
@@ -270,21 +287,45 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    private void DetectGroundAngle()
+    private Vector3 DetectGroundAngleInEuler()
     {
         int layerMask = 1 << grounded.layerMask;
-        for (int i = 0; i < visualPlayerTransform.childCount; i++)
+        if (Physics.Raycast(visualPlayerTransform.position, playerTransform.up * (-1), out RaycastHit hit, grounded.maxDistance, layerMask))
         {
-            if (visualPlayerTransform.GetChild(i).gameObject.name.Contains("Board"))
-            {
-                visualPlayerTransform.GetChild(i);
-            }
+            return hit.transform.rotation.eulerAngles;
         }
-        if (Physics.Raycast(visualPlayerTransform.position, new Vector3(0, -1, 0), out RaycastHit hit, grounded.maxDistance, layerMask))
+        return playerTransform.rotation.eulerAngles;
+    }
+
+    private Vector3 GetUpwardDirection()
+    {
+        Debug.Log("I am executed");
+        if(TryGetGroundObject(out GameObject groundObject))
         {
-           
+            return groundObject.transform.up;
         }
-        Vector3 center = new Vector3(visualPlayerTransform.position.x, visualPlayerTransform.position.y, visualPlayerTransform.position.z);
+        return playerTransform.up;
+    }
+
+    private Vector3 GetForwardDirection()
+    {
+        if (TryGetGroundObject(out GameObject groundObject))
+        {
+            return groundObject.transform.forward;
+        }
+        return playerTransform.forward;
+    }
+
+    private bool TryGetGroundObject(out GameObject groundObject)
+    {
+        int layerMask = 1 << grounded.layerMask;
+        if (Physics.Raycast(visualPlayerTransform.position, playerTransform.up * (-1), out RaycastHit hit, grounded.maxDistance, layerMask))
+        {
+            groundObject = hit.transform.gameObject;
+            return true;
+        }
+        groundObject = null;
+        return false;
     }
     #endregion
 
@@ -320,7 +361,8 @@ public class PlayerBehaviour : MonoBehaviour
     private void FillDebugDump()
     {
         string text = $"Translation: { movement.translation }{ Environment.NewLine }BoostTranslation: { movement.boostTranslation }" +
-                $"{ Environment.NewLine }Rotation: { movement.rotation}{ Environment.NewLine }BoostLock: { movement.boostLock }";
+                $"{ Environment.NewLine }Rotation: { movement.rotation}{ Environment.NewLine }BoostLock: { movement.boostLock }" +
+                $"{ Environment.NewLine }Grounded: { movement.grounded} { Environment.NewLine } Gravity: { movement.gravity }";
         debugDump.text = text;
     }
 
