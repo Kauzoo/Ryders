@@ -8,11 +8,14 @@ public class PlayerBehaviour : MonoBehaviour
     public Transform playerTransform;
     public Rigidbody playerRigidbody;
 
+
     public Transform visualPlayerTransform;
 
     private IEnumerator boostCoroutine;
 
     public TMPro.TextMeshProUGUI debugDump;
+
+    public Transform testObject;
 
     [System.Serializable]
     public class KeyBinds
@@ -71,6 +74,19 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     [System.Serializable]
+    public class Roation
+    {
+        public float currentRotationAngle;
+    }
+
+    [System.Serializable]
+    public class GroundInfo
+    {
+        public GameObject currentGround;
+        public GameObject previousGround;
+    }
+
+    [System.Serializable]
     public class Visuals
     {
         public float xOffset;
@@ -95,8 +111,10 @@ public class PlayerBehaviour : MonoBehaviour
     public InputVars standardInputVars = new InputVars();
     public MovementVars movementVars = new MovementVars();
     public Movement movement = new Movement();
+    public Roation rotation = new Roation();
     public Visuals visuals = new Visuals();
     public GroundVars grounded = new GroundVars();
+    public GroundInfo groundInfo = new GroundInfo();
 
     // Start is called before the first frame update
     void Start()
@@ -107,10 +125,10 @@ public class PlayerBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Grounded();
         GetInput();
         Move();
         DebugRays();
-        Grounded();
         FillDebugDump();
     }
 
@@ -173,12 +191,17 @@ public class PlayerBehaviour : MonoBehaviour
     #region Movement
     void Move()
     {
+        /***
+         * Compute movement variables for Movement, Rotation and Gravity
+         */
         movement.translation = movementVars.baseSpeed * Time.fixedDeltaTime;
         movement.translation -= Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration * Time.fixedDeltaTime;
         movement.rotation = standardInputVars.sidewaysAxis * movementVars.rotationSpeed * Time.deltaTime;
         movement.gravity = Gravity() * movementVars.gravityMultiplier * Time.fixedDeltaTime;
-        //movement.rotation = 1 * movementVars.rotationSpeed * Time.deltaTime;
 
+        /***
+         * Do stuff relating to Input
+         */
         if (standardInputVars.forwardInput)
         {
         }
@@ -205,28 +228,23 @@ public class PlayerBehaviour : MonoBehaviour
             Drift();
         }
 
-        
-        playerTransform.rotation = Quaternion.LookRotation(playerTransform.forward, GetUpwardDirection());
+        /***
+         * Handle Ground and Rotation
+         */
         playerTransform.Rotate(0, movement.rotation, 0, Space.Self);
+
+        /***
+         * Handle Translation and Gravity
+         */
         Vector3 forwardVector = playerTransform.forward * (movement.translation + movement.boostTranslation);
         Vector3 gravityVector = playerTransform.up * (-1) * movement.gravity;
         playerRigidbody.velocity = forwardVector + gravityVector;
+
+        /***
+         * Handle purely visual component of Movement
+         */
         ManipulatePlayerVisuals();
     }
-
-    void Rotation()
-    {
-        if (Grounded())
-        {
-            Vector3 groundRotation = DetectGroundAngleInEuler();
-        }
-        if (TryGetGroundObject(out GameObject groundObject))
-        {
-            playerTransform.parent = groundObject.transform;
-            
-        }
-    }
-
     private void Drift()
     {
 
@@ -261,23 +279,26 @@ public class PlayerBehaviour : MonoBehaviour
     #endregion
 
     #region Gravity & Grounded
-    private bool Grounded()
+    private void Grounded()
     {
         int layerMask = 1 << grounded.layerMask;
-        if (Physics.Raycast(visualPlayerTransform.position, new Vector3(0, -1, 0), out RaycastHit hit, grounded.maxDistance, layerMask))
+        if (Physics.Raycast(playerTransform.position, playerTransform.up * (-1), out RaycastHit hit, grounded.maxDistance, layerMask))
         {
-            Debug.Log(hit.collider.gameObject.name);
-            Debug.Log(hit.collider.name);
+            if(HasGroundChanged(hit.transform.gameObject))
+            {
+                HandleGroundChanged(hit.transform.gameObject);
+            }
             movement.grounded = true;
-            return true;
         }
-        movement.grounded = false;
-        return false;
+        else
+        {
+            movement.grounded = false;
+        }
     }
 
     private int Gravity()
     {
-        if (Grounded())
+        if (movement.grounded)
         {
             return 0;
         }
@@ -285,6 +306,33 @@ public class PlayerBehaviour : MonoBehaviour
         {
             return 1;
         }
+    }
+
+    private bool HasGroundChanged(GameObject newGround)
+    {
+        if (groundInfo.currentGround == null)
+        {
+            groundInfo.currentGround = playerTransform.gameObject;
+        }
+        if (!groundInfo.currentGround.Equals(newGround))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private void HandleGroundChanged(GameObject newGround)
+    {
+        Debug.Log("HandleGroundChanged is being executed");
+        groundInfo.previousGround = groundInfo.currentGround;
+        groundInfo.currentGround = newGround;
+
+        // Compute current y-Rotation Angle
+        float currentRotationAngle = Quaternion.Angle(groundInfo.previousGround.transform.rotation, playerTransform.rotation);
+        Vector3 currentRotationVector = new Vector3(0, currentRotationAngle, 0);
+
+        playerTransform.rotation = Quaternion.LookRotation(GetForwardDirection(), GetUpwardDirection());
+        playerTransform.Rotate(currentRotationVector, Space.Self);
     }
 
     private Vector3 DetectGroundAngleInEuler()
@@ -354,15 +402,29 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void DebugRays()
     {
-        Debug.DrawRay(playerTransform.position, playerTransform.forward, Color.green, 10, false);
-        Debug.DrawRay(playerTransform.position, playerTransform.up * (-1) * grounded.maxDistance, Color.yellow, 10, false);
+        // Debug.DrawRay(playerTransform.position, playerTransform.forward, Color.green, 10, false);
+        // Debug.DrawRay(playerTransform.position, playerTransform.up * (-1) * grounded.maxDistance, Color.yellow, 10, false);
+
+        Debug.DrawRay(playerTransform.position, GetForwardDirection(), Color.blue, 10, false);
+        Debug.DrawRay(playerTransform.position, GetUpwardDirection(), Color.green, 10, false);
+
+        Debug.DrawRay(testObject.position, testObject.forward, Color.blue, 10, false);
+        Debug.DrawRay(testObject.position, testObject.up, Color.green, 10, false);
+        Debug.DrawRay(testObject.position, testObject.right, Color.red, 10, false);
     }
 
     private void FillDebugDump()
     {
+        int layerMask = 1 << grounded.layerMask;
+        float angle = 0;
+        if (Physics.Raycast(playerTransform.position, playerTransform.up * (-1), out RaycastHit hit, grounded.maxDistance, layerMask))
+        {
+            angle = Quaternion.Angle(hit.transform.rotation, playerTransform.rotation);
+        }
         string text = $"Translation: { movement.translation }{ Environment.NewLine }BoostTranslation: { movement.boostTranslation }" +
                 $"{ Environment.NewLine }Rotation: { movement.rotation}{ Environment.NewLine }BoostLock: { movement.boostLock }" +
-                $"{ Environment.NewLine }Grounded: { movement.grounded} { Environment.NewLine } Gravity: { movement.gravity }";
+                $"{ Environment.NewLine }Grounded: { movement.grounded} { Environment.NewLine } Gravity: { movement.gravity }" +
+                $"{ Environment.NewLine }Angle: { angle }";
         debugDump.text = text;
     }
 
