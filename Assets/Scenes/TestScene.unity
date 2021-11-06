@@ -1036,8 +1036,8 @@ MonoBehaviour:
     boostTicks: 50
     speed: 10000
     rotationSpeed: 50
-    jumpSpeed: 2000
-    gravityMultiplier: 1000
+    jumpSpeed: 500
+    gravityMultiplier: 100
   movement:
     translation: 0
     boostTranslation: 0
@@ -1046,6 +1046,7 @@ MonoBehaviour:
     gravity: 0
     grounded: 0
     boostLock: 0
+    jumping: 0
   rotation:
     currentRotationAngleEuler: 0
     currentRoationAngleQuaternion: 0

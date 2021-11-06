@@ -71,6 +71,7 @@ public class PlayerBehaviour : MonoBehaviour
         public float gravity = 0;
         public bool grounded = false;
         public bool boostLock = false;
+        public bool jumping = false;
     }
 
     [System.Serializable]
@@ -201,6 +202,11 @@ public class PlayerBehaviour : MonoBehaviour
         movement.gravity = Gravity() * movementVars.gravityMultiplier * Time.fixedDeltaTime;
 
         /***
+         * Clean up Jump
+         */
+        CleanUpJump();
+
+        /***
          * Do stuff relating to Input
          */
         if (standardInputVars.forwardInput)
@@ -217,7 +223,7 @@ public class PlayerBehaviour : MonoBehaviour
         }
         if (standardInputVars.jumpInput)
         {
-            playerRigidbody.velocity = playerTransform.up * movementVars.jumpSpeed;
+            Jump();
         }
         if (standardInputVars.boostInput && !movement.boostLock)
         {
@@ -239,7 +245,8 @@ public class PlayerBehaviour : MonoBehaviour
          */
         Vector3 forwardVector = playerTransform.forward * (movement.translation + movement.boostTranslation);
         Vector3 gravityVector = Vector3.down * movement.gravity;
-        playerRigidbody.velocity = forwardVector + gravityVector;
+        Vector3 jumpVector = playerTransform.up * movement.jump;
+        playerRigidbody.velocity = forwardVector + gravityVector + jumpVector;
 
         /***
          * Handle purely visual component of Movement
@@ -249,6 +256,24 @@ public class PlayerBehaviour : MonoBehaviour
     private void Drift()
     {
 
+    }
+
+    private void Jump()
+    {
+        if (movement.grounded)
+        {
+            movement.jump = movementVars.jumpSpeed * Time.fixedDeltaTime;
+            movement.jumping = true;
+        }
+    }
+
+    private void CleanUpJump()
+    {
+        if( movement.jumping )
+        {
+            movement.jump = 0;
+            movement.jumping = false;
+        }
     }
 
     private IEnumerator SpeedRampUp()
