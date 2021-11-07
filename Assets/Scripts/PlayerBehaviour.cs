@@ -59,6 +59,8 @@ public class PlayerBehaviour : MonoBehaviour
         public float rotationSpeed;
         public float jumpSpeed;
         public float gravityMultiplier;
+        public float wallBumpTimer;
+        public float wallBumpSpeed;
     }
 
     [System.Serializable]
@@ -280,6 +282,22 @@ public class PlayerBehaviour : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.gameObject.layer != grounded.layerMask)
+        {
+            StartCoroutine("BumpOfWall");
+        }
+    }
+
+    private IEnumerator BumpOfWall()
+    {
+        float baseSpeed = movementVars.baseSpeed;
+        movementVars.baseSpeed = movementVars.wallBumpSpeed * (-1);
+        yield return new WaitForSeconds(movementVars.wallBumpTimer);
+        movementVars.baseSpeed = baseSpeed;
+    }
     #endregion
 
     #region Visuals
@@ -363,12 +381,11 @@ public class PlayerBehaviour : MonoBehaviour
         groundInfo.previousGround = groundInfo.currentGround;
         groundInfo.currentGround = newGround;
 
-        // Compute current y-Rotation Angle
-        //float currentRotationAngle = Quaternion.Angle(groundInfo.previousGround.transform.rotation, playerTransform.rotation);
         float currentRotationAngle = playerTransform.rotation.eulerAngles.y + groundInfo.previousGround.transform.rotation.eulerAngles.y;
         Vector3 currentRotationVector = new Vector3(0, currentRotationAngle, 0);
 
-        playerTransform.rotation = Quaternion.LookRotation(groundInfo.currentGround.transform.forward, groundInfo.currentGround.transform.up);
+        Quaternion targetRotation = Quaternion.LookRotation(groundInfo.currentGround.transform.forward, groundInfo.currentGround.transform.up);
+        playerTransform.rotation = Quaternion.Lerp(playerTransform.rotation, targetRotation, Time.time * 0.1f);
         playerTransform.Rotate(currentRotationVector, Space.Self);
     }
 
