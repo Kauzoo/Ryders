@@ -247,6 +247,7 @@ public class PlayerBehaviour : MonoBehaviour
          * Handle Ground and Rotation
          */
         playerTransform.Rotate(0, movement.rotation, 0, Space.Self);
+        playerRigidbody.MoveRotation(playerTransform.rotation);
 
         /***
          * Handle Translation and Gravity
@@ -301,14 +302,12 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    private void FastAccelerate()
-    {
-
-    }
-
     private void Drift()
     {
+        if ()
+        {
 
+        }
     }
 
     private void Jump()
@@ -331,10 +330,12 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        playerRigidbody.freezeRotation = true;
         if (collision.collider.gameObject.layer != grounded.layerMask)
         {
             StartCoroutine("BumpOfWall");
         }
+        playerRigidbody.freezeRotation = false;
     }
 
     private IEnumerator BumpOfWall()
@@ -393,6 +394,7 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 HandleGroundChanged(hit.transform.gameObject);
             }
+            CorrectGroundDistance(hit.distance);
             movement.grounded = true;
         }
         else if (Physics.Raycast(playerTransform.position, Vector3.down, out RaycastHit hitAlt, grounded.maxDistance, layerMask))
@@ -402,12 +404,25 @@ public class PlayerBehaviour : MonoBehaviour
                 {
                     HandleGroundChanged(hitAlt.transform.gameObject);
                 }
+                CorrectGroundDistance(hit.distance);
                 movement.grounded = true;
             }
         }
         else
         {
             movement.grounded = false;
+        }
+    }
+
+    private void CorrectGroundDistance(float distance)
+    {
+        if (distance < grounded.maxDistance)
+        {
+            Debug.Log("Code is reached");
+            //playerRigidbody.isKinematic = true;
+            playerTransform.Translate(playerTransform.up * (grounded.maxDistance - distance));
+            //playerRigidbody.MovePosition(playerTransform.up * (grounded.maxDistance - distance));
+            //playerRigidbody.isKinematic = false;
         }
     }
 
@@ -446,7 +461,8 @@ public class PlayerBehaviour : MonoBehaviour
         Vector3 currentRotationVector = new Vector3(0, currentRotationAngle, 0);
 
         Quaternion targetRotation = Quaternion.LookRotation(groundInfo.currentGround.transform.forward, groundInfo.currentGround.transform.up);
-        playerTransform.rotation = Quaternion.Lerp(playerTransform.rotation, targetRotation, Time.time * 0.1f);
+        // WIP playerTransform.rotation = Quaternion.Lerp(playerTransform.rotation, targetRotation, Time.time * 0.1f);
+        playerTransform.rotation = targetRotation;
         playerTransform.Rotate(currentRotationVector, Space.Self);
     }
 
