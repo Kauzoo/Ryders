@@ -304,10 +304,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void Drift()
     {
-        if ()
-        {
-
-        }
+        
     }
 
     private void Jump()
