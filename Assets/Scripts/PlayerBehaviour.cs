@@ -28,6 +28,7 @@ public class PlayerBehaviour : MonoBehaviour
         public KeyCode boostKey;
         public KeyCode driftKey1;
         public KeyCode driftKey2;
+        public KeyCode cycleLevelKey;
         public string verticalAxis;
         public string horizontalAxis;
     }
@@ -42,6 +43,7 @@ public class PlayerBehaviour : MonoBehaviour
         public bool jumpInput;
         public bool boostInput;
         public bool driftInput;
+        public bool cycleLevelInput;
         public float forwardAxis;
         public float sidewaysAxis;
     }
@@ -50,6 +52,7 @@ public class PlayerBehaviour : MonoBehaviour
     public class MovementVars
     {
         public float baseSpeed;
+        public float acceleration;
         public float corneringDeceleration;
         public float boostSpeed;
         public float boostLockTime;
@@ -61,26 +64,24 @@ public class PlayerBehaviour : MonoBehaviour
         public float gravityMultiplier;
         public float wallBumpTimer;
         public float wallBumpSpeed;
+        public int level1SpeedCap;
+        public int level2SpeedCap;
+        public int level3SpeedCap;
     }
 
     [System.Serializable]
     public class Movement
     {
         public float translation = 0;
+        public float speedMultiplier = 0;
         public float boostTranslation = 0;
         public float rotation = 0;
         public float jump = 0;
         public float gravity = 0;
+        public int level = 0;
         public bool grounded = false;
         public bool boostLock = false;
         public bool jumping = false;
-    }
-
-    [System.Serializable]
-    public class Roation
-    {
-        public float currentRotationAngleEuler;
-        public float currentRoationAngleQuaternion;
     }
 
     [System.Serializable]
@@ -115,7 +116,6 @@ public class PlayerBehaviour : MonoBehaviour
     public InputVars standardInputVars = new InputVars();
     public MovementVars movementVars = new MovementVars();
     public Movement movement = new Movement();
-    public Roation rotation = new Roation();
     public Visuals visuals = new Visuals();
     public GroundVars grounded = new GroundVars();
     public GroundInfo groundInfo = new GroundInfo();
@@ -131,6 +131,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         Grounded();
         GetInput();
+        HandleLevelSwitching();
         Move();
         DebugRays();
         FillDebugDump();
@@ -155,6 +156,7 @@ public class PlayerBehaviour : MonoBehaviour
         standardInputVars.rightInput = false;
         standardInputVars.jumpInput = false;
         standardInputVars.boostInput = false;
+        standardInputVars.cycleLevelInput = false;
 
         // Keys
         if (Input.GetKey(keyboardKeyBinds.fowardKey) || Input.GetKey(controllerKeyBinds.fowardKey))
@@ -184,6 +186,10 @@ public class PlayerBehaviour : MonoBehaviour
         if (Input.GetKey(keyboardKeyBinds.driftKey1) || Input.GetKey(keyboardKeyBinds.driftKey2) || Input.GetKey(controllerKeyBinds.driftKey1) || Input.GetKey(controllerKeyBinds.driftKey2))
         {
             standardInputVars.driftInput = true;
+        }
+        if (Input.GetKeyDown(keyboardKeyBinds.cycleLevelKey) || Input.GetKeyDown(controllerKeyBinds.cycleLevelKey))
+        {
+            standardInputVars.cycleLevelInput = true;
         }
 
         // Axis
@@ -255,6 +261,17 @@ public class PlayerBehaviour : MonoBehaviour
          */
         ManipulatePlayerVisuals();
     }
+
+    private void CalculateSpeedRampUp()
+    {
+        if (movement.translation < movementVars.speed * Time.fixedDeltaTime)
+        {
+            
+        }
+
+        movement.translation = movementVars.baseSpeed * Time.fixedDeltaTime;
+    }
+
     private void Drift()
     {
 
@@ -278,11 +295,6 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
-    private IEnumerator SpeedRampUp()
-    {
-        yield return new WaitForSeconds(1);
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.gameObject.layer != grounded.layerMask)
@@ -300,6 +312,22 @@ public class PlayerBehaviour : MonoBehaviour
     }
     #endregion
 
+    #region StateSwitching & Air
+    private void HandleLevelSwitching()
+    {
+        if (standardInputVars.cycleLevelInput)
+        {
+            if (movement.level < 3)
+            {
+                movement.level++;
+            }
+            else if (movement.level >= 3 || movement.level <= 0)
+            {
+                movement.level = 1;
+            }
+        }
+    }
+    #endregion
     #region Visuals
     private void ManipulatePlayerVisuals()
     {
@@ -444,7 +472,8 @@ public class PlayerBehaviour : MonoBehaviour
         string text = $"Translation: { movement.translation }{ Environment.NewLine }BoostTranslation: { movement.boostTranslation }" +
                 $"{ Environment.NewLine }Rotation: { movement.rotation}{ Environment.NewLine }BoostLock: { movement.boostLock }" +
                 $"{ Environment.NewLine }Grounded: { movement.grounded} { Environment.NewLine } Gravity: { movement.gravity }" +
-                $"{ Environment.NewLine }Angle: { angle } { Environment.NewLine } OherAngle: { otherAngle }";
+                $"{ Environment.NewLine }Angle: { angle } { Environment.NewLine } OherAngle: { otherAngle }" +
+                $"{ Environment.NewLine }Level: { movement.level }";
         debugDump.text = text;
     }
 

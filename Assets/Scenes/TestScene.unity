@@ -683,9 +683,10 @@ MonoBehaviour:
     leftKey: 0
     rightKey: 0
     jumpKey: 32
-    boostKey: 9
+    boostKey: 304
     driftKey1: 0
     driftKey2: 0
+    cycleLevelKey: 9
     verticalAxis: Vertical
     horizontalAxis: Horizontal
   controllerKeyBinds:
@@ -697,6 +698,7 @@ MonoBehaviour:
     boostKey: 331
     driftKey1: 0
     driftKey2: 0
+    cycleLevelKey: 0
     verticalAxis: Vertical
     horizontalAxis: Horizontal
   standardInputVars:
@@ -707,10 +709,12 @@ MonoBehaviour:
     jumpInput: 0
     boostInput: 0
     driftInput: 0
+    cycleLevelInput: 0
     forwardAxis: 0
     sidewaysAxis: 0
   movementVars:
     baseSpeed: 2000
+    acceleration: 0
     corneringDeceleration: 120
     boostSpeed: 2
     boostLockTime: 10
@@ -722,18 +726,20 @@ MonoBehaviour:
     gravityMultiplier: 2000
     wallBumpTimer: 0.5
     wallBumpSpeed: 1000
+    level1SpeedCap: 0
+    level2SpeedCap: 0
+    level3SpeedCap: 0
   movement:
     translation: 0
+    speedMultiplier: 0
     boostTranslation: 0
     rotation: 0
     jump: 0
     gravity: 0
+    level: 0
     grounded: 0
     boostLock: 0
     jumping: 0
-  rotation:
-    currentRotationAngleEuler: 0
-    currentRoationAngleQuaternion: 0
   visuals:
     xOffset: 2
     xOffsetDamping: 1
