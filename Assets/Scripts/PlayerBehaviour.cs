@@ -123,6 +123,7 @@ public class PlayerBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Application.targetFrameRate = 60;
         visualPlayerTransform.SetParent(playerTransform);
     }
 
@@ -204,7 +205,7 @@ public class PlayerBehaviour : MonoBehaviour
         /***
          * Compute movement variables for Movement, Rotation and Gravity
          */
-         Accelerate();
+        Accelerate();
         movement.rotation = standardInputVars.sidewaysAxis * movementVars.rotationSpeed * Time.deltaTime;
         movement.gravity = Gravity() * movementVars.gravityMultiplier;
 
@@ -501,13 +502,15 @@ public class PlayerBehaviour : MonoBehaviour
             quaternionAngle = Quaternion.Angle(hit.transform.rotation, playerTransform.rotation);
             eulerAngle = playerTransform.rotation.eulerAngles.y + hit.transform.rotation.eulerAngles.y;
         }
+        float fps = 1 / Time.unscaledDeltaTime;
+        fps = Mathf.Round(fps);
         string text = $"Speed: { movement.speed }{ Environment.NewLine }BoostTranslation: { movement.boostTranslation }" +
                 $"{ Environment.NewLine }Rotation: { movement.rotation}{ Environment.NewLine }BoostLock: { movement.boostLock }" +
                 $"{ Environment.NewLine }Grounded: { movement.grounded}{ Environment.NewLine }Gravity: { movement.gravity }" +
                 $"{ Environment.NewLine }QuaternionAngle: { quaternionAngle }{ Environment.NewLine }EulerAngle: { eulerAngle }" +
                 $"{ Environment.NewLine }Level: { movement.level }";
         string rigidbodyText = $"Velocity-X: { playerRigidbody.velocity.x }{ Environment.NewLine }Velocity-Y: { playerRigidbody.velocity.y}" +
-                $"{ Environment.NewLine }Velocity-Z: { playerRigidbody.velocity.z }";
+                $"{ Environment.NewLine }Velocity-Z: { playerRigidbody.velocity.z }{ Environment.NewLine }FPS: { fps }";
         debugDump.text = text;
         rigidbodyDebugDump.text = rigidbodyText;
     }
