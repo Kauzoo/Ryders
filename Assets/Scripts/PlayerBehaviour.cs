@@ -14,6 +14,7 @@ public class PlayerBehaviour : MonoBehaviour
     private IEnumerator boostCoroutine;
 
     public TMPro.TextMeshProUGUI debugDump;
+    public TMPro.TextMeshProUGUI rigidbodyDebugDump;
 
     public Transform testObject;
 
@@ -51,14 +52,14 @@ public class PlayerBehaviour : MonoBehaviour
     [System.Serializable]
     public class MovementVars
     {
-        public float baseSpeed;
-        public float acceleration;
+        public int minSpeed;
+        public int fastAcceleration;
+        public int acceleration;
         public float corneringDeceleration;
         public float boostSpeed;
         public float boostLockTime;
         public float boostInterval;
         public int boostTicks;
-        public float speed;
         public float rotationSpeed;
         public float jumpSpeed;
         public float gravityMultiplier;
@@ -72,8 +73,7 @@ public class PlayerBehaviour : MonoBehaviour
     [System.Serializable]
     public class Movement
     {
-        public float translation = 0;
-        public float speedMultiplier = 0;
+        public float speed = 0;
         public float boostTranslation = 0;
         public float rotation = 0;
         public float jump = 0;
@@ -204,10 +204,9 @@ public class PlayerBehaviour : MonoBehaviour
         /***
          * Compute movement variables for Movement, Rotation and Gravity
          */
-        movement.translation = movementVars.baseSpeed * Time.fixedDeltaTime;
-        movement.translation -= Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration * Time.fixedDeltaTime;
+         Accelerate();
         movement.rotation = standardInputVars.sidewaysAxis * movementVars.rotationSpeed * Time.deltaTime;
-        movement.gravity = Gravity() * movementVars.gravityMultiplier * Time.fixedDeltaTime;
+        movement.gravity = Gravity() * movementVars.gravityMultiplier;
 
         /***
          * Clean up Jump
@@ -251,9 +250,9 @@ public class PlayerBehaviour : MonoBehaviour
         /***
          * Handle Translation and Gravity
          */
-        Vector3 forwardVector = playerTransform.forward * (movement.translation + movement.boostTranslation);
-        Vector3 gravityVector = Vector3.down * movement.gravity;
-        Vector3 jumpVector = playerTransform.up * movement.jump;
+        Vector3 forwardVector = playerTransform.forward * (movement.speed * Time.fixedDeltaTime + movement.boostTranslation);
+        Vector3 gravityVector = Vector3.down * movement.gravity * Time.fixedDeltaTime;
+        Vector3 jumpVector = playerTransform.up * movement.jump * Time.fixedDeltaTime;
         playerRigidbody.velocity = forwardVector + gravityVector + jumpVector;
 
         /***
@@ -262,14 +261,48 @@ public class PlayerBehaviour : MonoBehaviour
         ManipulatePlayerVisuals();
     }
 
-    private void CalculateSpeedRampUp()
+    private void Accelerate()
     {
-        if (movement.translation < movementVars.speed * Time.fixedDeltaTime)
+        if (movement.speed < movementVars.minSpeed)
         {
-            
+            movement.speed = movementVars.fastAcceleration + movement.speed;
         }
+        else
+        {
+            if (standardInputVars.sidewaysAxis == 0)
+            {
+                switch (movement.level)
+                {
+                    case 1:
+                        if (movement.speed < movementVars.level1SpeedCap)
+                        {
+                            movement.speed = movementVars.acceleration + movement.speed;
+                        }
+                        break;
+                    case 2:
+                        if (movement.speed < movementVars.level2SpeedCap)
+                        {
+                            movement.speed = movementVars.acceleration + movement.speed;
+                        }
+                        break;
+                    case 3:
+                        if (movement.speed < movementVars.level3SpeedCap)
+                        {
+                            movement.speed = movementVars.acceleration + movement.speed;
+                        }
+                        break;
+                    default:
+                        Debug.LogWarning($"ERROR: Level was { movement.level }");
+                        break;
+                }
+            }
+            movement.speed -= Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration * Time.fixedDeltaTime;
+        }
+    }
 
-        movement.translation = movementVars.baseSpeed * Time.fixedDeltaTime;
+    private void FastAccelerate()
+    {
+
     }
 
     private void Drift()
@@ -305,10 +338,9 @@ public class PlayerBehaviour : MonoBehaviour
 
     private IEnumerator BumpOfWall()
     {
-        float baseSpeed = movementVars.baseSpeed;
-        movementVars.baseSpeed = movementVars.wallBumpSpeed * (-1);
+        movement.speed = movementVars.wallBumpSpeed * (-1);
         yield return new WaitForSeconds(movementVars.wallBumpTimer);
-        movementVars.baseSpeed = baseSpeed;
+        movement.speed = 0;
     }
     #endregion
 
@@ -462,19 +494,22 @@ public class PlayerBehaviour : MonoBehaviour
     private void FillDebugDump()
     {
         int layerMask = 1 << grounded.layerMask;
-        float angle = 0;
-        float otherAngle = 0;
+        float quaternionAngle = 0;
+        float eulerAngle = 0;
         if (Physics.Raycast(playerTransform.position, playerTransform.up * (-1), out RaycastHit hit, grounded.maxDistance, layerMask))
         {
-            angle = Quaternion.Angle(hit.transform.rotation, playerTransform.rotation);
-            otherAngle = playerTransform.rotation.eulerAngles.y + hit.transform.rotation.eulerAngles.y;
+            quaternionAngle = Quaternion.Angle(hit.transform.rotation, playerTransform.rotation);
+            eulerAngle = playerTransform.rotation.eulerAngles.y + hit.transform.rotation.eulerAngles.y;
         }
-        string text = $"Translation: { movement.translation }{ Environment.NewLine }BoostTranslation: { movement.boostTranslation }" +
+        string text = $"Speed: { movement.speed }{ Environment.NewLine }BoostTranslation: { movement.boostTranslation }" +
                 $"{ Environment.NewLine }Rotation: { movement.rotation}{ Environment.NewLine }BoostLock: { movement.boostLock }" +
-                $"{ Environment.NewLine }Grounded: { movement.grounded} { Environment.NewLine } Gravity: { movement.gravity }" +
-                $"{ Environment.NewLine }Angle: { angle } { Environment.NewLine } OherAngle: { otherAngle }" +
+                $"{ Environment.NewLine }Grounded: { movement.grounded}{ Environment.NewLine }Gravity: { movement.gravity }" +
+                $"{ Environment.NewLine }QuaternionAngle: { quaternionAngle }{ Environment.NewLine }EulerAngle: { eulerAngle }" +
                 $"{ Environment.NewLine }Level: { movement.level }";
+        string rigidbodyText = $"Velocity-X: { playerRigidbody.velocity.x }{ Environment.NewLine }Velocity-Y: { playerRigidbody.velocity.y}" +
+                $"{ Environment.NewLine }Velocity-Z: { playerRigidbody.velocity.z }";
         debugDump.text = text;
+        rigidbodyDebugDump.text = rigidbodyText;
     }
 
     void OnDrawGizmos()
