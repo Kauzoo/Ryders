@@ -12,6 +12,7 @@ public class PlayerBehaviour : MonoBehaviour
     public Transform visualPlayerTransform;
 
     private IEnumerator boostCoroutine;
+    private IEnumerator driftBoostCoroutine;
 
     public TMPro.TextMeshProUGUI debugDump;
     public TMPro.TextMeshProUGUI rigidbodyDebugDump;
@@ -59,6 +60,10 @@ public class PlayerBehaviour : MonoBehaviour
         public float boostSpeed;
         public float boostLockTime;
         public float boostInterval;
+        public float driftDuration;
+        public float driftBoostSpeed;
+        public float driftBoostInterval;
+        public int driftBoostTicks;
         public int boostTicks;
         public float rotationSpeed;
         public float jumpSpeed;
@@ -77,8 +82,11 @@ public class PlayerBehaviour : MonoBehaviour
         public float boostTranslation = 0;
         public float rotation = 0;
         public float jump = 0;
+        public float driftTimeMarker = 0;
+        public float driftTimer = 0;
         public float gravity = 0;
         public int level = 0;
+        public bool driftBoost = false;
         public bool grounded = false;
         public bool boostLock = false;
         public bool jumping = false;
@@ -157,6 +165,7 @@ public class PlayerBehaviour : MonoBehaviour
         standardInputVars.rightInput = false;
         standardInputVars.jumpInput = false;
         standardInputVars.boostInput = false;
+        standardInputVars.driftInput = false;
         standardInputVars.cycleLevelInput = false;
 
         // Keys
@@ -210,9 +219,10 @@ public class PlayerBehaviour : MonoBehaviour
         movement.gravity = Gravity() * movementVars.gravityMultiplier;
 
         /***
-         * Clean up Jump
+         * Clean up
          */
         CleanUpJump();
+        CleanUpDrift();
 
         /***
          * Do stuff relating to Input
@@ -263,6 +273,7 @@ public class PlayerBehaviour : MonoBehaviour
         ManipulatePlayerVisuals();
     }
 
+    #region BasicTranslation
     private void Accelerate()
     {
         if (movement.speed < movementVars.minSpeed)
@@ -302,11 +313,45 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    private void Boost()
+    {
+
+    }
+    #endregion
+
+    #region Drift
     private void Drift()
     {
-        
+        if (movement.driftTimeMarker == 0)
+        {
+            movement.driftTimeMarker = Time.time;
+        }
+        movement.driftTimer += Time.time - movement.driftTimeMarker;
+        if (movement.driftTimer > movementVars.driftDuration)
+        {
+            movement.driftTimeMarker = 0;
+            movement.driftTimer = 0;
+            movement.driftBoost = true;
+        }
     }
 
+    private void CleanUpDrift()
+    {
+        if (!standardInputVars.driftInput)
+        {
+            movement.driftTimer = 0;
+            movement.driftTimeMarker = 0;
+            if (movement.driftBoost)
+            {
+                driftBoostCoroutine = BoostTimer(0, movementVars.driftBoostInterval, movementVars.driftBoostTicks);
+                StartCoroutine(driftBoostCoroutine);
+                movement.driftBoost = false;
+            }
+        }
+    }
+    #endregion
+
+    #region Jump
     private void Jump()
     {
         if (movement.grounded)
@@ -324,7 +369,9 @@ public class PlayerBehaviour : MonoBehaviour
             movement.jumping = false;
         }
     }
+    #endregion
 
+    #region WallCollision
     private void OnCollisionEnter(Collision collision)
     {
         playerRigidbody.freezeRotation = true;
@@ -341,6 +388,7 @@ public class PlayerBehaviour : MonoBehaviour
         yield return new WaitForSeconds(movementVars.wallBumpTimer);
         movement.speed = 0;
     }
+    #endregion
     #endregion
 
     #region StateSwitching & Air
@@ -359,6 +407,7 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
     #endregion
+
     #region Visuals
     private void ManipulatePlayerVisuals()
     {

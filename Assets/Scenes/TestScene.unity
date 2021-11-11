@@ -686,7 +686,7 @@ MonoBehaviour:
     rightKey: 0
     jumpKey: 32
     boostKey: 304
-    driftKey1: 0
+    driftKey1: 106
     driftKey2: 0
     cycleLevelKey: 9
     verticalAxis: Vertical
@@ -722,6 +722,10 @@ MonoBehaviour:
     boostSpeed: 2
     boostLockTime: 10
     boostInterval: 0.1
+    driftDuration: 1
+    driftBoostSpeed: 0
+    driftBoostInterval: 0.1
+    driftBoostTicks: 40
     boostTicks: 50
     rotationSpeed: 50
     jumpSpeed: 6000
@@ -736,6 +740,8 @@ MonoBehaviour:
     boostTranslation: 0
     rotation: 0
     jump: 0
+    driftTimeMarker: 0
+    driftTimer: 0
     gravity: 0
     level: 0
     grounded: 0
