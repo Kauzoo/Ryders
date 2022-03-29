@@ -75,6 +75,9 @@ public class PlayerBehaviour : MonoBehaviour
         [Header("Turning")]
         public float rotationSpeed;
         public float turnVectorMultiplier;
+        public float lowSpeedTurnMultiplier;
+        public float highSpeedTurnMultiplier;
+        public float turnrate;
         [Header("Jump&Gravity")]
         public float jumpSpeed;
         public float gravityMultiplier;
@@ -90,21 +93,36 @@ public class PlayerBehaviour : MonoBehaviour
     [System.Serializable]
     public class Movement
     {
+        public enum TranslationStates
+        {
+            Stationary, LowSpeed, HighSpeed
+        }
+        public enum CorneringStates
+        {
+            None, Turning, Drifting, Braking
+        }
         public float speed = 0;
         public float boostTranslation = 0;
         public float rotation = 0;
-        public float turning = 0;
+        public float turningRaw = 0;    // Raw value for turning without speed multipliers
+        public float turning = 0;   // Degress per Frame by which the playerTransform is rotated arround it's y-Axis
         public Vector3 savedRotation;
         public float jump = 0;
         public float driftTimeMarker = 0;
         public float driftTimer = 0;
         public float gravity = 0;
         public int level = 0;
+        [Header("MovementStates")]
         public bool driftBoost = false;
+        public bool drifting = false;
         public bool grounded = false;
         public bool boostLock = false;
         public bool jumping = false;
+        public bool chargingJump = false;
         public bool brakeing = false;
+        public bool cornering = false;
+        public TranslationStates translationState = TranslationStates.Stationary;
+        public CorneringStates corneringStates = CorneringStates.None;
     }
 
     [System.Serializable]
@@ -227,6 +245,16 @@ public class PlayerBehaviour : MonoBehaviour
     void Move()
     {
         /***
+         * State Determination
+         */
+        // Set the TranslationState (based on current moveSpeed)
+        SetTranslationState();
+        // Set cornering state (based on current input)
+        SetCorneringState();
+        
+
+
+        /***
          * Clean Up
          */
         CleanUpBrake();
@@ -246,12 +274,21 @@ public class PlayerBehaviour : MonoBehaviour
         /***
          * Compute movement variables for Movement, Rotation and Gravity
          */
-        if(!movement.brakeing)
+        // Do Accel
+        Accelerate();
+
+        // Calculate turn stuff
+        movement.turningRaw = standardInputVars.sidewaysAxis * movementVars.turnrate;
+        if (movementVars.minSpeed > movement.speed)
         {
-            Accelerate();
+            movement.turning = movement.turningRaw * movementVars.lowSpeedTurnMultiplier;
         }
-        movement.rotation = standardInputVars.sidewaysAxis * movementVars.rotationSpeed * Time.deltaTime;
-        movement.turning = standardInputVars.sidewaysAxis * movementVars.turnVectorMultiplier;
+        else
+        {
+            movement.turning = movement.turningRaw * movementVars.highSpeedTurnMultiplier;
+        }
+
+        // Calculate gravity value
         movement.gravity = Gravity() * movementVars.gravityMultiplier;
 
         /***
@@ -287,10 +324,12 @@ public class PlayerBehaviour : MonoBehaviour
         
 
         /***
-         * Handle Ground and Rotation
+         * Handle Ground and Turning
          */
         //playerTransform.Rotate(0, movement.rotation, 0, Space.Self);
         //playerRigidbody.MoveRotation(playerTransform.rotation);
+        
+
 
         /***
          * Handle Translation and Gravity
@@ -310,9 +349,102 @@ public class PlayerBehaviour : MonoBehaviour
         ManipulatePlayerVisuals();
     }
 
+    #region StateSetters
+    private void SetTranslationState()
+    {
+        if (movement.speed < movementVars.minSpeed)
+        {
+            if (movement.speed == 0)
+            {
+                movement.translationState = Movement.TranslationStates.Stationary;
+            }
+            else
+            {
+                movement.translationState = Movement.TranslationStates.LowSpeed;
+            }
+        }
+        else
+        {
+            movement.translationState = Movement.TranslationStates.HighSpeed;
+        }
+    }
+
+    // This needs to be expanded to make sure only legal state changes are possible (with regards to drifting/braking and so on)
+    private void SetCorneringState()
+    {
+        if (standardInputVars.sidewaysAxis == 0)
+        {
+            if (standardInputVars.driftInput)
+            {
+                movement.corneringStates = Movement.CorneringStates.Braking;
+            }
+            else
+            {
+                movement.corneringStates = Movement.CorneringStates.None;
+            }
+        }
+        else
+        {
+            if (standardInputVars.driftInput)
+            {
+                movement.corneringStates = Movement.CorneringStates.Drifting;
+            }
+            else
+            {
+                movement.corneringStates = Movement.CorneringStates.Turning;
+            }
+        }
+    }
+    #endregion
+
     #region BasicTranslation
+    /// <summary>
+    /// Handles everything to do with Acceleration, except boosting
+    /// </summary>
     private void Accelerate()
     {
+        // Case 1: LowSpeed
+        /*
+         * LowSpeed Accel only takes into account if the player is braking or not (turning is ignored)
+         */
+        if (movement.translationState == Movement.TranslationStates.LowSpeed)
+        {
+            if (movement.corneringStates == Movement.CorneringStates.Braking)
+            {
+                movement.speed = movement.speed - movementVars.brakeDeceleration;
+                // Negative speed should not be a thing
+                if (movement.speed < 0)
+                {
+                    movement.speed = 0;
+                }
+            }
+            else
+            {
+                movement.speed = movementVars.fastAcceleration + movement.speed;
+            }
+        }
+
+        // Case 2: HighSpeed
+        if (movement.translationState == Movement.TranslationStates.HighSpeed)
+        {
+            if (movement.corneringStates == Movement.CorneringStates.Braking)
+            {
+                movement.speed = movement.speed - movementVars.brakeDeceleration;
+                // Negative speed should not be a thing
+                if (movement.speed < 0)
+                {
+                    movement.speed = 0;
+                }
+            }
+            if (movement.corneringStates == Movement.CorneringStates.Turning)
+            {
+                movement.
+            }
+        }
+
+        // Case 3: Stationary
+
+
         if (movement.speed < movementVars.minSpeed)
         {
             movement.speed = movementVars.fastAcceleration + movement.speed;
@@ -351,6 +483,11 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     private void Boost()
+    {
+
+    }
+
+    private void Turn()
     {
 
     }
