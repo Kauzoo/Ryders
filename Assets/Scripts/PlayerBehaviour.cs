@@ -11,6 +11,8 @@ public class PlayerBehaviour : MonoBehaviour
 
     public Transform visualPlayerTransform;
 
+    public LookupTables LookupTables;
+
     private IEnumerator boostCoroutine;
     private IEnumerator driftBoostCoroutine;
 
@@ -53,23 +55,33 @@ public class PlayerBehaviour : MonoBehaviour
     [System.Serializable]
     public class MovementVars
     {
+        [Header("Speed")]
         public int minSpeed;
         public int fastAcceleration;
         public int acceleration;
         public float corneringDeceleration;
+        [Header("Boost")]
         public float boostSpeed;
         public float boostLockTime;
         public float boostInterval;
+        [Header("Brake")]
+        public float brakeDeceleration;
+        [Header("Drift")]
         public float driftDuration;
         public float driftBoostSpeed;
         public float driftBoostInterval;
         public int driftBoostTicks;
         public int boostTicks;
+        [Header("Turning")]
         public float rotationSpeed;
+        public float turnVectorMultiplier;
+        [Header("Jump&Gravity")]
         public float jumpSpeed;
         public float gravityMultiplier;
+        [Header("WallBump")]
         public float wallBumpTimer;
         public float wallBumpSpeed;
+        [Header("SpeedLevels")]
         public int level1SpeedCap;
         public int level2SpeedCap;
         public int level3SpeedCap;
@@ -81,6 +93,8 @@ public class PlayerBehaviour : MonoBehaviour
         public float speed = 0;
         public float boostTranslation = 0;
         public float rotation = 0;
+        public float turning = 0;
+        public Vector3 savedRotation;
         public float jump = 0;
         public float driftTimeMarker = 0;
         public float driftTimer = 0;
@@ -90,6 +104,7 @@ public class PlayerBehaviour : MonoBehaviour
         public bool grounded = false;
         public bool boostLock = false;
         public bool jumping = false;
+        public bool brakeing = false;
     }
 
     [System.Serializable]
@@ -212,10 +227,31 @@ public class PlayerBehaviour : MonoBehaviour
     void Move()
     {
         /***
+         * Clean Up
+         */
+        CleanUpBrake();
+
+        /***
+         * Drifting & Brakeing
+         */
+        if (standardInputVars.driftInput && standardInputVars.sidewaysAxis > 0.01f)
+        {
+            Drift();
+        }
+        else if (standardInputVars.driftInput && standardInputVars.sidewaysAxis == 0)
+        {
+            Brake();
+        }
+
+        /***
          * Compute movement variables for Movement, Rotation and Gravity
          */
-        Accelerate();
+        if(!movement.brakeing)
+        {
+            Accelerate();
+        }
         movement.rotation = standardInputVars.sidewaysAxis * movementVars.rotationSpeed * Time.deltaTime;
+        movement.turning = standardInputVars.sidewaysAxis * movementVars.turnVectorMultiplier;
         movement.gravity = Gravity() * movementVars.gravityMultiplier;
 
         /***
@@ -248,24 +284,25 @@ public class PlayerBehaviour : MonoBehaviour
             boostCoroutine = BoostTimer(movementVars.boostLockTime, movementVars.boostInterval, movementVars.boostTicks);
             StartCoroutine(boostCoroutine);
         }
-        if (standardInputVars.driftInput)
-        {
-            Drift();
-        }
+        
 
         /***
          * Handle Ground and Rotation
          */
-        playerTransform.Rotate(0, movement.rotation, 0, Space.Self);
-        playerRigidbody.MoveRotation(playerTransform.rotation);
+        //playerTransform.Rotate(0, movement.rotation, 0, Space.Self);
+        //playerRigidbody.MoveRotation(playerTransform.rotation);
 
         /***
          * Handle Translation and Gravity
          */
         Vector3 forwardVector = playerTransform.forward * (movement.speed * Time.fixedDeltaTime + movement.boostTranslation);
+        forwardVector = forwardVector + movementVars.turnVectorMultiplier * playerTransform.right * movement.turning * Time.fixedDeltaTime;
         Vector3 gravityVector = Vector3.down * movement.gravity * Time.fixedDeltaTime;
         Vector3 jumpVector = playerTransform.up * movement.jump * Time.fixedDeltaTime;
         playerRigidbody.velocity = forwardVector + gravityVector + jumpVector;
+
+        playerTransform.rotation *= Quaternion.FromToRotation(playerTransform.forward, forwardVector);
+        playerRigidbody.MoveRotation(playerTransform.rotation);
 
         /***
          * Handle purely visual component of Movement
@@ -348,6 +385,24 @@ public class PlayerBehaviour : MonoBehaviour
                 movement.driftBoost = false;
             }
         }
+    }
+
+    private void Brake()
+    {
+        movement.brakeing = true;
+        if (movement.speed > 0)
+        {
+            movement.speed = movement.speed - movementVars.brakeDeceleration;
+        }
+        if(movement.speed <= 0)
+        {
+            movement.speed = 0; 
+        }
+    }
+
+    private void CleanUpBrake()
+    {
+        movement.brakeing = false;
     }
     #endregion
 
@@ -545,7 +600,7 @@ public class PlayerBehaviour : MonoBehaviour
     #region Debug
     private void DebugCircleMovement()
     {
-
+        //playerTransform.gameObject.
     }
 
     private void DebugRays()
