@@ -20,6 +20,7 @@ public class PlayerBehaviour : MonoBehaviour
     public TMPro.TextMeshProUGUI rigidbodyDebugDump;
 
     public Transform testObject;
+    public Transform respanwn;
 
     [System.Serializable]
     public class KeyBinds
@@ -73,8 +74,7 @@ public class PlayerBehaviour : MonoBehaviour
         public int driftBoostTicks;
         public int boostTicks;
         [Header("Turning")]
-        public float rotationSpeed;
-        public float turnVectorMultiplier;
+        public float turnSpeedThreshhold;
         public float lowSpeedTurnMultiplier;
         public float highSpeedTurnMultiplier;
         public float turnrate;
@@ -238,6 +238,13 @@ public class PlayerBehaviour : MonoBehaviour
         // Axis
         standardInputVars.forwardAxis = Input.GetAxis("Vertical");
         standardInputVars.sidewaysAxis = Input.GetAxis("Horizontal");
+
+
+        //OTHER DEBUG ONLY
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            playerTransform.position = respanwn.position;
+        }
     }
     #endregion
 
@@ -257,11 +264,12 @@ public class PlayerBehaviour : MonoBehaviour
         /***
          * Clean Up
          */
-        CleanUpBrake();
+        //CleanUpBrake();
 
         /***
          * Drifting & Brakeing
          */
+        /*
         if (standardInputVars.driftInput && standardInputVars.sidewaysAxis > 0.01f)
         {
             Drift();
@@ -270,6 +278,7 @@ public class PlayerBehaviour : MonoBehaviour
         {
             Brake();
         }
+        */
 
         /***
          * Compute movement variables for Movement, Rotation and Gravity
@@ -277,16 +286,8 @@ public class PlayerBehaviour : MonoBehaviour
         // Do Accel
         Accelerate();
 
-        // Calculate turn stuff
-        movement.turningRaw = standardInputVars.sidewaysAxis * movementVars.turnrate;
-        if (movementVars.minSpeed > movement.speed)
-        {
-            movement.turning = movement.turningRaw * movementVars.lowSpeedTurnMultiplier;
-        }
-        else
-        {
-            movement.turning = movement.turningRaw * movementVars.highSpeedTurnMultiplier;
-        }
+        // Do turn
+        Turn();
 
         // Calculate gravity value
         movement.gravity = Gravity() * movementVars.gravityMultiplier;
@@ -294,8 +295,8 @@ public class PlayerBehaviour : MonoBehaviour
         /***
          * Clean up
          */
-        CleanUpJump();
-        CleanUpDrift();
+        //CleanUpJump();
+        //CleanUpDrift();
 
         /***
          * Do stuff relating to Input
@@ -334,14 +335,14 @@ public class PlayerBehaviour : MonoBehaviour
         /***
          * Handle Translation and Gravity
          */
-        Vector3 forwardVector = playerTransform.forward * (movement.speed * Time.fixedDeltaTime + movement.boostTranslation);
-        forwardVector = forwardVector + movementVars.turnVectorMultiplier * playerTransform.right * movement.turning * Time.fixedDeltaTime;
+        Vector3 forwardVector = playerTransform.forward * (movement.speed + movement.boostTranslation) * Time.fixedDeltaTime;
+        //forwardVector = forwardVector + movementVars.turnVectorMultiplier * playerTransform.right * movement.turning * Time.fixedDeltaTime;
         Vector3 gravityVector = Vector3.down * movement.gravity * Time.fixedDeltaTime;
         Vector3 jumpVector = playerTransform.up * movement.jump * Time.fixedDeltaTime;
         playerRigidbody.velocity = forwardVector + gravityVector + jumpVector;
 
-        playerTransform.rotation *= Quaternion.FromToRotation(playerTransform.forward, forwardVector);
-        playerRigidbody.MoveRotation(playerTransform.rotation);
+        //playerTransform.rotation *= Quaternion.FromToRotation(playerTransform.forward, forwardVector);
+        //playerRigidbody.MoveRotation(playerTransform.rotation);
 
         /***
          * Handle purely visual component of Movement
@@ -420,7 +421,9 @@ public class PlayerBehaviour : MonoBehaviour
             }
             else
             {
+                Debug.Log("ja moin");
                 movement.speed = movementVars.fastAcceleration + movement.speed;
+                return;
             }
         }
 
@@ -438,39 +441,34 @@ public class PlayerBehaviour : MonoBehaviour
             }
             if (movement.corneringStates == Movement.CorneringStates.Turning)
             {
-                movement.
+                // Testing quadaratic cornering decel
+                //movement.speed = movement.speed - ( movementVars.corneringDeceleration * Mathf.Pow(Mathf.Abs(standardInputVars.sidewaysAxis), 2.0f));
+                movement.speed = movement.speed - (movementVars.corneringDeceleration * Mathf.Abs(standardInputVars.sidewaysAxis));
             }
-        }
-
-        // Case 3: Stationary
-
-
-        if (movement.speed < movementVars.minSpeed)
-        {
-            movement.speed = movementVars.fastAcceleration + movement.speed;
-        }
-        else
-        {
-            if (standardInputVars.sidewaysAxis == 0)
+            if (movement.corneringStates == Movement.CorneringStates.None)
             {
-                switch (movement.level)
+                // Make sure speed is always accelerated to the relevant level move speed cap
+                switch(movement.level)
                 {
                     case 1:
                         if (movement.speed < movementVars.level1SpeedCap)
                         {
                             movement.speed = movementVars.acceleration + movement.speed;
+                            return;
                         }
                         break;
                     case 2:
                         if (movement.speed < movementVars.level2SpeedCap)
                         {
                             movement.speed = movementVars.acceleration + movement.speed;
+                            return;
                         }
                         break;
                     case 3:
                         if (movement.speed < movementVars.level3SpeedCap)
                         {
                             movement.speed = movementVars.acceleration + movement.speed;
+                            return;
                         }
                         break;
                     default:
@@ -478,7 +476,14 @@ public class PlayerBehaviour : MonoBehaviour
                         break;
                 }
             }
-            movement.speed -= Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration * Time.fixedDeltaTime;
+        }
+
+        // Case 3: Stationary
+        if (movement.translationState == Movement.TranslationStates.Stationary)
+        {
+            Debug.LogWarning("State not coded yet");
+            movement.speed = 100;
+            return;
         }
     }
 
@@ -487,9 +492,34 @@ public class PlayerBehaviour : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Handles all things turning
+    /// </summary>
     private void Turn()
     {
+        // Always reset to zero first
+        movement.turningRaw = 0;
+        movement.turning = 0;
 
+        if (movement.corneringStates == Movement.CorneringStates.Turning)
+        {
+            movement.turningRaw = standardInputVars.sidewaysAxis * movementVars.turnrate;
+            // Factor in SpeedTier
+            if (movement.speed <= movementVars.turnSpeedThreshhold)
+            {
+                movement.turning = movement.turningRaw * movementVars.lowSpeedTurnMultiplier;
+            }
+            else
+            {
+                movement.turning = movement.turningRaw * movementVars.highSpeedTurnMultiplier;
+            }
+            movement.turning = movement.
+
+            // Make frame indipendent
+            movement.turning = movement.turning * Time.deltaTime;
+            playerTransform.Rotate(0, movement.turning, 0, Space.Self);
+            playerRigidbody.MoveRotation(playerTransform.rotation);
+        }
     }
     #endregion
 

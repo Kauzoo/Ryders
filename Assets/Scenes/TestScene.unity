@@ -1109,6 +1109,7 @@ Transform:
   - {fileID: 722833270}
   - {fileID: 2057720578}
   - {fileID: 1004389755}
+  - {fileID: 1733372652}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1546,7 +1547,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 699451648}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 898.9, y: 58.62, z: -144.7}
+  m_LocalPosition: {x: 260, y: 27, z: -144.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 751309166}
@@ -1586,6 +1587,7 @@ MonoBehaviour:
   debugDump: {fileID: 286868704}
   rigidbodyDebugDump: {fileID: 1637321834}
   testObject: {fileID: 0}
+  respanwn: {fileID: 1733372652}
   keyboardKeyBinds:
     fowardKey: 0
     backwardKey: 0
@@ -1623,9 +1625,9 @@ MonoBehaviour:
     sidewaysAxis: 0
   movementVars:
     minSpeed: 1000
-    fastAcceleration: 40
-    acceleration: 20
-    corneringDeceleration: 200
+    fastAcceleration: 20
+    acceleration: 10
+    corneringDeceleration: 2
     boostSpeed: 2
     boostLockTime: 10
     boostInterval: 0.1
@@ -1637,6 +1639,9 @@ MonoBehaviour:
     boostTicks: 50
     rotationSpeed: 50
     turnVectorMultiplier: 4
+    lowSpeedTurnMultiplier: 2
+    highSpeedTurnMultiplier: 0.9
+    turnrate: 10
     jumpSpeed: 6000
     gravityMultiplier: 1000
     wallBumpTimer: 0.5
@@ -1648,6 +1653,7 @@ MonoBehaviour:
     speed: 0
     boostTranslation: 0
     rotation: 0
+    turningRaw: 0
     turning: 0
     savedRotation: {x: 0, y: 0, z: 0}
     jump: 0
@@ -1656,10 +1662,15 @@ MonoBehaviour:
     gravity: 0
     level: 0
     driftBoost: 0
+    drifting: 0
     grounded: 0
     boostLock: 0
     jumping: 0
+    chargingJump: 0
     brakeing: 0
+    cornering: 0
+    translationState: 1
+    corneringStates: 0
   visuals:
     xOffset: 2
     xOffsetDamping: 1
@@ -5042,6 +5053,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1720394454}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1733372651
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1733372652}
+  m_Layer: 0
+  m_Name: Respawn
+  m_TagString: Respawn
+  m_Icon: {fileID: -1412012063857583412, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1733372652
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1733372651}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 9.19, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 541590705}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1742795924
 GameObject:
   m_ObjectHideFlags: 0
