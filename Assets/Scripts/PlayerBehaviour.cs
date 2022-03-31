@@ -88,6 +88,8 @@ public class PlayerBehaviour : MonoBehaviour
         public int level1SpeedCap;
         public int level2SpeedCap;
         public int level3SpeedCap;
+        [Header("Curves")]
+        public AnimationCurve test;
     }
 
     [System.Serializable]
@@ -513,7 +515,6 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 movement.turning = movement.turningRaw * movementVars.highSpeedTurnMultiplier;
             }
-            movement.turning = movement.
 
             // Make frame indipendent
             movement.turning = movement.turning * Time.deltaTime;

@@ -1637,8 +1637,7 @@ MonoBehaviour:
     driftBoostInterval: 0.1
     driftBoostTicks: 40
     boostTicks: 50
-    rotationSpeed: 50
-    turnVectorMultiplier: 4
+    turnSpeedThreshhold: 0
     lowSpeedTurnMultiplier: 2
     highSpeedTurnMultiplier: 0.9
     turnrate: 10
@@ -1649,6 +1648,30 @@ MonoBehaviour:
     level1SpeedCap: 1500
     level2SpeedCap: 2500
     level3SpeedCap: 3500
+    test:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   movement:
     speed: 0
     boostTranslation: 0
