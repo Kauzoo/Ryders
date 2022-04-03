@@ -60,10 +60,12 @@ public class PlayerBehaviour : MonoBehaviour
         public int minSpeed;
         public int fastAcceleration;
         public int acceleration;
+        public float deceleration;
         public float corneringDeceleration;
         [Header("Boost")]
-        public float boostSpeed;
-        public float boostLockTime;
+        public float boostSpeed;        // Speed to which the player is set while boosting
+        public float boostDuration;     // How long the boost lasts
+        public float boostLockTime;     // Duration for which a player can't boost after boosting (total: driftDuration + boostLockTime)
         public float boostInterval;
         [Header("Brake")]
         public float brakeDeceleration;
@@ -114,8 +116,13 @@ public class PlayerBehaviour : MonoBehaviour
         {
             None, JumpCharging, Jumping, JumpLanding
         }
+        public enum BoostStates
+        {
+            None, Boost, Boosting, BoostLock
+        }
         public float speed = 0;
-        public float boostTranslation = 0;
+        public float cruisingSpeed = 0;
+        public float boostSpeed = 0;
         [Header("Turning")]
         public float rotation = 0;
         public float turningRaw = 0;    // Raw value for turning without speed multipliers
@@ -123,7 +130,6 @@ public class PlayerBehaviour : MonoBehaviour
         public Vector3 savedRotation;
         [Header("Drift")]
         public float driftTurning = 0;
-        public float driftTimeMarker = 0;
         public float driftTimer = 0;
         public int level = 0;
         [Header("Jump")]
@@ -132,6 +138,9 @@ public class PlayerBehaviour : MonoBehaviour
         public float jumpAccel = 0;
         [Header("Gravity")]
         public float gravity = 0;
+        [Header("Boost")]
+        public float boostTimer = 0;    // Duration in seconds that has been boosted for
+        public float boostLockTimer = 0;
         [Header("MovementStates")]
         public bool driftBoost = false;
         public bool drifting = false;
@@ -144,6 +153,7 @@ public class PlayerBehaviour : MonoBehaviour
         public TranslationStates translationState = TranslationStates.Stationary;
         public CorneringStates corneringStates = CorneringStates.None;
         public MiscStates miscState = MiscStates.None;
+        public BoostStates boostState = BoostStates.None;
     }
 
     [System.Serializable]
@@ -281,6 +291,8 @@ public class PlayerBehaviour : MonoBehaviour
         SetCorneringState();
         // Set misc state
         SetMiscState();
+        SetBoostState();
+        SetLevelStates();
   
 
         /***
@@ -297,26 +309,11 @@ public class PlayerBehaviour : MonoBehaviour
         {
             movement.gravity = Gravity() * (movement.gravity + movementVars.gravityMultiplier);
         }
-
-        if (standardInputVars.boostInput && !movement.boostLock)
-        {
-            boostCoroutine = BoostTimer(movementVars.boostLockTime, movementVars.boostInterval, movementVars.boostTicks);
-            StartCoroutine(boostCoroutine);
-        }
-        
-
-        /***
-         * Handle Ground and Turning
-         */
-        //playerTransform.Rotate(0, movement.rotation, 0, Space.Self);
-        //playerRigidbody.MoveRotation(playerTransform.rotation);
-        
-
-
+       
         /***
          * Handle Translation and Gravity
          */
-        Vector3 forwardVector = playerTransform.forward * (movement.speed + movement.boostTranslation) * Time.fixedDeltaTime;
+        Vector3 forwardVector = playerTransform.forward * movement.speed * Time.fixedDeltaTime;
         //forwardVector = forwardVector + movementVars.turnVectorMultiplier * playerTransform.right * movement.turning * Time.fixedDeltaTime;
         Vector3 gravityVector = Vector3.down * movement.gravity * Time.fixedDeltaTime;
         Vector3 jumpVector = playerTransform.up * movement.jumpSpeed * Time.fixedDeltaTime;
@@ -354,6 +351,14 @@ public class PlayerBehaviour : MonoBehaviour
     // This needs to be expanded to make sure only legal state changes are possible (with regards to drifting/braking and so on)
     private void SetCorneringState()
     {
+        // Check if a drift has been released
+        if ((movement.corneringStates == Movement.CorneringStates.DriftingL || movement.corneringStates == Movement.CorneringStates.DriftingR) && !standardInputVars.driftInput)
+        {
+            movement.driftTimer = 0;
+            movement.speed = movementVars.driftBoostSpeed;
+            movement.corneringStates = Movement.CorneringStates.None;
+            return;
+        }
         // If drift or breake state have already been entered, only the drift button needs to be checked
         if(standardInputVars.driftInput)
         {
@@ -361,11 +366,13 @@ public class PlayerBehaviour : MonoBehaviour
             if (movement.corneringStates == Movement.CorneringStates.DriftingL)
             {
                 movement.corneringStates = Movement.CorneringStates.DriftingL;
+                movement.driftTimer = movement.driftTimer + Time.deltaTime;
                 return;
             }
             if(movement.corneringStates == Movement.CorneringStates.DriftingR)
             {
                 movement.corneringStates = Movement.CorneringStates.DriftingR;
+                movement.driftTimer = movement.driftTimer + Time.deltaTime;
                 return;
             }
             // If already braking, continue braking if the brake button is held down
@@ -430,14 +437,79 @@ public class PlayerBehaviour : MonoBehaviour
             movement.miscState = Movement.MiscStates.None;
         }
     }
+
+    private void SetBoostState()
+    {
+        if(standardInputVars.boostInput && movement.boostState == Movement.BoostStates.None)
+        {
+            movement.boostState = Movement.BoostStates.Boost;
+            movement.boostTimer = 0;
+            return;
+        }
+        if(movement.boostState == Movement.BoostStates.Boosting)
+        {
+            movement.boostTimer = movement.boostTimer + Time.deltaTime;
+        }
+        if(movement.boostState == Movement.BoostStates.Boosting && movement.boostTimer > movementVars.boostDuration)
+        {
+            movement.boostState = Movement.BoostStates.BoostLock;
+        }
+        if(movement.boostState == Movement.BoostStates.BoostLock)
+        {
+            movement.boostLockTimer = movement.boostLockTimer + Time.deltaTime;
+        }
+        if(movement.boostState == Movement.BoostStates.BoostLock && movement.boostLockTimer > movementVars.boostLockTime)
+        {
+            movement.boostState = Movement.BoostStates.None;
+            movement.boostTimer = 0;
+            movement.boostLockTimer = 0;
+        }
+
+    }
+
+    private void SetLevelStates()
+    {
+        switch(movement.level)
+        {
+            case 1:
+                movement.cruisingSpeed = movementVars.level1SpeedCap;
+                movement.boostSpeed = movementVars.boostSpeed;
+                break;
+            case 2:
+                movement.cruisingSpeed = movementVars.level2SpeedCap;
+                movement.boostSpeed = movementVars.boostSpeed;
+                break;
+            case 3:
+                movement.cruisingSpeed = movementVars.level3SpeedCap;
+                movement.boostSpeed = movementVars.boostSpeed;
+                break;
+            default:
+                break;
+        }
+    }
     #endregion
 
     #region BasicTranslation
     /// <summary>
-    /// Handles everything to do with Acceleration, except boosting
+    /// Handles everything affecting speed
     /// </summary>
     private void Accelerate()
     {
+        // Case 0: Handle any sort of boost
+        if (movement.boostState == Movement.BoostStates.Boost)
+        {
+            movement.speed = movementVars.boostSpeed;
+            movement.boostState = Movement.BoostStates.Boosting;
+        }
+        // Unless boosting, decel should always be applied
+        if(movement.boostState != Movement.BoostStates.Boosting)
+        {
+            if(movement.speed > movement.cruisingSpeed)
+            {
+                movement.speed = movement.speed - movementVars.deceleration;
+            }
+        }
+
         // Case 1: LowSpeed
         /*
          * LowSpeed Accel only takes into account if the player is braking or not (turning is ignored)
@@ -467,6 +539,7 @@ public class PlayerBehaviour : MonoBehaviour
                     else
                     {
                         movement.speed = movement.speed - movementVars.jumpChargeDeceleration;
+                        //movement.jumpAccel = movementVars.jumpChargeDeceleration;
                     }
                 }
                 movement.speed = movementVars.fastAcceleration + movement.speed;
@@ -481,53 +554,49 @@ public class PlayerBehaviour : MonoBehaviour
             if (movement.miscState == Movement.MiscStates.JumpCharging)
             {
                 movement.speed = movement.speed - movementVars.jumpChargeDeceleration;
+                //movement.jumpAccel = movementVars.jumpChargeDeceleration;
             }
-            // Cornering
+            // Breaking
             if (movement.corneringStates == Movement.CorneringStates.Braking)
             {
                 movement.speed = movement.speed - movementVars.brakeDeceleration;
+                //movement.brakeAccel = movementVars.brakeDeceleration;
                 // Negative speed should not be a thing
                 if (movement.speed < 0)
                 {
                     movement.speed = 0;
                 }
             }
+            // Cornering | Calculate TurnAccel for the frame
             if (movement.corneringStates == Movement.CorneringStates.Turning)
             {
-                // Testing quadaratic cornering decel
-                //movement.speed = movement.speed - ( movementVars.corneringDeceleration * Mathf.Pow(Mathf.Abs(standardInputVars.sidewaysAxis), 2.0f));
-                //movement.speed = movement.speed - (movementVars.corneringDeceleration * Mathf.Abs(standardInputVars.sidewaysAxis));
-                movement.speed = movement.speed - (movementVars.test.Evaluate(movement.speed / 10) * Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration) ;
+                movement.speed = movement.speed - (movementVars.test.Evaluate(movement.speed / 10) * Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration);
+                //movement.turnAccel = (movementVars.test.Evaluate(movement.speed / 10) * Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration) * (-1);
             }
+            // Regular Accel
             if (movement.corneringStates == Movement.CorneringStates.None)
             {
-                // Make sure speed is always accelerated to the relevant level move speed cap
-                switch(movement.level)
+                // Acceleration Behaviour while boosting
+                if(movement.boostState == Movement.BoostStates.Boosting)
                 {
-                    case 1:
-                        if (movement.speed < movementVars.level1SpeedCap)
-                        {
-                            movement.speed = movementVars.acceleration + movement.speed;
-                            return;
-                        }
-                        break;
-                    case 2:
-                        if (movement.speed < movementVars.level2SpeedCap)
-                        {
-                            movement.speed = movementVars.acceleration + movement.speed;
-                            return;
-                        }
-                        break;
-                    case 3:
-                        if (movement.speed < movementVars.level3SpeedCap)
-                        {
-                            movement.speed = movementVars.acceleration + movement.speed;
-                            return;
-                        }
-                        break;
-                    default:
-                        Debug.LogWarning($"ERROR: Level was { movement.level }");
-                        break;
+                    if (movement.speed < movement.boostSpeed)
+                    {
+                        movement.speed = movement.speed + movementVars.acceleration;
+                        //movement.baseAccel = movementVars.acceleration;
+                    }
+                    if(movement.speed > movement.boostSpeed)
+                    {
+                        movement.speed = movement.boostSpeed;
+                    }
+                }
+                // Acceleration Behaviour while cruising
+                else
+                {
+                    if (movement.speed < movement.cruisingSpeed)
+                    {
+                        movement.speed = movement.speed + movementVars.acceleration;
+                        //movement.baseAccel = movementVars.acceleration;
+                    }
                 }
             }
         }
@@ -539,11 +608,6 @@ public class PlayerBehaviour : MonoBehaviour
             movement.speed = 100;
             return;
         }
-    }
-
-    private void Boost()
-    {
-
     }
 
     /// <summary>
@@ -616,6 +680,24 @@ public class PlayerBehaviour : MonoBehaviour
                 movement.jumpSpeed = 0;
                 movement.miscState = Movement.MiscStates.JumpLanding;
             }
+        }
+    }
+    #endregion
+
+    #region Drift
+    private void Drift()
+    {
+
+    }
+    #endregion
+
+    #region Boost
+    private void Boost()
+    {
+        if (movement.boostState == Movement.BoostStates.Boost)
+        {
+            movement.speed = movementVars.boostSpeed;
+            movement.boostState = Movement.BoostStates.Boosting;
         }
     }
     #endregion
@@ -773,22 +855,6 @@ public class PlayerBehaviour : MonoBehaviour
     }
     #endregion
 
-    private IEnumerator BoostTimer(float blt, float bi, int bt)
-    {
-        for (int i = bt; i >= 0; i--)
-        {
-            movement.boostTranslation = (movementVars.boostSpeed * i);
-            movement.boostLock = true;
-            yield return new WaitForSeconds(bi);
-        }
-        yield return new WaitForSecondsRealtime(blt);
-        movement.boostLock = false;
-    }
-
-    private IEnumerator JumpTimer(float jumpTime)
-    {
-        yield return new WaitForSeconds(jumpTime);
-    }
 
     #endregion
 
@@ -816,7 +882,7 @@ public class PlayerBehaviour : MonoBehaviour
         }
         float fps = 1 / Time.unscaledDeltaTime;
         fps = Mathf.Round(fps);
-        string text = $"Speed: { movement.speed }{ Environment.NewLine }BoostTranslation: { movement.boostTranslation }" +
+        string text = $"Speed: { movement.speed }" +
                 $"{ Environment.NewLine }Rotation: { movement.rotation}{ Environment.NewLine }BoostLock: { movement.boostLock }" +
                 $"{ Environment.NewLine }Grounded: { movement.grounded}{ Environment.NewLine }Gravity: { movement.gravity }" +
                 $"{ Environment.NewLine }QuaternionAngle: { quaternionAngle }{ Environment.NewLine }EulerAngle: { eulerAngle }" +
