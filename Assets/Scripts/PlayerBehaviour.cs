@@ -83,7 +83,8 @@ public class PlayerBehaviour : MonoBehaviour
         public float turnrate;
         public AnimationCurve turnrateCurve;
         [Header("Jump&Gravity")]
-        public AnimationCurve jumpSpeed;    // Controls jump speed relative to time
+        public float jumpSpeedMax;          // Controls jump speed relative to time
+        public AnimationCurve jumpAccel;    // Acceleration for a jump
         public float jumpChargeMinSpeed;
         public float jumpChargeDeceleration;
         public float gravityMultiplier;
@@ -111,7 +112,7 @@ public class PlayerBehaviour : MonoBehaviour
         }
         public enum MiscStates
         {
-            None, Braking, JumpCharging
+            None, JumpCharging, Jumping, JumpLanding
         }
         public float speed = 0;
         public float boostTranslation = 0;
@@ -122,11 +123,15 @@ public class PlayerBehaviour : MonoBehaviour
         public Vector3 savedRotation;
         [Header("Drift")]
         public float driftTurning = 0;
-        public float jump = 0;
         public float driftTimeMarker = 0;
         public float driftTimer = 0;
-        public float gravity = 0;
         public int level = 0;
+        [Header("Jump")]
+        public float jumpChargeDuration = 0;
+        public float jumpSpeed = 0;
+        public float jumpAccel = 0;
+        [Header("Gravity")]
+        public float gravity = 0;
         [Header("MovementStates")]
         public bool driftBoost = false;
         public bool drifting = false;
@@ -274,45 +279,25 @@ public class PlayerBehaviour : MonoBehaviour
         SetTranslationState();
         // Set cornering state (based on current input)
         SetCorneringState();
+        // Set misc state
+        SetMiscState();
   
 
         /***
-         * Compute movement variables for Movement, Rotation and Gravity
+         * Handle the results of the determined states, relating to speed/accel, rotation and jump
          */
-        // Do Accel
         Accelerate();
-
-        // Do turn
         Turn();
+        Jump();
+
+
 
         // Calculate gravity value
-        movement.gravity = Gravity() * movementVars.gravityMultiplier;
+        if (movement.miscState != Movement.MiscStates.Jumping)
+        {
+            movement.gravity = Gravity() * (movement.gravity + movementVars.gravityMultiplier);
+        }
 
-        /***
-         * Clean up
-         */
-        //CleanUpJump();
-        //CleanUpDrift();
-
-        /***
-         * Do stuff relating to Input
-         */
-        if (standardInputVars.forwardInput)
-        {
-        }
-        if (standardInputVars.backwardInput)
-        {
-        }
-        if (standardInputVars.leftInput)
-        {
-        }
-        if (standardInputVars.rightInput)
-        {
-        }
-        if (standardInputVars.jumpInput)
-        {
-            Jump();
-        }
         if (standardInputVars.boostInput && !movement.boostLock)
         {
             boostCoroutine = BoostTimer(movementVars.boostLockTime, movementVars.boostInterval, movementVars.boostTicks);
@@ -334,7 +319,7 @@ public class PlayerBehaviour : MonoBehaviour
         Vector3 forwardVector = playerTransform.forward * (movement.speed + movement.boostTranslation) * Time.fixedDeltaTime;
         //forwardVector = forwardVector + movementVars.turnVectorMultiplier * playerTransform.right * movement.turning * Time.fixedDeltaTime;
         Vector3 gravityVector = Vector3.down * movement.gravity * Time.fixedDeltaTime;
-        Vector3 jumpVector = playerTransform.up * movement.jump * Time.fixedDeltaTime;
+        Vector3 jumpVector = playerTransform.up * movement.jumpSpeed * Time.fixedDeltaTime;
         playerRigidbody.velocity = forwardVector + gravityVector + jumpVector;
 
         //playerTransform.rotation *= Quaternion.FromToRotation(playerTransform.forward, forwardVector);
@@ -424,7 +409,26 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void SetMiscState()
     {
-        
+        if (standardInputVars.jumpInput && movement.grounded)
+        {
+            movement.miscState = Movement.MiscStates.JumpCharging;
+            return;
+        }
+        if (movement.grounded && movement.miscState == Movement.MiscStates.JumpCharging && !standardInputVars.jumpInput)
+        {
+            movement.miscState = Movement.MiscStates.Jumping;
+            movement.jumpSpeed = movementVars.jumpSpeedMax;
+            return;
+        }
+        if (movement.miscState == Movement.MiscStates.JumpLanding && movement.grounded)
+        {
+            movement.miscState = Movement.MiscStates.None;
+            return;
+        }
+        if (movement.miscState != Movement.MiscStates.Jumping)
+        {
+            movement.miscState = Movement.MiscStates.None;
+        }
     }
     #endregion
 
@@ -440,6 +444,7 @@ public class PlayerBehaviour : MonoBehaviour
          */
         if (movement.translationState == Movement.TranslationStates.LowSpeed)
         {
+            // Breaking
             if (movement.corneringStates == Movement.CorneringStates.Braking)
             {
                 movement.speed = movement.speed - movementVars.brakeDeceleration;
@@ -451,7 +456,8 @@ public class PlayerBehaviour : MonoBehaviour
             }
             else
             {
-                if(standardInputVars.jumpInput)
+                // Jump
+                if(movement.miscState == Movement.MiscStates.JumpCharging)
                 {
                     if(movement.speed < movementVars.jumpChargeMinSpeed)
                     {
@@ -471,6 +477,12 @@ public class PlayerBehaviour : MonoBehaviour
         // Case 2: HighSpeed
         if (movement.translationState == Movement.TranslationStates.HighSpeed)
         {
+            // Jump
+            if (movement.miscState == Movement.MiscStates.JumpCharging)
+            {
+                movement.speed = movement.speed - movementVars.jumpChargeDeceleration;
+            }
+            // Cornering
             if (movement.corneringStates == Movement.CorneringStates.Braking)
             {
                 movement.speed = movement.speed - movementVars.brakeDeceleration;
@@ -592,7 +604,19 @@ public class PlayerBehaviour : MonoBehaviour
     #region Jump
     private void Jump()
     {
-        Debug.Log("Jumping");
+        if(movement.miscState == Movement.MiscStates.Jumping)
+        {
+            
+            if(movement.jumpSpeed > 0)
+            {
+                movement.jumpSpeed = movement.jumpSpeed - movementVars.jumpAccel.Evaluate(movement.jumpSpeed / 100);
+            }
+            else
+            {
+                movement.jumpSpeed = 0;
+                movement.miscState = Movement.MiscStates.JumpLanding;
+            }
+        }
     }
     #endregion
 
@@ -765,6 +789,8 @@ public class PlayerBehaviour : MonoBehaviour
     {
         yield return new WaitForSeconds(jumpTime);
     }
+
+    #endregion
 
     #region Debug
     private void DebugCircleMovement()
