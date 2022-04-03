@@ -68,18 +68,24 @@ public class PlayerBehaviour : MonoBehaviour
         [Header("Brake")]
         public float brakeDeceleration;
         [Header("Drift")]
-        public float driftDuration;
-        public float driftBoostSpeed;
+        public float driftDuration;     // Minimum amount of seconds for a drift boost
+        public float driftBoostSpeed;   
         public float driftBoostInterval;
         public int driftBoostTicks;
         public int boostTicks;
+        public float driftTurnratePassive;  // Amount that the player passively turns towards a direction, while drifting
+        public float driftTurnrateMin;      // Minimum amount the player turn while drifting
+        public float driftTurnrate;         // maximum rate at which the player can turn while drifting
         [Header("Turning")]
         public float turnSpeedThreshhold;
         public float lowSpeedTurnMultiplier;
         public float highSpeedTurnMultiplier;
         public float turnrate;
+        public AnimationCurve turnrateCurve;
         [Header("Jump&Gravity")]
-        public float jumpSpeed;
+        public AnimationCurve jumpSpeed;    // Controls jump speed relative to time
+        public float jumpChargeMinSpeed;
+        public float jumpChargeDeceleration;
         public float gravityMultiplier;
         [Header("WallBump")]
         public float wallBumpTimer;
@@ -101,14 +107,21 @@ public class PlayerBehaviour : MonoBehaviour
         }
         public enum CorneringStates
         {
-            None, Turning, Drifting, Braking
+            None, Turning, DriftingL, DriftingR, Braking
+        }
+        public enum MiscStates
+        {
+            None, Braking, JumpCharging
         }
         public float speed = 0;
         public float boostTranslation = 0;
+        [Header("Turning")]
         public float rotation = 0;
         public float turningRaw = 0;    // Raw value for turning without speed multipliers
         public float turning = 0;   // Degress per Frame by which the playerTransform is rotated arround it's y-Axis
         public Vector3 savedRotation;
+        [Header("Drift")]
+        public float driftTurning = 0;
         public float jump = 0;
         public float driftTimeMarker = 0;
         public float driftTimer = 0;
@@ -125,6 +138,7 @@ public class PlayerBehaviour : MonoBehaviour
         public bool cornering = false;
         public TranslationStates translationState = TranslationStates.Stationary;
         public CorneringStates corneringStates = CorneringStates.None;
+        public MiscStates miscState = MiscStates.None;
     }
 
     [System.Serializable]
@@ -260,27 +274,7 @@ public class PlayerBehaviour : MonoBehaviour
         SetTranslationState();
         // Set cornering state (based on current input)
         SetCorneringState();
-        
-
-
-        /***
-         * Clean Up
-         */
-        //CleanUpBrake();
-
-        /***
-         * Drifting & Brakeing
-         */
-        /*
-        if (standardInputVars.driftInput && standardInputVars.sidewaysAxis > 0.01f)
-        {
-            Drift();
-        }
-        else if (standardInputVars.driftInput && standardInputVars.sidewaysAxis == 0)
-        {
-            Brake();
-        }
-        */
+  
 
         /***
          * Compute movement variables for Movement, Rotation and Gravity
@@ -375,6 +369,27 @@ public class PlayerBehaviour : MonoBehaviour
     // This needs to be expanded to make sure only legal state changes are possible (with regards to drifting/braking and so on)
     private void SetCorneringState()
     {
+        // If drift or breake state have already been entered, only the drift button needs to be checked
+        if(standardInputVars.driftInput)
+        {
+            // If already drifting, continue drift if the drift button is held down
+            if (movement.corneringStates == Movement.CorneringStates.DriftingL)
+            {
+                movement.corneringStates = Movement.CorneringStates.DriftingL;
+                return;
+            }
+            if(movement.corneringStates == Movement.CorneringStates.DriftingR)
+            {
+                movement.corneringStates = Movement.CorneringStates.DriftingR;
+                return;
+            }
+            // If already braking, continue braking if the brake button is held down
+            if (movement.corneringStates == Movement.CorneringStates.Braking)
+            {
+                movement.corneringStates = Movement.CorneringStates.Braking;
+                return;
+            }
+        }
         if (standardInputVars.sidewaysAxis == 0)
         {
             if (standardInputVars.driftInput)
@@ -387,16 +402,29 @@ public class PlayerBehaviour : MonoBehaviour
             }
         }
         else
-        {
-            if (standardInputVars.driftInput)
+        { 
+            // Enter Drift state
+            if (movement.translationState != Movement.TranslationStates.Stationary && standardInputVars.driftInput)
             {
-                movement.corneringStates = Movement.CorneringStates.Drifting;
+                if(standardInputVars.sidewaysAxis > 0)
+                {
+                    movement.corneringStates = Movement.CorneringStates.DriftingR;
+                }
+                else
+                {
+                    movement.corneringStates = Movement.CorneringStates.DriftingL;
+                }
             }
-            else
+            else if(standardInputVars.sidewaysAxis != 0)
             {
                 movement.corneringStates = Movement.CorneringStates.Turning;
             }
         }
+    }
+
+    private void SetMiscState()
+    {
+        
     }
     #endregion
 
@@ -423,7 +451,18 @@ public class PlayerBehaviour : MonoBehaviour
             }
             else
             {
-                Debug.Log("ja moin");
+                if(standardInputVars.jumpInput)
+                {
+                    if(movement.speed < movementVars.jumpChargeMinSpeed)
+                    {
+                        movement.speed = movementVars.fastAcceleration + movement.speed;
+                        return;
+                    }
+                    else
+                    {
+                        movement.speed = movement.speed - movementVars.jumpChargeDeceleration;
+                    }
+                }
                 movement.speed = movementVars.fastAcceleration + movement.speed;
                 return;
             }
@@ -445,7 +484,8 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 // Testing quadaratic cornering decel
                 //movement.speed = movement.speed - ( movementVars.corneringDeceleration * Mathf.Pow(Mathf.Abs(standardInputVars.sidewaysAxis), 2.0f));
-                movement.speed = movement.speed - (movementVars.corneringDeceleration * Mathf.Abs(standardInputVars.sidewaysAxis));
+                //movement.speed = movement.speed - (movementVars.corneringDeceleration * Mathf.Abs(standardInputVars.sidewaysAxis));
+                movement.speed = movement.speed - (movementVars.test.Evaluate(movement.speed / 10) * Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration) ;
             }
             if (movement.corneringStates == Movement.CorneringStates.None)
             {
@@ -509,88 +549,50 @@ public class PlayerBehaviour : MonoBehaviour
             // Factor in SpeedTier
             if (movement.speed <= movementVars.turnSpeedThreshhold)
             {
-                movement.turning = movement.turningRaw * movementVars.lowSpeedTurnMultiplier;
+                //movement.turning = movement.turningRaw * movementVars.lowSpeedTurnMultiplier;
             }
             else
             {
-                movement.turning = movement.turningRaw * movementVars.highSpeedTurnMultiplier;
+                //movement.turning = movement.turningRaw * movementVars.highSpeedTurnMultiplier;
             }
+            movement.turning = movement.turningRaw * movementVars.turnrateCurve.Evaluate(movement.speed / 1000);
 
             // Make frame indipendent
             movement.turning = movement.turning * Time.deltaTime;
             playerTransform.Rotate(0, movement.turning, 0, Space.Self);
             playerRigidbody.MoveRotation(playerTransform.rotation);
         }
-    }
-    #endregion
-
-    #region Drift
-    private void Drift()
-    {
-        if (movement.driftTimeMarker == 0)
+        else 
         {
-            movement.driftTimeMarker = Time.time;
-        }
-        movement.driftTimer += Time.time - movement.driftTimeMarker;
-        if (movement.driftTimer > movementVars.driftDuration)
-        {
-            movement.driftTimeMarker = 0;
-            movement.driftTimer = 0;
-            movement.driftBoost = true;
-        }
-    }
-
-    private void CleanUpDrift()
-    {
-        if (!standardInputVars.driftInput)
-        {
-            movement.driftTimer = 0;
-            movement.driftTimeMarker = 0;
-            if (movement.driftBoost)
+            if(movement.corneringStates == Movement.CorneringStates.DriftingL)
             {
-                driftBoostCoroutine = BoostTimer(0, movementVars.driftBoostInterval, movementVars.driftBoostTicks);
-                StartCoroutine(driftBoostCoroutine);
-                movement.driftBoost = false;
+                // For left turn, values have to negative
+                movement.driftTurning = movementVars.driftTurnratePassive * (-1) + movementVars.driftTurnrate * standardInputVars.sidewaysAxis;
+                if (movement.driftTurning > movementVars.driftTurnrateMin)
+                {
+                    movement.driftTurning = movementVars.driftTurnrateMin * (-1);
+                }
             }
+            if(movement.corneringStates == Movement.CorneringStates.DriftingR)
+            {
+                // For right turn, values have to positive
+                movement.driftTurning = movementVars.driftTurnratePassive + movementVars.driftTurnrate * standardInputVars.sidewaysAxis;
+                if (movement.driftTurning < movementVars.driftTurnrateMin)
+                {
+                    movement.driftTurning = movementVars.driftTurnrateMin;
+                }
+            }
+            movement.driftTurning = movement.driftTurning * Time.deltaTime;
+            playerTransform.Rotate(0, movement.driftTurning, 0, Space.Self);
+            playerRigidbody.MoveRotation(playerTransform.rotation);
         }
-    }
-
-    private void Brake()
-    {
-        movement.brakeing = true;
-        if (movement.speed > 0)
-        {
-            movement.speed = movement.speed - movementVars.brakeDeceleration;
-        }
-        if(movement.speed <= 0)
-        {
-            movement.speed = 0; 
-        }
-    }
-
-    private void CleanUpBrake()
-    {
-        movement.brakeing = false;
     }
     #endregion
 
     #region Jump
     private void Jump()
     {
-        if (movement.grounded)
-        {
-            movement.jump = movementVars.jumpSpeed * Time.fixedDeltaTime;
-            movement.jumping = true;
-        }
-    }
-
-    private void CleanUpJump()
-    {
-        if( movement.jumping )
-        {
-            movement.jump = 0;
-            movement.jumping = false;
-        }
+        Debug.Log("Jumping");
     }
     #endregion
 
@@ -611,7 +613,6 @@ public class PlayerBehaviour : MonoBehaviour
         yield return new WaitForSeconds(movementVars.wallBumpTimer);
         movement.speed = 0;
     }
-    #endregion
     #endregion
 
     #region StateSwitching & Air
