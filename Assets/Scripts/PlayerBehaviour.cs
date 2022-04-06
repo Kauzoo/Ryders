@@ -150,6 +150,7 @@ public class PlayerBehaviour : MonoBehaviour
         public bool chargingJump = false;
         public bool brakeing = false;
         public bool cornering = false;
+        public bool overrideControl = false;
         public TranslationStates translationState = TranslationStates.Stationary;
         public CorneringStates corneringStates = CorneringStates.None;
         public MiscStates miscState = MiscStates.None;
@@ -202,12 +203,15 @@ public class PlayerBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Grounded();
-        GetInput();
-        HandleLevelSwitching();
-        Move();
-        DebugRays();
-        FillDebugDump();
+        if(!movement.overrideControl)
+        {
+            Grounded();
+            GetInput();
+            HandleLevelSwitching();
+            Move();
+            DebugRays();
+            FillDebugDump();
+        }
     }
 
     private void FixedUpdate()
@@ -419,6 +423,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (standardInputVars.jumpInput && movement.grounded)
         {
             movement.miscState = Movement.MiscStates.JumpCharging;
+            movement.jumpChargeDuration = movement.jumpChargeDuration + Time.deltaTime;
             return;
         }
         if (movement.grounded && movement.miscState == Movement.MiscStates.JumpCharging && !standardInputVars.jumpInput)
@@ -435,6 +440,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (movement.miscState != Movement.MiscStates.Jumping)
         {
             movement.miscState = Movement.MiscStates.None;
+            movement.jumpChargeDuration = 0;
         }
     }
 
