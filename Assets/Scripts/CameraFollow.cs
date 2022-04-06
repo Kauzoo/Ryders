@@ -47,7 +47,7 @@ public class CameraFollow : MonoBehaviour
 
     private void RotateCam()
     {
-        Vector3 targetRotation = new Vector3(target.rotation.eulerAngles.x, target.rotation.eulerAngles.y, camZAngle);
+        Vector3 targetRotation = new Vector3(target.rotation.eulerAngles.x, target.rotation.eulerAngles.y, target.rotation.eulerAngles.z);
         mainCam.transform.rotation = Quaternion.Lerp(mainCam.transform.rotation, Quaternion.Euler(targetRotation), 0.07f);
     }
 }

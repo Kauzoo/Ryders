@@ -705,12 +705,12 @@ public class PlayerBehaviour : MonoBehaviour
     #region WallCollision
     private void OnCollisionEnter(Collision collision)
     {
-        playerRigidbody.freezeRotation = true;
+        //playerRigidbody.freezeRotation = true;
         if (collision.collider.gameObject.layer != grounded.layerMask)
         {
             StartCoroutine("BumpOfWall");
         }
-        playerRigidbody.freezeRotation = false;
+        //playerRigidbody.freezeRotation = false;
     }
 
     private IEnumerator BumpOfWall()
@@ -755,6 +755,18 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     private void ComputeAxisFactor()
+    {
+
+    }
+    #endregion
+
+    #region Ramps
+    private void OnRampEnter()
+    {
+        
+    }
+
+    private void OnRampApex()
     {
 
     }
@@ -827,18 +839,25 @@ public class PlayerBehaviour : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Handles Ground allignment
+    /// WIP: Make it work with ground that is not world axis alligned
+    /// </summary>
+    /// <param name="newGround"></param>
     private void HandleGroundChanged(GameObject newGround)
     {
         Debug.Log("HandleGroundChanged is being executed");
         groundInfo.previousGround = groundInfo.currentGround;
         groundInfo.currentGround = newGround;
 
-        float currentRotationAngle = playerTransform.rotation.eulerAngles.y + groundInfo.previousGround.transform.rotation.eulerAngles.y;
+        float currentRotationAngle = playerTransform.rotation.eulerAngles.y; //+ groundInfo.previousGround.transform.rotation.eulerAngles.y;
         Vector3 currentRotationVector = new Vector3(0, currentRotationAngle, 0);
 
+        // Alligns player to the new ground
         Quaternion targetRotation = Quaternion.LookRotation(groundInfo.currentGround.transform.forward, groundInfo.currentGround.transform.up);
-        // WIP playerTransform.rotation = Quaternion.Lerp(playerTransform.rotation, targetRotation, Time.time * 0.1f);
         playerTransform.rotation = targetRotation;
+
+        //playerTransform.rotation = Quaternion.LookRotation(groundInfo.previousGround.transform.forward, groundInfo.currentGround.transform.up);
         playerTransform.Rotate(currentRotationVector, Space.Self);
     }
 
