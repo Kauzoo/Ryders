@@ -69,7 +69,14 @@ public class InputHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Player1)
+        {
+            GetInput_Player1();
+        }
+        if(Player2)
+        {
+            GetInput_Player2();
+        }
     }
 
     #region Getters&Setters

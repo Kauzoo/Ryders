@@ -5,20 +5,26 @@ using UnityEngine;
 
 public class PlayerBehaviour : MonoBehaviour
 {
+    /**
+     * Required Refrences
+     */
+    // Controlls to which player this Behaviour script belongs
+    public EnumCollection.Player playerPort;    // Needs to set before startup
+    private InputHandler inputHandler;
+
+    public Character character;                 // Needs to set before startup
+    public Board board;                         // Needs to set before startup
+
     public Transform playerTransform;
     public Rigidbody playerRigidbody;
 
-
     public Transform visualPlayerTransform;
 
-    public LookupTables LookupTables;
-
-    private IEnumerator boostCoroutine;
-    private IEnumerator driftBoostCoroutine;
-
+    /**
+     * DEBUG
+     */
     public TMPro.TextMeshProUGUI debugDump;
     public TMPro.TextMeshProUGUI rigidbodyDebugDump;
-
     public Transform testObject;
     public Transform respanwn;
 
@@ -72,9 +78,6 @@ public class PlayerBehaviour : MonoBehaviour
         [Header("Drift")]
         public float driftDuration;     // Minimum amount of seconds for a drift boost
         public float driftBoostSpeed;   
-        public float driftBoostInterval;
-        public int driftBoostTicks;
-        public int boostTicks;
         public float driftTurnratePassive;  // Amount that the player passively turns towards a direction, while drifting
         public float driftTurnrateMin;      // Minimum amount the player turn while drifting
         public float driftTurnrate;         // maximum rate at which the player can turn while drifting
@@ -198,6 +201,25 @@ public class PlayerBehaviour : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         visualPlayerTransform.SetParent(playerTransform);
+
+        // Go through inital setup
+        inputHandler = FindObjectOfType<InputHandler>();
+        if(inputHandler == null)
+        {
+            Debug.LogError("ERROR: No InputHandler found");
+        }
+        switch(playerPort)
+        {
+            case EnumCollection.Player.Player1:
+
+                break;
+            case EnumCollection.Player.Player2:
+                break;
+            default:
+                Debug.LogWarning($"PlayerBehaviour {this.gameObject.name} does not have a Player assigned");
+                break;
+
+        }
     }
 
     // Update is called once per frame

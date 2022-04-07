@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8039757478143774623
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8989888128622882241}
+  - component: {fileID: 4779269284538909668}
+  m_Layer: 0
+  m_Name: InputModule
+  m_TagString: GameController
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8989888128622882241
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8039757478143774623}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4779269284538909668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8039757478143774623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37037f33f7ed1ff44b5028cdf2b19821, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player1: 0
+  Player2: 0
+  player1keyboard:
+    upKey: 0
+    downKey: 0
+    leftKey: 0
+    rightKey: 0
+    jumpKey: 0
+    boostKey: 0
+    driftKey1: 0
+    driftKey2: 0
+    cycleLevelKey: 0
+    verticalAxis: 
+    horizontalAxis: 
+  player1gamepad:
+    upKey: 0
+    downKey: 0
+    leftKey: 0
+    rightKey: 0
+    jumpKey: 0
+    boostKey: 0
+    driftKey1: 0
+    driftKey2: 0
+    cycleLevelKey: 0
+    verticalAxis: 
+    horizontalAxis: 
+  player1Input:
+    forwardInput: 0
+    backwardInput: 0
+    leftInput: 0
+    rightInput: 0
+    jumpInput: 0
+    boostInput: 0
+    driftInput: 0
+    cycleLevelInput: 0
+    verticalAxis: 0
+    horizontalAxis: 0
