@@ -2,8 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnumCollection : MonoBehaviour
+namespace Enums
 {
+    public class EnumCollection : MonoBehaviour
+    {
+        
+    }
+
     public enum Player
     {
         None, Player1, Player2
@@ -23,5 +28,4 @@ public class EnumCollection : MonoBehaviour
     {
         Speed, Power, Fly
     }
-
 }

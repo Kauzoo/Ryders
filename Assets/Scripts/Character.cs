@@ -1,12 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Enums;
 
 public class Character : MonoBehaviour
 {
+    public GameObject model; 
+
     [System.Serializable]
     public class CharacterStatsMovement
     {
+        public CharacterType ShortCutType;
+        public CharacterType StatsType;
+
         public float SpeedMultiplier;
 
         [Header("TopSpeed")]

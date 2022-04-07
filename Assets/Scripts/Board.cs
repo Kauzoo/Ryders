@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
+    /// <summary>
+    /// Contains Movement variables that are not level dependent
+    /// </summary>
     [System.Serializable]
     public class MovementVars
     {
         [Header("LinearMovement")]
-        public float MinSpeed;
-        public float FastAcceleration;
-        public float Acceleration;
-        public float CruisingSpeed;
-        public float BoostSpeed;
+        public float MinSpeed;      // Threshold to trigger fast accel
+        public float FastAcceleration;      // Value for fast accel
+        // public float Acceleration;   value can be found on character
+        // public float CruisingSpeed;  value can be found on character
+        // public float BoostSpeed;     value can be found in LevlStats
         [Header("Turning")]
         /// <summary>
         /// Currently Unused
@@ -54,8 +57,33 @@ public class Board : MonoBehaviour
         [Header("WallBump")]
         public float wallBumpTimer;
         public float wallBumpSpeed;
-
+        [Header("Air")]
+        public float AirGainTrick;
+        public float AirGainShortcut;
+        public float AirGainAutorotate;
+        public float JumpAirLoss;
     }
+
+    /// <summary>
+    /// Contains Level dependent stats
+    /// </summary>
+    public class ExtremeGearLevelStats
+    {
+        [Header("Air")]
+        public int MaxAir;
+        public int PassiveAirDrain;
+        public int DriftAirCost;
+        public int BoostCost;
+        public int TornadoCost;
+        [Header("Speed&Boost")]
+        public float SpeedGainedFromDriftDash;
+        public float BoostSpeed;
+    }
+
+    public MovementVars movementVars = new MovementVars();
+    public ExtremeGearLevelStats GearStatsLevel1 = new ExtremeGearLevelStats();
+    public ExtremeGearLevelStats GearStatsLevel2 = new ExtremeGearLevelStats();
+    public ExtremeGearLevelStats GearStatsLevel3 = new ExtremeGearLevelStats();
 
     // Start is called before the first frame update
     void Start()
