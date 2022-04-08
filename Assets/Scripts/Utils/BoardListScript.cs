@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Play : MonoBehaviour
+public class BoardListScript : MonoBehaviour
 {
+    public List<GameObject> boardPrefabList = new List<GameObject>();
+
+
     // Start is called before the first frame update
     void Start()
     {

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
+    public Enums.Board board;
+
     /// <summary>
     /// Contains Movement variables that are not level dependent
     /// </summary>
@@ -11,11 +13,13 @@ public class Board : MonoBehaviour
     public class MovementVars
     {
         [Header("LinearMovement")]
-        public float MinSpeed;      // Threshold to trigger fast accel
-        public float FastAcceleration;      // Value for fast accel
+        public int MinSpeed;      // Threshold to trigger fast accel
+        public int FastAcceleration;      // Value for fast accel
         // public float Acceleration;   value can be found on character
         // public float CruisingSpeed;  value can be found on character
         // public float BoostSpeed;     value can be found in LevlStats
+        public float deceleration;
+        public float corneringDeceleration;
         [Header("Turning")]
         /// <summary>
         /// Currently Unused

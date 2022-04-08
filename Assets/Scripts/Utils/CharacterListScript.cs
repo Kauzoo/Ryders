@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CharacterListScript : MonoBehaviour
 {
+    public List<GameObject> characterPrefabList = new List<GameObject>();
+    
     // Start is called before the first frame update
     void Start()
     {

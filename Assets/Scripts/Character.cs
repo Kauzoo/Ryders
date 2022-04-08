@@ -5,7 +5,8 @@ using Enums;
 
 public class Character : MonoBehaviour
 {
-    public GameObject model; 
+    public Enums.Character character;
+    public GameObject model;
 
     [System.Serializable]
     public class CharacterStatsMovement
@@ -16,26 +17,26 @@ public class Character : MonoBehaviour
         public float SpeedMultiplier;
 
         [Header("TopSpeed")]
-        public float TopSpeedLvl1;
-        public float TopSpeedLvl2;
-        public float TopSpeedLvl3;
+        public int TopSpeedLvl1;
+        public int TopSpeedLvl2;
+        public int TopSpeedLvl3;
 
 
         [Header("Acceleration")]
-        public float AccelerationLvl1;
-        public float AccelerationLvl2;
-        public float AccelerationLvl3;
+        public int AccelerationLvl1;
+        public int AccelerationLvl2;
+        public int AccelerationLvl3;
 
         [Header("Cornering")]
-        public float CorneringLvl1;
-        public float CorneringLvl2;
-        public float CorneringLvl3;
+        public int CorneringLvl1;
+        public int CorneringLvl2;
+        public int CorneringLvl3;
 
 
         [Header("Offroad")]
-        public float OffroadLvl1;
-        public float OffroadLvl2;
-        public float OffroadLvl3;
+        public int OffroadLvl1;
+        public int OffroadLvl2;
+        public int OffroadLvl3;
     }
 
     [System.Serializable]
@@ -44,4 +45,7 @@ public class Character : MonoBehaviour
         public float Height;
         public bool Gender;
     }
+
+    public CharacterStatsMovement characterStatsMovement = new CharacterStatsMovement();
+    public CharacterStatsVanity characterStatsVanity = new CharacterStatsVanity();
 }

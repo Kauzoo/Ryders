@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5852308498792909707}
+  - component: {fileID: 29913353503549910}
   m_Layer: 0
   m_Name: BoardList
-  m_TagString: Untagged
+  m_TagString: Utils
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,3 +31,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &29913353503549910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8795198260386006156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53f18bb4aab37d8499ef162f45b6af7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boardPrefabList:
+  - {fileID: 3668698616865934323, guid: ad3cbe3e5c397d449bffc0b420878fc4, type: 3}
