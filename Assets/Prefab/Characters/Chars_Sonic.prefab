@@ -141,4 +141,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a37a2777984eb214d91a1882a29532d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: 0
   model: {fileID: 6425076605784800266}
+  characterStatsMovement:
+    ShortCutType: 0
+    StatsType: 0
+    SpeedMultiplier: 0
+    TopSpeedLvl1: 2000
+    TopSpeedLvl2: 3000
+    TopSpeedLvl3: 4000
+    AccelerationLvl1: 10
+    AccelerationLvl2: 12
+    AccelerationLvl3: 14
+    CorneringLvl1: 10
+    CorneringLvl2: 11
+    CorneringLvl3: 12
+    OffroadLvl1: 0
+    OffroadLvl2: 0
+    OffroadLvl3: 0
+  characterStatsVanity:
+    Height: 0
+    Gender: 0

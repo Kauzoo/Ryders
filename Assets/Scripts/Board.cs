@@ -45,12 +45,18 @@ public class Board : MonoBehaviour
         /// Curve determening the speed lost while turning, based of the current speed
         /// </summary>
         public AnimationCurve TurnSpeedLossCurve;
+        public AnimationCurve TurnrateCurve;
         [Header("Drift")]
         public float DriftDurationMinimum;
-        public float DriftBoostSpeed;
+        // public float DriftBoostSpeed;    LVL_AFFECTED
         public float DriftTurnratePassive;
         public float DriftTurnrateMin;
         public float DriftTurnrate;
+        [Header("Boost")]
+        public float BoostDuration;
+        public float BoostLockTime;
+        [Header("Breake")]
+        public float BreakeDeceleration;
         [Header("Jump")]
         public float jumpSpeedMax;          // Controls jump speed relative to time
         public AnimationCurve jumpAccel;    // Acceleration for a jump
@@ -71,6 +77,7 @@ public class Board : MonoBehaviour
     /// <summary>
     /// Contains Level dependent stats
     /// </summary>
+    [System.Serializable]
     public class ExtremeGearLevelStats
     {
         [Header("Air")]

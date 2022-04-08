@@ -12,6 +12,11 @@ namespace Player
 
         public void LoadStats(PlayerBehaviour playerBehaviour)
         {
+            if(playerBehaviour == null)
+            {
+                Debug.LogError("dafuq");
+            }
+
             // Determine Character & Board
             var boardListObject = Instantiate<GameObject>(boardListPrefab);
             var characterListObject = Instantiate<GameObject>(characterListPrefab);
@@ -127,7 +132,34 @@ namespace Player
             playerBehaviour.movementVars.deceleration = board.movementVars.deceleration;
             playerBehaviour.movementVars.corneringDeceleration = board.movementVars.corneringDeceleration;
             // Boost
-            //playerBehaviour.movementVars.boostDuration = board.movementVars.boo
+            playerBehaviour.movementVars.boostDuration = board.movementVars.BoostDuration;
+            playerBehaviour.movementVars.boostLockTime = board.movementVars.BoostLockTime;
+            // Break
+            playerBehaviour.movementVars.breakeDeceleration = board.movementVars.BreakeDeceleration;
+            // Drift
+            playerBehaviour.movementVars.driftDuration = board.movementVars.DriftDurationMinimum;
+            playerBehaviour.movementVars.driftTurnratePassive = board.movementVars.DriftTurnratePassive;
+            playerBehaviour.movementVars.driftTurnrateMin = board.movementVars.DriftTurnrateMin;
+            playerBehaviour.movementVars.driftTurnrate = board.movementVars.DriftTurnrate;
+            // Cornering
+            playerBehaviour.movementVars.lowSpeedTurnMultiplier = board.movementVars.TurnLowSpeedHandlingMultiplier;
+            playerBehaviour.movementVars.highSpeedTurnMultiplier = board.movementVars.SpeedHandlingMultiplier;
+            playerBehaviour.movementVars.turnrateCurve = board.movementVars.TurnrateCurve;
+            playerBehaviour.movementVars.turnSpeedLossCurve = board.movementVars.TurnSpeedLossCurve;
+            // Jump & Gravity
+            playerBehaviour.movementVars.jumpSpeedMax = board.movementVars.jumpSpeedMax;
+            playerBehaviour.movementVars.jumpAccel = board.movementVars.jumpAccel;
+            playerBehaviour.movementVars.jumpChargeMinSpeed = board.movementVars.jumpChargeMinSpeed;
+            playerBehaviour.movementVars.jumpChargeDeceleration = board.movementVars.jumpChargeDeceleration;
+            playerBehaviour.movementVars.gravityMultiplier = board.movementVars.gravityMultiplier;
+            // Wall Bump
+            playerBehaviour.movementVars.wallBumpTimer = board.movementVars.wallBumpTimer;
+            playerBehaviour.movementVars.wallBumpSpeed = board.movementVars.wallBumpSpeed;
+            // Air
+            playerBehaviour.airVars.AirGainTrick = board.movementVars.AirGainTrick;
+            playerBehaviour.airVars.AirGainShortcut = board.movementVars.AirGainShortcut;
+            playerBehaviour.airVars.AirGainAutorotate = board.movementVars.AirGainAutorotate;
+            playerBehaviour.airVars.JumpAirLoss = board.movementVars.JumpAirLoss;
 
 
         }

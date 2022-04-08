@@ -140,11 +140,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f321dd2d54c594e8ee1e65575d338e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  board: 0
   movementVars:
-    MinSpeed: 0
-    FastAcceleration: 0
+    MinSpeed: 1500
+    FastAcceleration: 20
+    deceleration: 30
+    corneringDeceleration: 5
     TurnAcceleration: 0
-    Turnrate: 0
+    Turnrate: 10
     TurnSpeedLoss: 0
     SpeedHandlingMultiplier: 0
     TurnLowSpeedHandlingMultiplier: 0
@@ -154,11 +157,20 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    DriftDurationMinimum: 0
-    DriftBoostSpeed: 0
+    TurnrateCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    DriftDurationMinimum: 1
+    DriftBoostSpeed: 5000
     DriftTurnratePassive: 0
     DriftTurnrateMin: 0
-    DriftTurnrate: 0
+    DriftTurnrate: 2
+    BoostDuration: 5
+    BoostLockTime: 7
+    BreakeDeceleration: 40
     jumpSpeedMax: 0
     jumpAccel:
       serializedVersion: 2
@@ -175,3 +187,27 @@ MonoBehaviour:
     AirGainShortcut: 0
     AirGainAutorotate: 0
     JumpAirLoss: 0
+  GearStatsLevel1:
+    MaxAir: 0
+    PassiveAirDrain: 0
+    DriftAirCost: 0
+    BoostCost: 0
+    TornadoCost: 0
+    SpeedGainedFromDriftDash: 0
+    BoostSpeed: 0
+  GearStatsLevel2:
+    MaxAir: 0
+    PassiveAirDrain: 0
+    DriftAirCost: 0
+    BoostCost: 0
+    TornadoCost: 0
+    SpeedGainedFromDriftDash: 0
+    BoostSpeed: 0
+  GearStatsLevel3:
+    MaxAir: 0
+    PassiveAirDrain: 0
+    DriftAirCost: 0
+    BoostCost: 0
+    TornadoCost: 0
+    SpeedGainedFromDriftDash: 0
+    BoostSpeed: 0

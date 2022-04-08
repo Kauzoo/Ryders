@@ -1,7 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
+/// <summary>
+/// Responsible for retrieving input and distribute it
+/// Only Instantiate the prefab, not the script itself
+/// </summary>
 public class InputHandler : MonoBehaviour
 {
     /**
@@ -14,7 +19,7 @@ public class InputHandler : MonoBehaviour
      * PLAYER 1
      */
     [System.Serializable]
-    public class Player1Keybinds
+    public class PlayerKeybinds
     {
         public KeyCode upKey;
         public KeyCode downKey;
@@ -30,7 +35,7 @@ public class InputHandler : MonoBehaviour
     }
 
     [System.Serializable]
-    public class Player1Input
+    public class PlayerInput
     {
         public bool forwardInput;
         public bool backwardInput;
@@ -44,20 +49,18 @@ public class InputHandler : MonoBehaviour
         public float horizontalAxis;
     }
 
-    /**
-     * PLAYER 2
-     */
-    public class Player2Input
-    {
-
-    }
 
     /**
      * Class Instanciation
      */
-    public Player1Keybinds player1keyboard = new Player1Keybinds();
-    public Player1Keybinds player1gamepad = new Player1Keybinds();
-    public Player1Input player1Input = new Player1Input();
+    // Player 1
+    public PlayerKeybinds player1keyboard = new PlayerKeybinds();
+    public PlayerKeybinds player1gamepad = new PlayerKeybinds();
+    public PlayerInput player1Input = new PlayerInput();
+    // Player 2
+    public PlayerKeybinds player2keyboard = new PlayerKeybinds();
+    public PlayerKeybinds player2gamepad = new PlayerKeybinds();
+    public PlayerInput player2Input = new PlayerInput();
 
 
     // Start is called before the first frame update
@@ -80,7 +83,7 @@ public class InputHandler : MonoBehaviour
     }
 
     #region Getters&Setters
-    public void GetInput_Player1()
+    private void GetInput_Player1()
     {
         // Reset
         player1Input.forwardInput = false;
@@ -135,5 +138,9 @@ public class InputHandler : MonoBehaviour
     {
         Debug.LogWarning("GetInput_Player2 is not yet implemented");
     }
+    #endregion
+
+    #region Utils
+    
     #endregion
 }

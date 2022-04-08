@@ -3979,10 +3979,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4779269284538909668, guid: 5d915e5a0b2a8e644afbb3bf5721b68d, type: 3}
-      propertyPath: Player1
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8039757478143774623, guid: 5d915e5a0b2a8e644afbb3bf5721b68d, type: 3}
       propertyPath: m_Name
       value: InputModule
@@ -9939,6 +9935,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 286868704}
     - target: {fileID: 6643478920379946870, guid: 01316008f0e721743927debf13da3a56, type: 3}
+      propertyPath: playerPort
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6643478920379946870, guid: 01316008f0e721743927debf13da3a56, type: 3}
       propertyPath: rigidbodyDebugDump
       value: 
       objectReference: {fileID: 1637321834}
@@ -10121,6 +10121,10 @@ PrefabInstance:
     - target: {fileID: 6643478920379946870, guid: 01316008f0e721743927debf13da3a56, type: 3}
       propertyPath: movementVars.jumpAccel.m_Curve.Array.data[4].outWeight
       value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 7597825519397828129, guid: 01316008f0e721743927debf13da3a56, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01316008f0e721743927debf13da3a56, type: 3}

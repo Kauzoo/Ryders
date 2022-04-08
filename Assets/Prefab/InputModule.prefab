@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37037f33f7ed1ff44b5028cdf2b19821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player1: 0
+  Player1: 1
   Player2: 0
   player1keyboard:
     upKey: 0
@@ -62,6 +62,29 @@ MonoBehaviour:
     downKey: 0
     leftKey: 0
     rightKey: 0
+    jumpKey: 330
+    boostKey: 331
+    driftKey1: 0
+    driftKey2: 0
+    cycleLevelKey: 0
+    verticalAxis: Vertical
+    horizontalAxis: Horizontal
+  player1Input:
+    forwardInput: 0
+    backwardInput: 0
+    leftInput: 0
+    rightInput: 0
+    jumpInput: 0
+    boostInput: 0
+    driftInput: 0
+    cycleLevelInput: 0
+    verticalAxis: 0
+    horizontalAxis: 0
+  player2keyboard:
+    upKey: 0
+    downKey: 0
+    leftKey: 0
+    rightKey: 0
     jumpKey: 0
     boostKey: 0
     driftKey1: 0
@@ -69,7 +92,19 @@ MonoBehaviour:
     cycleLevelKey: 0
     verticalAxis: 
     horizontalAxis: 
-  player1Input:
+  player2gamepad:
+    upKey: 0
+    downKey: 0
+    leftKey: 0
+    rightKey: 0
+    jumpKey: 0
+    boostKey: 0
+    driftKey1: 0
+    driftKey2: 0
+    cycleLevelKey: 0
+    verticalAxis: 
+    horizontalAxis: 
+  player2Input:
     forwardInput: 0
     backwardInput: 0
     leftInput: 0

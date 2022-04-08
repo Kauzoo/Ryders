@@ -14,6 +14,8 @@ namespace Player
         // Controlls to which player this Behaviour script belongs
         public Enums.Player playerPort;    // Needs to set before startup
         private InputHandler inputHandler;
+        public InputHandler.PlayerInput inputVars;
+        private PlayerStatLoader playerStatLoader;
 
         public Enums.Character character;                 // Needs to set before startup
         public Enums.Board board;                         // Needs to set before startup
@@ -31,36 +33,10 @@ namespace Player
         public Transform testObject;
         public Transform respanwn;
 
-        [System.Serializable]
-        public class KeyBinds
-        {
-            public KeyCode fowardKey;
-            public KeyCode backwardKey;
-            public KeyCode leftKey;
-            public KeyCode rightKey;
-            public KeyCode jumpKey;
-            public KeyCode boostKey;
-            public KeyCode driftKey1;
-            public KeyCode driftKey2;
-            public KeyCode cycleLevelKey;
-            public string verticalAxis;
-            public string horizontalAxis;
-        }
-
-        [System.Serializable]
-        public class InputVars
-        {
-            public bool forwardInput;
-            public bool backwardInput;
-            public bool leftInput;
-            public bool rightInput;
-            public bool jumpInput;
-            public bool boostInput;
-            public bool driftInput;
-            public bool cycleLevelInput;
-            public float forwardAxis;
-            public float sidewaysAxis;
-        }
+        /**
+         * Utils
+         */
+        public bool constantStatReload;
 
         /// <summary>
         /// Contains all movement related vars
@@ -90,11 +66,11 @@ namespace Player
             public float driftTurnrateMin;      // Minimum amount the player turn while drifting
             public float driftTurnrate;         // maximum rate at which the player can turn while drifting
             [Header("Cornering")]
-            public float turnSpeedThreshhold;       // currently unused
             public float lowSpeedTurnMultiplier;    // currently unused
             public float highSpeedTurnMultiplier;   // currently unused
             public float turnrate;                  // LVL_AFFECTED
             public AnimationCurve turnrateCurve;    // Determines how your ability to turn is affected by speed
+            public AnimationCurve turnSpeedLossCurve;
             [Header("Jump&Gravity")]
             public float jumpSpeedMax;          // Controls jump speed relative to time
             public AnimationCurve jumpAccel;    // Acceleration for a jump
@@ -104,8 +80,6 @@ namespace Player
             [Header("WallBump")]
             public float wallBumpTimer;
             public float wallBumpSpeed;
-            [Header("Curves")]
-            public AnimationCurve test;
         }
 
         /// <summary>
@@ -159,7 +133,7 @@ namespace Player
             {
                 None, Turning, DriftingL, DriftingR, Braking
             }
-            public enum MiscStates
+            public enum JumpStates
             {
                 None, JumpCharging, Jumping, JumpLanding
             }
@@ -193,8 +167,14 @@ namespace Player
             public bool overrideControl = false;        // temp | needs to be reworked
             public TranslationStates translationState = TranslationStates.Stationary;
             public CorneringStates corneringStates = CorneringStates.None;
-            public MiscStates miscState = MiscStates.None;
+            public JumpStates miscState = JumpStates.None;
             public BoostStates boostState = BoostStates.None;
+        }
+
+        [System.Serializable]
+        public class Air
+        {
+            public int air;
         }
 
         [System.Serializable]
@@ -224,13 +204,9 @@ namespace Player
             public int layerMask;
         }
 
-        // Depercated
-        public KeyBinds keyboardKeyBinds = new KeyBinds();
-        public KeyBinds controllerKeyBinds = new KeyBinds();
-        public InputVars standardInputVars = new InputVars();
-
         // Variable storage for calcs
         public MovementVars movementVars = new MovementVars();
+        public AirVars airVars = new AirVars();
         public LevelStats statsLevel1 = new LevelStats();
         public LevelStats statsLevel2 = new LevelStats();
         public LevelStats statsLevel3 = new LevelStats();
@@ -245,7 +221,6 @@ namespace Player
         void Start()
         {
             Application.targetFrameRate = 60;
-            visualPlayerTransform.SetParent(playerTransform);
 
             // Go through inital setup
             inputHandler = FindObjectOfType<InputHandler>();
@@ -256,24 +231,29 @@ namespace Player
             switch (playerPort)
             {
                 case Enums.Player.Player1:
-
+                    inputVars = inputHandler.player1Input;
                     break;
                 case Enums.Player.Player2:
+                    inputVars = inputHandler.player2Input;
                     break;
                 default:
                     Debug.LogWarning($"PlayerBehaviour {this.gameObject.name} does not have a Player assigned");
                     break;
             }
 
+            playerStatLoader = gameObject.GetComponent<PlayerStatLoader>();
+            playerStatLoader.LoadStats(this);
+
+            UpdateLevelStats();
         }
 
         // Update is called once per frame
         void Update()
         {
+            EnableConstantStatReload();
             if (!movement.overrideControl)
             {
                 Grounded();
-                GetInput();
                 HandleLevelSwitching();
                 Move();
                 DebugRays();
@@ -285,70 +265,6 @@ namespace Player
         {
 
         }
-
-        void SanityChecks()
-        {
-        }
-
-        #region InputHandeling
-        void GetInput()
-        {
-            // Reset
-            standardInputVars.forwardInput = false;
-            standardInputVars.backwardInput = false;
-            standardInputVars.leftInput = false;
-            standardInputVars.rightInput = false;
-            standardInputVars.jumpInput = false;
-            standardInputVars.boostInput = false;
-            standardInputVars.driftInput = false;
-            standardInputVars.cycleLevelInput = false;
-
-            // Keys
-            if (Input.GetKey(keyboardKeyBinds.fowardKey) || Input.GetKey(controllerKeyBinds.fowardKey))
-            {
-                standardInputVars.forwardInput = true;
-            }
-            if (Input.GetKey(keyboardKeyBinds.backwardKey) || Input.GetKey(controllerKeyBinds.backwardKey))
-            {
-                standardInputVars.backwardInput = true;
-            }
-            if (Input.GetKey(keyboardKeyBinds.leftKey) || Input.GetKey(controllerKeyBinds.leftKey))
-            {
-                standardInputVars.leftInput = true;
-            }
-            if (Input.GetKey(keyboardKeyBinds.rightKey) || Input.GetKey(controllerKeyBinds.rightKey))
-            {
-                standardInputVars.rightInput = true;
-            }
-            if (Input.GetKey(keyboardKeyBinds.jumpKey) || Input.GetKey(controllerKeyBinds.jumpKey))
-            {
-                standardInputVars.jumpInput = true;
-            }
-            if (Input.GetKeyDown(keyboardKeyBinds.boostKey) || Input.GetKeyDown(controllerKeyBinds.boostKey))
-            {
-                standardInputVars.boostInput = true;
-            }
-            if (Input.GetKey(keyboardKeyBinds.driftKey1) || Input.GetKey(keyboardKeyBinds.driftKey2) || Input.GetKey(controllerKeyBinds.driftKey1) || Input.GetKey(controllerKeyBinds.driftKey2))
-            {
-                standardInputVars.driftInput = true;
-            }
-            if (Input.GetKeyDown(keyboardKeyBinds.cycleLevelKey) || Input.GetKeyDown(controllerKeyBinds.cycleLevelKey))
-            {
-                standardInputVars.cycleLevelInput = true;
-            }
-
-            // Axis
-            standardInputVars.forwardAxis = Input.GetAxis("Vertical");
-            standardInputVars.sidewaysAxis = Input.GetAxis("Horizontal");
-
-
-            //OTHER DEBUG ONLY
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                playerTransform.position = respanwn.position;
-            }
-        }
-        #endregion
 
         #region Movement
         void Move()
@@ -376,7 +292,7 @@ namespace Player
 
 
             // Calculate gravity value
-            if (movement.miscState != Movement.MiscStates.Jumping)
+            if (movement.miscState != Movement.JumpStates.Jumping)
             {
                 movement.gravity = Gravity() * (movement.gravity + movementVars.gravityMultiplier);
             }
@@ -423,7 +339,7 @@ namespace Player
         private void SetCorneringState()
         {
             // Check if a drift has been released
-            if ((movement.corneringStates == Movement.CorneringStates.DriftingL || movement.corneringStates == Movement.CorneringStates.DriftingR) && !standardInputVars.driftInput)
+            if ((movement.corneringStates == Movement.CorneringStates.DriftingL || movement.corneringStates == Movement.CorneringStates.DriftingR) && !inputVars.driftInput)
             {
                 movement.driftTimer = 0;
                 movement.speed = movementVars.driftBoostSpeed;
@@ -431,7 +347,7 @@ namespace Player
                 return;
             }
             // If drift or breake state have already been entered, only the drift button needs to be checked
-            if (standardInputVars.driftInput)
+            if (inputVars.driftInput)
             {
                 // If already drifting, continue drift if the drift button is held down
                 if (movement.corneringStates == Movement.CorneringStates.DriftingL)
@@ -453,9 +369,9 @@ namespace Player
                     return;
                 }
             }
-            if (standardInputVars.sidewaysAxis == 0)
+            if (inputVars.horizontalAxis == 0)
             {
-                if (standardInputVars.driftInput)
+                if (inputVars.driftInput)
                 {
                     movement.corneringStates = Movement.CorneringStates.Braking;
                 }
@@ -467,9 +383,9 @@ namespace Player
             else
             {
                 // Enter Drift state
-                if (movement.translationState != Movement.TranslationStates.Stationary && standardInputVars.driftInput)
+                if (movement.translationState != Movement.TranslationStates.Stationary && inputVars.driftInput)
                 {
-                    if (standardInputVars.sidewaysAxis > 0)
+                    if (inputVars.horizontalAxis > 0)
                     {
                         movement.corneringStates = Movement.CorneringStates.DriftingR;
                     }
@@ -478,7 +394,7 @@ namespace Player
                         movement.corneringStates = Movement.CorneringStates.DriftingL;
                     }
                 }
-                else if (standardInputVars.sidewaysAxis != 0)
+                else if (inputVars.horizontalAxis != 0)
                 {
                     movement.corneringStates = Movement.CorneringStates.Turning;
                 }
@@ -487,33 +403,33 @@ namespace Player
 
         private void SetMiscState()
         {
-            if (standardInputVars.jumpInput && movement.grounded)
+            if (inputVars.jumpInput && movement.grounded)
             {
-                movement.miscState = Movement.MiscStates.JumpCharging;
+                movement.miscState = Movement.JumpStates.JumpCharging;
                 movement.jumpChargeDuration = movement.jumpChargeDuration + Time.deltaTime;
                 return;
             }
-            if (movement.grounded && movement.miscState == Movement.MiscStates.JumpCharging && !standardInputVars.jumpInput)
+            if (movement.grounded && movement.miscState == Movement.JumpStates.JumpCharging && !inputVars.jumpInput)
             {
-                movement.miscState = Movement.MiscStates.Jumping;
+                movement.miscState = Movement.JumpStates.Jumping;
                 movement.jumpSpeed = movementVars.jumpSpeedMax;
                 return;
             }
-            if (movement.miscState == Movement.MiscStates.JumpLanding && movement.grounded)
+            if (movement.miscState == Movement.JumpStates.JumpLanding && movement.grounded)
             {
-                movement.miscState = Movement.MiscStates.None;
+                movement.miscState = Movement.JumpStates.None;
                 return;
             }
-            if (movement.miscState != Movement.MiscStates.Jumping)
+            if (movement.miscState != Movement.JumpStates.Jumping)
             {
-                movement.miscState = Movement.MiscStates.None;
+                movement.miscState = Movement.JumpStates.None;
                 movement.jumpChargeDuration = 0;
             }
         }
 
         private void SetBoostState()
         {
-            if (standardInputVars.boostInput && movement.boostState == Movement.BoostStates.None)
+            if (inputVars.boostInput && movement.boostState == Movement.BoostStates.None)
             {
                 movement.boostState = Movement.BoostStates.Boost;
                 movement.boostTimer = 0;
@@ -602,7 +518,7 @@ namespace Player
                 else
                 {
                     // Jump
-                    if (movement.miscState == Movement.MiscStates.JumpCharging)
+                    if (movement.miscState == Movement.JumpStates.JumpCharging)
                     {
                         if (movement.speed < movementVars.jumpChargeMinSpeed)
                         {
@@ -624,7 +540,7 @@ namespace Player
             if (movement.translationState == Movement.TranslationStates.HighSpeed)
             {
                 // Jump
-                if (movement.miscState == Movement.MiscStates.JumpCharging)
+                if (movement.miscState == Movement.JumpStates.JumpCharging)
                 {
                     movement.speed = movement.speed - movementVars.jumpChargeDeceleration;
                     //movement.jumpAccel = movementVars.jumpChargeDeceleration;
@@ -643,7 +559,7 @@ namespace Player
                 // Cornering | Calculate TurnAccel for the frame
                 if (movement.corneringStates == Movement.CorneringStates.Turning)
                 {
-                    movement.speed = movement.speed - (movementVars.test.Evaluate(movement.speed / 10) * Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration);
+                    movement.speed = movement.speed - (movementVars.turnSpeedLossCurve.Evaluate(movement.speed / 10) * Mathf.Abs(inputVars.horizontalAxis) * movementVars.corneringDeceleration);
                     //movement.turnAccel = (movementVars.test.Evaluate(movement.speed / 10) * Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration) * (-1);
                 }
                 // Regular Accel
@@ -694,7 +610,7 @@ namespace Player
 
             if (movement.corneringStates == Movement.CorneringStates.Turning)
             {
-                movement.turningRaw = standardInputVars.sidewaysAxis * movementVars.turnrate;
+                movement.turningRaw = inputVars.horizontalAxis * movementVars.turnrate;
                 // Factor in SpeedTier
                 /*
                 if (movement.speed <= movementVars.turnSpeedThreshhold)
@@ -718,7 +634,7 @@ namespace Player
                 if (movement.corneringStates == Movement.CorneringStates.DriftingL)
                 {
                     // For left turn, values have to negative
-                    movement.driftTurning = movementVars.driftTurnratePassive * (-1) + movementVars.driftTurnrate * standardInputVars.sidewaysAxis;
+                    movement.driftTurning = movementVars.driftTurnratePassive * (-1) + movementVars.driftTurnrate * inputVars.horizontalAxis;
                     if (movement.driftTurning > movementVars.driftTurnrateMin)
                     {
                         movement.driftTurning = movementVars.driftTurnrateMin * (-1);
@@ -727,7 +643,7 @@ namespace Player
                 if (movement.corneringStates == Movement.CorneringStates.DriftingR)
                 {
                     // For right turn, values have to positive
-                    movement.driftTurning = movementVars.driftTurnratePassive + movementVars.driftTurnrate * standardInputVars.sidewaysAxis;
+                    movement.driftTurning = movementVars.driftTurnratePassive + movementVars.driftTurnrate * inputVars.horizontalAxis;
                     if (movement.driftTurning < movementVars.driftTurnrateMin)
                     {
                         movement.driftTurning = movementVars.driftTurnrateMin;
@@ -743,7 +659,7 @@ namespace Player
         #region Jump
         private void Jump()
         {
-            if (movement.miscState == Movement.MiscStates.Jumping)
+            if (movement.miscState == Movement.JumpStates.Jumping)
             {
 
                 if (movement.jumpSpeed > 0)
@@ -753,7 +669,7 @@ namespace Player
                 else
                 {
                     movement.jumpSpeed = 0;
-                    movement.miscState = Movement.MiscStates.JumpLanding;
+                    movement.miscState = Movement.JumpStates.JumpLanding;
                 }
             }
         }
@@ -799,7 +715,7 @@ namespace Player
         #region StateSwitching & Air
         private void HandleLevelSwitching()
         {
-            if (standardInputVars.cycleLevelInput)
+            if (inputVars.cycleLevelInput)
             {
                 if (movement.level < 3)
                 {
@@ -811,20 +727,73 @@ namespace Player
                 }
             }
         }
+
+        private void HandleLevelChange()
+        {
+            
+        }
+
+        private void UpdateLevelStats()
+        {
+            switch(movement.level)
+            {
+                case 1:
+                    movementVars.acceleration = statsLevel1.acceleration;
+                    movementVars.boostSpeed = statsLevel1.boostSpeed;
+                    movementVars.cruisingSpeed = statsLevel1.cruisingSpeed;
+                    movementVars.turnrate = statsLevel1.turnrate;
+                    airVars.boostCost = statsLevel1.boostCost;
+                    airVars.driftAirCost = statsLevel1.driftAirCost;
+                    airVars.maxAir = statsLevel1.maxAir;
+                    airVars.tornadoCost = statsLevel1.tornadoCost;
+                    airVars.passiveAirDrain = statsLevel1.passiveAirDrain;
+                    break;
+                case 2:
+                    movementVars.acceleration = statsLevel2.acceleration;
+                    movementVars.boostSpeed = statsLevel2.boostSpeed;
+                    movementVars.cruisingSpeed = statsLevel2.cruisingSpeed;
+                    movementVars.turnrate = statsLevel2.turnrate;
+                    airVars.boostCost = statsLevel2.boostCost;
+                    airVars.driftAirCost = statsLevel2.driftAirCost;
+                    airVars.maxAir = statsLevel2.maxAir;
+                    airVars.tornadoCost = statsLevel2.tornadoCost;
+                    airVars.passiveAirDrain = statsLevel2.passiveAirDrain;
+                    break;
+                case 3:
+                    movementVars.acceleration = statsLevel3.acceleration;
+                    movementVars.boostSpeed = statsLevel3.boostSpeed;
+                    movementVars.cruisingSpeed = statsLevel3.cruisingSpeed;
+                    movementVars.turnrate = statsLevel3.turnrate;
+                    airVars.boostCost = statsLevel3.boostCost;
+                    airVars.driftAirCost = statsLevel3.driftAirCost;
+                    airVars.maxAir = statsLevel3.maxAir;
+                    airVars.tornadoCost = statsLevel3.tornadoCost;
+                    airVars.passiveAirDrain = statsLevel3.passiveAirDrain;
+                    break;
+                default:
+                    Debug.LogWarning("No valid Level");
+                    break;
+            }
+        }
+
+        private void PassiveAirDrain()
+        {
+
+        }
         #endregion
 
         #region Visuals
         private void ManipulatePlayerVisuals()
         {
-            float xOffset = standardInputVars.sidewaysAxis * visuals.xOffset;
+            float xOffset = inputVars.horizontalAxis * visuals.xOffset;
             Vector3 visualPosition = new Vector3(0 - xOffset, 0, 0);
             visualPlayerTransform.localPosition = Vector3.Lerp(visualPlayerTransform.localPosition, visualPosition, visuals.xOffsetDamping);
 
-            float zTilt = standardInputVars.sidewaysAxis * visuals.zRotationMaxAngle * (-1);
+            float zTilt = inputVars.horizontalAxis * visuals.zRotationMaxAngle * (-1);
             Quaternion visualZTilt = Quaternion.Euler(0, 0, zTilt);
             visualPlayerTransform.localRotation = Quaternion.Slerp(visualPlayerTransform.localRotation, visualZTilt, visuals.zRotationDamping);
 
-            float yTilt = standardInputVars.sidewaysAxis * visuals.yRoationMaxAngle;
+            float yTilt = inputVars.horizontalAxis * visuals.yRoationMaxAngle;
             Quaternion visualYTilt = Quaternion.Euler(0, yTilt, 0);
             visualPlayerTransform.localRotation = Quaternion.Slerp(visualPlayerTransform.localRotation, visualYTilt, visuals.yRotationDamping);
         }
@@ -950,6 +919,21 @@ namespace Player
         #endregion
 
 
+        #endregion
+
+        #region Utils
+        private void ReloadStats()
+        {
+            playerStatLoader.LoadStats(this);
+        }
+
+        private void EnableConstantStatReload()
+        {
+            if(constantStatReload)
+            {
+                ReloadStats();
+            }
+        }
         #endregion
 
         #region Debug

@@ -33,7 +33,7 @@ public class JumpOffAreaHandler : MonoBehaviour
             {
                 Debug.Log("OnTriggerEnter");
                 // Check if player is already charging a jump while entering
-                if(playerBehaviour.movement.miscState == PlayerBehaviour.Movement.MiscStates.JumpCharging)
+                if(playerBehaviour.movement.miscState == PlayerBehaviour.Movement.JumpStates.JumpCharging)
                 {
                     charging = true;
                 }
@@ -48,13 +48,13 @@ public class JumpOffAreaHandler : MonoBehaviour
             if(other.TryGetComponent<PlayerBehaviour>(out PlayerBehaviour playerBehaviour))
             {
                 Debug.Log("OnTriggerStay");
-                if(playerBehaviour.standardInputVars.jumpInput)
+                if(playerBehaviour.inputVars.jumpInput)
                 {
                     charging = true;
                 }
 
                 // Charge on Enter section
-                if(charging && !playerBehaviour.standardInputVars.jumpInput)
+                if(charging && !playerBehaviour.inputVars.jumpInput)
                 {
                     chargeRelease = true;
                     /*
@@ -62,7 +62,7 @@ public class JumpOffAreaHandler : MonoBehaviour
                      */
                     float jumpChargeDuration = playerBehaviour.movement.jumpChargeDuration;
                     RampJumpBehaviour.JumpDirection jumpDirection;
-                    if (playerBehaviour.standardInputVars.forwardAxis > 0.2f)
+                    if (playerBehaviour.inputVars.verticalAxis > 0.2f)
                     {
                         jumpDirection = RampJumpBehaviour.JumpDirection.DOWN;
                     }
