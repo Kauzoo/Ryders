@@ -200,28 +200,55 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     DriftDurationMinimum: 1
-    DriftTurnratePassive: 0
-    DriftTurnrateMin: 0
-    DriftTurnrate: 2
+    DriftTurnratePassive: 3
+    DriftTurnrateMin: 2
+    DriftTurnrate: 30
     BoostDuration: 3
     BoostLockTime: 2
     BreakeDeceleration: 40
-    jumpSpeedMax: 0
+    jumpSpeedMax: 3000
     jumpAccel:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 2
-        outSlope: 2
+        time: 0.087640226
+        value: 84.492805
+        inSlope: 0
+        outSlope: 0
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
-        time: 1
-        value: 1
+        time: 15.397232
+        value: 85.066765
+        inSlope: -0.015876558
+        outSlope: -0.015876558
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 31.274027
+        value: 71.61339
+        inSlope: -2.3428936
+        outSlope: -2.3428936
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.19053935
+        outWeight: 0.238852
+      - serializedVersion: 3
+        time: 34.52882
+        value: 63.04966
+        inSlope: -4.4014997
+        outSlope: -4.4014997
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.19728695
+      - serializedVersion: 3
+        time: 39.453934
+        value: 51.333244
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -231,11 +258,11 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    jumpChargeMinSpeed: 0
-    jumpChargeDeceleration: 0
+    jumpChargeMinSpeed: 1000
+    jumpChargeDeceleration: 30
     gravityMultiplier: 100
-    wallBumpTimer: 0
-    wallBumpSpeed: 0
+    wallBumpTimer: 2
+    wallBumpSpeed: 1000
     AirGainTrick: 0
     AirGainShortcut: 0
     AirGainAutorotate: 0

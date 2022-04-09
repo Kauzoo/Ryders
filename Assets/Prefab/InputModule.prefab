@@ -64,7 +64,7 @@ MonoBehaviour:
     rightKey: 0
     jumpKey: 330
     boostKey: 331
-    driftKey1: 0
+    driftKey1: 335
     driftKey2: 0
     cycleLevelKey: 0
     verticalAxis: Vertical

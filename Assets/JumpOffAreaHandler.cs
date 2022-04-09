@@ -33,7 +33,7 @@ public class JumpOffAreaHandler : MonoBehaviour
             {
                 Debug.Log("OnTriggerEnter");
                 // Check if player is already charging a jump while entering
-                if(playerBehaviour.movement.miscState == PlayerBehaviour.Movement.JumpStates.JumpCharging)
+                if(playerBehaviour.movement.jumpState == PlayerBehaviour.Movement.JumpStates.JumpCharging)
                 {
                     charging = true;
                 }

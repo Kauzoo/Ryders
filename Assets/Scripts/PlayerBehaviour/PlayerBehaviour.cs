@@ -143,8 +143,6 @@ namespace Player
                 None, Boost, Boosting, BoostLock
             }
             public float speed = 0;
-            public float cruisingSpeed = 0;
-            public float boostSpeed = 0;
             [Header("Turning")]
             public float rotation = 0;
             public float turningRaw = 0;    // Raw value for turning without speed multipliers
@@ -168,14 +166,14 @@ namespace Player
             public bool overrideControl = false;        // temp | needs to be reworked
             public TranslationStates translationState = TranslationStates.Stationary;
             public CorneringStates corneringStates = CorneringStates.None;
-            public JumpStates miscState = JumpStates.None;
+            public JumpStates jumpState = JumpStates.None;
             public BoostStates boostState = BoostStates.None;
         }
 
         [System.Serializable]
         public class Air
         {
-            public int air;
+            public float air;
         }
 
         [System.Serializable]
@@ -217,6 +215,7 @@ namespace Player
         public Visuals visuals = new Visuals();
         public GroundVars grounded = new GroundVars();
         public GroundInfo groundInfo = new GroundInfo();
+        public Air air = new Air();
 
         // Start is called before the first frame update
         void Start()
@@ -281,7 +280,6 @@ namespace Player
             // Set misc state
             SetMiscState();
             SetBoostState();
-            SetLevelStates();
 
 
             /***
@@ -291,10 +289,14 @@ namespace Player
             Turn();
             Jump();
 
+            // Air Stuff
+            PassiveAirDrain();
+            DriftAirDrain();
+
 
 
             // Calculate gravity value
-            if (movement.miscState != Movement.JumpStates.Jumping)
+            if (movement.jumpState != Movement.JumpStates.Jumping)
             {
                 movement.gravity = Gravity() * (movement.gravity + movementVars.gravityMultiplier);
             }
@@ -407,24 +409,24 @@ namespace Player
         {
             if (inputVars.jumpInput && movement.grounded)
             {
-                movement.miscState = Movement.JumpStates.JumpCharging;
+                movement.jumpState = Movement.JumpStates.JumpCharging;
                 movement.jumpChargeDuration = movement.jumpChargeDuration + Time.deltaTime;
                 return;
             }
-            if (movement.grounded && movement.miscState == Movement.JumpStates.JumpCharging && !inputVars.jumpInput)
+            if (movement.grounded && movement.jumpState == Movement.JumpStates.JumpCharging && !inputVars.jumpInput)
             {
-                movement.miscState = Movement.JumpStates.Jumping;
+                movement.jumpState = Movement.JumpStates.Jumping;
                 movement.jumpSpeed = movementVars.jumpSpeedMax;
                 return;
             }
-            if (movement.miscState == Movement.JumpStates.JumpLanding && movement.grounded)
+            if (movement.jumpState == Movement.JumpStates.JumpLanding && movement.grounded)
             {
-                movement.miscState = Movement.JumpStates.None;
+                movement.jumpState = Movement.JumpStates.None;
                 return;
             }
-            if (movement.miscState != Movement.JumpStates.Jumping)
+            if (movement.jumpState != Movement.JumpStates.Jumping)
             {
-                movement.miscState = Movement.JumpStates.None;
+                movement.jumpState = Movement.JumpStates.None;
                 movement.jumpChargeDuration = 0;
             }
         }
@@ -433,8 +435,13 @@ namespace Player
         {
             if (inputVars.boostInput && movement.boostState == Movement.BoostStates.None)
             {
-                movement.boostState = Movement.BoostStates.Boost;
-                movement.boostTimer = 0;
+                // Air stuff
+                if (TryBoostAirDrain())
+                {
+                    movement.boostState = Movement.BoostStates.Boost;
+                    movement.boostTimer = 0;
+                    return;
+                }
                 return;
             }
             if (movement.boostState == Movement.BoostStates.Boosting)
@@ -456,27 +463,6 @@ namespace Player
                 movement.boostLockTimer = 0;
             }
 
-        }
-
-        private void SetLevelStates()
-        {
-            switch (movement.level)
-            {
-                case 1:
-                    //movement.cruisingSpeed = movementVars.level1SpeedCap;
-                    movement.boostSpeed = movementVars.boostSpeed;
-                    break;
-                case 2:
-                    //movement.cruisingSpeed = movementVars.level2SpeedCap;
-                    movement.boostSpeed = movementVars.boostSpeed;
-                    break;
-                case 3:
-                    //movement.cruisingSpeed = movementVars.level3SpeedCap;
-                    movement.boostSpeed = movementVars.boostSpeed;
-                    break;
-                default:
-                    break;
-            }
         }
         #endregion
 
@@ -520,7 +506,7 @@ namespace Player
                 else
                 {
                     // Jump
-                    if (movement.miscState == Movement.JumpStates.JumpCharging)
+                    if (movement.jumpState == Movement.JumpStates.JumpCharging)
                     {
                         if (movement.speed < movementVars.jumpChargeMinSpeed)
                         {
@@ -542,7 +528,7 @@ namespace Player
             if (movement.translationState == Movement.TranslationStates.HighSpeed)
             {
                 // Jump
-                if (movement.miscState == Movement.JumpStates.JumpCharging)
+                if (movement.jumpState == Movement.JumpStates.JumpCharging)
                 {
                     movement.speed = movement.speed - movementVars.jumpChargeDeceleration;
                     //movement.jumpAccel = movementVars.jumpChargeDeceleration;
@@ -570,20 +556,20 @@ namespace Player
                     // Acceleration Behaviour while boosting
                     if (movement.boostState == Movement.BoostStates.Boosting)
                     {
-                        if (movement.speed < movement.boostSpeed)
+                        if (movement.speed < movementVars.boostSpeed)
                         {
                             movement.speed = movement.speed + movementVars.acceleration;
                             //movement.baseAccel = movementVars.acceleration;
                         }
-                        if (movement.speed > movement.boostSpeed)
+                        if (movement.speed > movementVars.boostSpeed)
                         {
-                            movement.speed = movement.boostSpeed;
+                            movement.speed = movementVars.boostSpeed;
                         }
                     }
                     // Acceleration Behaviour while cruising
                     else
                     {
-                        if (movement.speed < movement.cruisingSpeed)
+                        if (movement.speed < movementVars.cruisingSpeed)
                         {
                             movement.speed = movement.speed + movementVars.acceleration;
                             //movement.baseAccel = movementVars.acceleration;
@@ -661,9 +647,8 @@ namespace Player
         #region Jump
         private void Jump()
         {
-            if (movement.miscState == Movement.JumpStates.Jumping)
+            if (movement.jumpState == Movement.JumpStates.Jumping)
             {
-
                 if (movement.jumpSpeed > 0)
                 {
                     movement.jumpSpeed = movement.jumpSpeed - movementVars.jumpAccel.Evaluate(movement.jumpSpeed / 100);
@@ -671,7 +656,7 @@ namespace Player
                 else
                 {
                     movement.jumpSpeed = 0;
-                    movement.miscState = Movement.JumpStates.JumpLanding;
+                    movement.jumpState = Movement.JumpStates.JumpLanding;
                 }
             }
         }
@@ -714,7 +699,7 @@ namespace Player
         }
         #endregion
 
-        #region StateSwitching & Air
+        #region StateSwitching
         private void HandleLevelSwitching()
         {
             if (inputVars.cycleLevelInput)
@@ -777,10 +762,49 @@ namespace Player
                     break;
             }
         }
+        #endregion
 
+        #region Air
         private void PassiveAirDrain()
         {
+            if (movement.translationState != Movement.TranslationStates.Stationary)
+            {
+                air.air = air.air - airVars.passiveAirDrain * Time.deltaTime;
+                if (movement.jumpState == Movement.JumpStates.JumpCharging)
+                {
+                    air.air = air.air - airVars.passiveAirDrain * airVars.JumpAirLoss * Time.deltaTime;
+                }
+            }
+        }
 
+        /// <summary>
+        /// Checks if enough air for a boost is available and removes it if possible
+        /// </summary>
+        /// <returns></returns>
+        private bool TryBoostAirDrain()
+        {
+            if(air.air > airVars.boostCost)
+            {
+                BoostAirDrain();
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Removes a set amount of air when the player boosts
+        /// </summary>
+        private void BoostAirDrain()
+        {
+            air.air = air.air - airVars.boostCost;
+        }
+
+        private void DriftAirDrain()
+        {
+            if(movement.corneringStates == Movement.CorneringStates.DriftingL || movement.corneringStates == Movement.CorneringStates.DriftingR)
+            {
+                air.air = air.air - airVars.driftAirCost * Time.deltaTime;
+            }
         }
         #endregion
 
