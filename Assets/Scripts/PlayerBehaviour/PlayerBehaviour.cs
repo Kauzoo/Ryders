@@ -30,6 +30,7 @@ namespace Player
          */
         public TMPro.TextMeshProUGUI debugDump;
         public TMPro.TextMeshProUGUI rigidbodyDebugDump;
+        public TMPro.TextMeshProUGUI movementDebugDump;
         public Transform testObject;
         public Transform respanwn;
 
@@ -220,7 +221,7 @@ namespace Player
         // Start is called before the first frame update
         void Start()
         {
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = 120;
 
             // Go through inital setup
             inputHandler = FindObjectOfType<InputHandler>();
@@ -253,6 +254,7 @@ namespace Player
             EnableConstantStatReload();
             if (!movement.overrideControl)
             {
+                UpdateLevelStats();
                 Grounded();
                 HandleLevelSwitching();
                 Move();
@@ -493,7 +495,7 @@ namespace Player
             // Unless boosting, decel should always be applied
             if (movement.boostState != Movement.BoostStates.Boosting)
             {
-                if (movement.speed > movement.cruisingSpeed)
+                if (movement.speed > movementVars.cruisingSpeed)
                 {
                     movement.speed = movement.speed - movementVars.deceleration;
                 }
@@ -969,6 +971,11 @@ namespace Player
                     $"{ Environment.NewLine }Velocity-Z: { playerRigidbody.velocity.z }{ Environment.NewLine }FPS: { fps }";
             debugDump.text = text;
             rigidbodyDebugDump.text = rigidbodyText;
+        }
+
+        private void FillMovementDebugDump()
+        {
+
         }
 
         void OnDrawGizmos()

@@ -64,6 +64,8 @@ namespace Player
             {
                 Debug.LogError("Board not found");
             }
+            Destroy(boardListObject);
+            Destroy(characterListObject);
 
             // Load into Level stat first
             /*
