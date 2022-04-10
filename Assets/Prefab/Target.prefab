@@ -694,8 +694,6 @@ MonoBehaviour:
     tornadoCost: 0
   movement:
     speed: 0
-    cruisingSpeed: 0
-    boostSpeed: 0
     rotation: 0
     turningRaw: 0
     turning: 0
@@ -713,7 +711,7 @@ MonoBehaviour:
     overrideControl: 0
     translationState: 1
     corneringStates: 0
-    miscState: 0
+    jumpState: 0
     boostState: 0
   visuals:
     xOffset: 2
@@ -727,9 +725,12 @@ MonoBehaviour:
   grounded:
     maxDistance: 3
     layerMask: 3
+    tollerance: 0.2
   groundInfo:
     currentGround: {fileID: 0}
     previousGround: {fileID: 0}
+  air:
+    air: 0
 --- !u!114 &9196125426895348073
 MonoBehaviour:
   m_ObjectHideFlags: 0

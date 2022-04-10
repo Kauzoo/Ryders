@@ -201,6 +201,7 @@ namespace Player
         {
             public float maxDistance;
             public int layerMask;
+            public float tollerance;
         }
 
         // Variable storage for calcs
@@ -850,22 +851,26 @@ namespace Player
             {
                 if (HasGroundChanged(hit.transform.gameObject))
                 {
-                    HandleGroundChanged(hit.transform.gameObject);
+                    //HandleGroundChanged(hit.transform.gameObject);
+                    NewGroundChanged(hit.transform.gameObject);
                 }
                 CorrectGroundDistance(hit.distance);
                 movement.grounded = true;
             }
+            
             else if (Physics.Raycast(playerTransform.position, Vector3.down, out RaycastHit hitAlt, grounded.maxDistance, layerMask))
             {
                 {
                     if (HasGroundChanged(hitAlt.transform.gameObject))
                     {
-                        HandleGroundChanged(hitAlt.transform.gameObject);
+                        // HandleGroundChanged(hitAlt.transform.gameObject);
+                        NewGroundChanged(hitAlt.transform.gameObject);
                     }
-                    CorrectGroundDistance(hit.distance);
+                    CorrectGroundDistance(hitAlt.distance);
                     movement.grounded = true;
                 }
             }
+            
             else
             {
                 movement.grounded = false;
@@ -874,13 +879,13 @@ namespace Player
 
         private void CorrectGroundDistance(float distance)
         {
-            if (distance < grounded.maxDistance)
+            if (distance < grounded.maxDistance - grounded.tollerance)
             {
                 Debug.Log("Code is reached");
-                //playerRigidbody.isKinematic = true;
-                playerTransform.Translate(playerTransform.up * (grounded.maxDistance - distance));
+                playerRigidbody.isKinematic = true;
+                playerTransform.Translate(playerTransform.up * ((grounded.maxDistance - grounded.tollerance * 0.5f) - distance));
                 //playerRigidbody.MovePosition(playerTransform.up * (grounded.maxDistance - distance));
-                //playerRigidbody.isKinematic = false;
+                playerRigidbody.isKinematic = false;
             }
         }
 
@@ -929,6 +934,20 @@ namespace Player
 
             //playerTransform.rotation = Quaternion.LookRotation(groundInfo.previousGround.transform.forward, groundInfo.currentGround.transform.up);
             playerTransform.Rotate(currentRotationVector, Space.Self);
+        }
+
+        private void NewGroundChanged(GameObject newGround)
+        {
+            groundInfo.previousGround = groundInfo.currentGround;
+            groundInfo.currentGround = newGround;
+
+            Vector3 localSpacePlayerForward = groundInfo.previousGround.transform.InverseTransformDirection(playerTransform.forward);
+
+            //Quaternion targetRotation = Quaternion.LookRotation(groundInfo.currentGround.transform.forward, groundInfo.currentGround.transform.up);
+            //playerTransform.rotation = targetRotation;
+
+            Vector3 wordlSpaceForward = groundInfo.currentGround.transform.TransformDirection(localSpacePlayerForward);
+            playerTransform.rotation = Quaternion.LookRotation(wordlSpaceForward, groundInfo.currentGround.transform.up);
         }
 
         private bool TryGetGroundObject(out GameObject groundObject)
