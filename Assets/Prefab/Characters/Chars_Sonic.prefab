@@ -147,12 +147,12 @@ MonoBehaviour:
     ShortCutType: 0
     StatsType: 0
     SpeedMultiplier: 0
-    TopSpeedLvl1: 2000
-    TopSpeedLvl2: 3000
-    TopSpeedLvl3: 4000
-    AccelerationLvl1: 10
-    AccelerationLvl2: 12
-    AccelerationLvl3: 14
+    TopSpeedLvl1: 3000
+    TopSpeedLvl2: 4000
+    TopSpeedLvl3: 5000
+    AccelerationLvl1: 15
+    AccelerationLvl2: 17
+    AccelerationLvl3: 19
     CorneringLvl1: 10
     CorneringLvl2: 11
     CorneringLvl3: 12

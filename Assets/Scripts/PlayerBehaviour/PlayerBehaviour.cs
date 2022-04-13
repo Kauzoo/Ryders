@@ -258,6 +258,7 @@ namespace Player
                 Grounded();
                 HandleLevelSwitching();
                 Move();
+                ConstantGroundAllignment();
                 DebugRays();
                 FillDebugDump();
             }
@@ -846,6 +847,7 @@ namespace Player
         #region Gravity & Grounded
         private void Grounded()
         {
+            
             int layerMask = 1 << grounded.layerMask;
             if (Physics.Raycast(playerTransform.position, playerTransform.up * (-1), out RaycastHit hit, grounded.maxDistance, layerMask))
             {
@@ -858,6 +860,7 @@ namespace Player
                 movement.grounded = true;
             }
             
+            /*
             else if (Physics.Raycast(playerTransform.position, Vector3.down, out RaycastHit hitAlt, grounded.maxDistance, layerMask))
             {
                 {
@@ -870,7 +873,7 @@ namespace Player
                     movement.grounded = true;
                 }
             }
-            
+            */
             else
             {
                 movement.grounded = false;
@@ -883,7 +886,8 @@ namespace Player
             {
                 Debug.Log("Code is reached");
                 playerRigidbody.isKinematic = true;
-                playerTransform.Translate(playerTransform.up * ((grounded.maxDistance - grounded.tollerance * 0.5f) - distance));
+                
+                playerTransform.Translate(groundInfo.currentGround.transform. up * ((grounded.maxDistance - grounded.tollerance * 0.5f) - distance));
                 //playerRigidbody.MovePosition(playerTransform.up * (grounded.maxDistance - distance));
                 playerRigidbody.isKinematic = false;
             }
@@ -948,6 +952,12 @@ namespace Player
 
             Vector3 wordlSpaceForward = groundInfo.currentGround.transform.TransformDirection(localSpacePlayerForward);
             playerTransform.rotation = Quaternion.LookRotation(wordlSpaceForward, groundInfo.currentGround.transform.up);
+        }
+
+        private void ConstantGroundAllignment()
+        {
+            if(groundInfo.currentGround != null)
+                playerTransform.rotation = Quaternion.LookRotation(playerTransform.forward, groundInfo.currentGround.transform.up);
         }
 
         private bool TryGetGroundObject(out GameObject groundObject)

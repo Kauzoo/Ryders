@@ -79,12 +79,14 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  rotMul: 0
   targetArea: {fileID: 9039755968594097661}
   jumpOffArea: {fileID: 1424242015678406819}
   jumpCamera: {fileID: 5957343388756981477}
   mainCamera: {fileID: 0}
   player: {fileID: 0}
   playerBehaviour: {fileID: 0}
+  visualPlayer: {fileID: 0}
   jumpChargeDuration: 0
   jumpDirection: 0
   startPoint: {x: 0, y: 0, z: 0}

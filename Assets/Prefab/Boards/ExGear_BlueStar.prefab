@@ -202,7 +202,7 @@ MonoBehaviour:
     DriftDurationMinimum: 1
     DriftTurnratePassive: 3
     DriftTurnrateMin: 2
-    DriftTurnrate: 30
+    DriftTurnrate: 50
     BoostDuration: 3
     BoostLockTime: 2
     BreakeDeceleration: 40
@@ -273,7 +273,7 @@ MonoBehaviour:
     DriftAirCost: 0
     BoostCost: 0
     TornadoCost: 0
-    SpeedGainedFromDriftDash: 1000
+    SpeedGainedFromDriftDash: 7000
     BoostSpeed: 4500
   GearStatsLevel2:
     MaxAir: 0
@@ -289,5 +289,5 @@ MonoBehaviour:
     DriftAirCost: 0
     BoostCost: 0
     TornadoCost: 0
-    SpeedGainedFromDriftDash: 0
+    SpeedGainedFromDriftDash: 7000
     BoostSpeed: 5500

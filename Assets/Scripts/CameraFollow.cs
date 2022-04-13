@@ -43,6 +43,7 @@ public class CameraFollow : MonoBehaviour
     {
         Vector3 targetPosition = new Vector3(target.position.x + camXOffset, target.position.y + camYOffset, target.position.z + camZOffset);
         mainCam.transform.position = Vector3.Lerp(mainCam.transform.position, targetPosition + target.forward * (-1) * camDistance, followDamping);
+        //mainCam.transform.position = new Vector3(mainCam.transform.position, targetPosition + target.forward * (-1) * camDistance, followDamping);
     }
 
     private void RotateCam()
