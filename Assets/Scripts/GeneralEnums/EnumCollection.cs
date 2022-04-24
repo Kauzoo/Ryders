@@ -28,4 +28,9 @@ namespace Enums
     {
         Speed, Power, Fly
     }
+
+    public enum CharacterClass
+    {
+        LateBoost, TopSpeed, Combat, Drift, AllRound, Omni
+    }
 }

@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7156829987992983164
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6132119902980371030}
+  - component: {fileID: 5627098189007062233}
+  m_Layer: 0
+  m_Name: DefaultPlayerStats
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6132119902980371030
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7156829987992983164}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5627098189007062233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7156829987992983164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99935625ae081444282d88a355ab7f18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MinSpeed: 0
+  FastAcceleration: 0
+  Deceleration: 0
+  corneringDeceleration: 0
+  TurnAcceleration: 0
+  Turnrate: 0
+  TurnSpeedLoss: 0
+  SpeedHandlingMultiplier: 0
+  TurnLowSpeedHandlingMultiplier: 0
+  TurnSpeedLossCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  TurnrateCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  DriftDurationMinimum: 0
+  DriftTurnratePassive: 0
+  DriftTurnrateMin: 0
+  DriftTurnrate: 0
+  BoostDuration: 0
+  BoostLockTime: 0
+  BreakeDeceleration: 0
+  jumpSpeedMax: 0
+  jumpAccel:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  jumpChargeMinSpeed: 0
+  jumpChargeDeceleration: 0
+  gravityMultiplier: 0
+  wallBumpTimer: 0
+  wallBumpSpeed: 0
+  AirGainTrick: 0
+  AirGainShortcut: 0
+  AirGainAutorotate: 0
+  JumpAirLoss: 0

@@ -142,7 +142,8 @@ namespace Player
             {
                 None, Boost, Boosting, BoostLock
             }
-            public float speed = 0;
+            public float speed = 0;         // Current movement speed
+            public float MaxSpeed = 0;      // Current MaxSpeed value the player will accelerate/decellerate towards
             [Header("Turning")]
             public float rotation = 0;
             public float turningRaw = 0;    // Raw value for turning without speed multipliers
@@ -731,6 +732,7 @@ namespace Player
                     movementVars.boostSpeed = statsLevel1.boostSpeed;
                     movementVars.cruisingSpeed = statsLevel1.cruisingSpeed;
                     movementVars.turnrate = statsLevel1.turnrate;
+                    movementVars.driftBoostSpeed = statsLevel1.driftBoostSpeed;
                     airVars.boostCost = statsLevel1.boostCost;
                     airVars.driftAirCost = statsLevel1.driftAirCost;
                     airVars.maxAir = statsLevel1.maxAir;
@@ -742,6 +744,7 @@ namespace Player
                     movementVars.boostSpeed = statsLevel2.boostSpeed;
                     movementVars.cruisingSpeed = statsLevel2.cruisingSpeed;
                     movementVars.turnrate = statsLevel2.turnrate;
+                    movementVars.driftBoostSpeed = statsLevel2.driftBoostSpeed;
                     airVars.boostCost = statsLevel2.boostCost;
                     airVars.driftAirCost = statsLevel2.driftAirCost;
                     airVars.maxAir = statsLevel2.maxAir;
@@ -753,6 +756,7 @@ namespace Player
                     movementVars.boostSpeed = statsLevel3.boostSpeed;
                     movementVars.cruisingSpeed = statsLevel3.cruisingSpeed;
                     movementVars.turnrate = statsLevel3.turnrate;
+                    movementVars.driftBoostSpeed = statsLevel3.driftBoostSpeed;
                     airVars.boostCost = statsLevel3.boostCost;
                     airVars.driftAirCost = statsLevel3.driftAirCost;
                     airVars.maxAir = statsLevel3.maxAir;
@@ -886,8 +890,10 @@ namespace Player
             {
                 Debug.Log("Code is reached");
                 playerRigidbody.isKinematic = true;
+
+                playerTransform.Translate(groundInfo.currentGround.transform.up * ((grounded.maxDistance - grounded.tollerance * 0.5f) - distance));
+                Debug.Log("Angle less than 90");
                 
-                playerTransform.Translate(groundInfo.currentGround.transform. up * ((grounded.maxDistance - grounded.tollerance * 0.5f) - distance));
                 //playerRigidbody.MovePosition(playerTransform.up * (grounded.maxDistance - distance));
                 playerRigidbody.isKinematic = false;
             }

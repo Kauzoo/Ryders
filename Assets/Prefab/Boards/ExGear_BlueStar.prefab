@@ -281,7 +281,7 @@ MonoBehaviour:
     DriftAirCost: 0
     BoostCost: 0
     TornadoCost: 0
-    SpeedGainedFromDriftDash: 1000
+    SpeedGainedFromDriftDash: 7500
     BoostSpeed: 5000
   GearStatsLevel3:
     MaxAir: 0
@@ -289,5 +289,5 @@ MonoBehaviour:
     DriftAirCost: 0
     BoostCost: 0
     TornadoCost: 0
-    SpeedGainedFromDriftDash: 7000
+    SpeedGainedFromDriftDash: 8000
     BoostSpeed: 5500
