@@ -21,10 +21,14 @@ namespace PlayerStats
         /// </summary>
         public int FastAcceleration;
         /// <summary>
+        /// Will probably be handled as a Function.
         /// The rate at which the player decelerates back to his current MaxSpeed (when above that value). This value scales with CurrentSpeed as well as current MaxSpeed.
-        /// For more see the SRDX Datasheet.
+        /// For more see the SRDX Datasheet. 
         /// </summary>
         public float Deceleration;
+        /// <summary>
+        /// Base Value for speed loss while cornering.
+        /// </summary>
         public float corneringDeceleration;
         /// <summary>
         /// Default formula to calculate Deceleration.
@@ -75,8 +79,12 @@ namespace PlayerStats
         public AnimationCurve TurnSpeedLossCurve;
         public AnimationCurve TurnrateCurve;
 
+        /// <summary>
+        /// SRDX
+        /// 
+        /// </summary>
         [Header("Drift")]
-        public float DriftDurationMinimum;
+        public float DriftDashChargeDuration;
         // public float DriftBoostSpeed;    LVL_AFFECTED
         public float DriftTurnratePassive;
         public float DriftTurnrateMin;

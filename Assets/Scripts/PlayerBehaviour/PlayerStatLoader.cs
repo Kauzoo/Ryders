@@ -139,7 +139,7 @@ namespace Player
             // Break
             playerBehaviour.movementVars.breakeDeceleration = board.movementVars.BreakeDeceleration;
             // Drift
-            playerBehaviour.movementVars.driftDuration = board.movementVars.DriftDurationMinimum;
+            playerBehaviour.movementVars.driftDuration = board.movementVars.DriftDashChargeDuration;
             playerBehaviour.movementVars.driftTurnratePassive = board.movementVars.DriftTurnratePassive;
             playerBehaviour.movementVars.driftTurnrateMin = board.movementVars.DriftTurnrateMin;
             playerBehaviour.movementVars.driftTurnrate = board.movementVars.DriftTurnrate;

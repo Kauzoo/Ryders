@@ -12,14 +12,27 @@ public class Board : MonoBehaviour
     [System.Serializable]
     public class MovementVars
     {
-        [Header("LinearMovement")]
-        public int MinSpeed;      // Threshold to trigger fast accel
-        public int FastAcceleration;      // Value for fast accel
-        // public float Acceleration;   value can be found on character
-        // public float CruisingSpeed;  value can be found on character
-        // public float BoostSpeed;     value can be found in LevlStats
-        public float deceleration;
-        public float corneringDeceleration;
+        /***
+         * All Stats in this category are based of the gear stats breakdown in the SRDX Datasheets
+         */
+        /// <summary>
+        /// Determines the players usual cruising speed. This value is additive with the Character Based TopSpeed Value.
+        /// </summary>
+        [Header("SpeedStats")]
+        public int TopSpeed;
+        /// <summary>
+        /// 
+        /// </summary>
+        public int BoostSpeedLvl1;
+        public int BoostSpeedLvl2;
+        public int BoostSpeedLvl3;
+        public float BoostChainModifier;
+        public int DriftDashSpeedLvl1;
+        public int DriftDashSpeedLvl2;
+        public int DriftDashSpeedLvl3;
+        public int DriftCap;
+        public int DriftDashChargeDuration;
+
         [Header("Turning")]
         /// <summary>
         /// Currently Unused
@@ -46,27 +59,39 @@ public class Board : MonoBehaviour
         /// </summary>
         public AnimationCurve TurnSpeedLossCurve;
         public AnimationCurve TurnrateCurve;
+
+        /// <summary>
+        /// SRDX
+        /// Minimum duration the player needs to be drifting for to gain a DriftDash upon releasing the drift. Measured in seconds.
+        /// Stat is originally called DriftDashFrames and is orginally measured in Frames.
+        /// </summary>
         [Header("Drift")]
-        public float DriftDurationMinimum;
+        public float DriftDashChargeDuration;
         // public float DriftBoostSpeed;    LVL_AFFECTED
-        public float DriftTurnratePassive;
+        public float DriftTurnratePassive;      // Stat usually filled by GlobalStats
         public float DriftTurnrateMin;
         public float DriftTurnrate;
+
         [Header("Boost")]
         public float BoostDuration;
         public float BoostLockTime;
+
         [Header("Breake")]
         public float BreakeDeceleration;
+
         [Header("Jump")]
         public float jumpSpeedMax;          // Controls jump speed relative to time
         public AnimationCurve jumpAccel;    // Acceleration for a jump
         public float jumpChargeMinSpeed;
         public float jumpChargeDeceleration;
+
         [Header("Gravity")]
         public float gravityMultiplier;
+
         [Header("WallBump")]
         public float wallBumpTimer;
         public float wallBumpSpeed;
+
         [Header("Air")]
         public float AirGainTrick;
         public float AirGainShortcut;
