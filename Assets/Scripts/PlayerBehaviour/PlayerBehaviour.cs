@@ -41,21 +41,25 @@ namespace Player
 
         /// <summary>
         /// Contains all movement related vars
-        /// Values are loaded in from a combination of player and board
+        /// Values are loaded in from a combination of player and gear
         /// Can be updated to refelect level changes
         /// </summary>
         [System.Serializable]
         public class MovementVars
         {
             [Header("Speed")]
-            public int minSpeed;            // Speed threshold for fast accel
-            public int fastAcceleration;
-            public int acceleration;        // LVL_AFFECTED
-            public int cruisingSpeed;       // LVL_AFFECTED
+            public int MinSpeed;            // Speed threshold for fast accel
+            public int FastAcceleration;
+            public int Acceleration;        // LVL_AFFECTED
+            /// <summary>
+            /// LVL_AFFECTED
+            /// basically the players cruising speed
+            /// </summary>
+            public int TopSpeed;        // LVL_AFFECTED
             public float deceleration;
             public float corneringDeceleration;
             [Header("Boost")]
-            public float boostSpeed;        // LVL_AFFECTED | Speed to which the player is set while boosting
+            public float BoostSpeed;        // LVL_AFFECTED | Speed to which the player is set while boosting
             public float boostDuration;     // How long the boost lasts
             public float boostLockTime;     // Duration for which a player can't boost after boosting (total: driftDuration + boostLockTime)
             [Header("Breake")]
@@ -87,7 +91,7 @@ namespace Player
         /// Contains all air related vars
         /// </summary>
         [System.Serializable]
-        public class AirVars
+        public class FuelVars
         {
             public int maxAir;                  // LVL_AFFECTED
             public int passiveAirDrain;         // LVL_AFFECTED
@@ -207,7 +211,7 @@ namespace Player
 
         // Variable storage for calcs
         public MovementVars movementVars = new MovementVars();
-        public AirVars airVars = new AirVars();
+        public FuelVars airVars = new FuelVars();
         public LevelStats statsLevel1 = new LevelStats();
         public LevelStats statsLevel2 = new LevelStats();
         public LevelStats statsLevel3 = new LevelStats();
@@ -325,7 +329,7 @@ namespace Player
         #region StateSetters
         private void SetTranslationState()
         {
-            if (movement.speed < movementVars.minSpeed)
+            if (movement.speed < movementVars.MinSpeed)
             {
                 if (movement.speed == 0)
                 {
@@ -478,13 +482,13 @@ namespace Player
             // Case 0: Handle any sort of boost
             if (movement.boostState == Movement.BoostStates.Boost)
             {
-                movement.speed = movementVars.boostSpeed;
+                movement.speed = movementVars.BoostSpeed;
                 movement.boostState = Movement.BoostStates.Boosting;
             }
             // Unless boosting, decel should always be applied
             if (movement.boostState != Movement.BoostStates.Boosting)
             {
-                if (movement.speed > movementVars.cruisingSpeed)
+                if (movement.speed > movementVars.TopSpeed)
                 {
                     movement.speed = movement.speed - movementVars.deceleration;
                 }
@@ -513,7 +517,7 @@ namespace Player
                     {
                         if (movement.speed < movementVars.jumpChargeMinSpeed)
                         {
-                            movement.speed = movementVars.fastAcceleration + movement.speed;
+                            movement.speed = movementVars.FastAcceleration + movement.speed;
                             return;
                         }
                         else
@@ -522,7 +526,7 @@ namespace Player
                             //movement.jumpAccel = movementVars.jumpChargeDeceleration;
                         }
                     }
-                    movement.speed = movementVars.fastAcceleration + movement.speed;
+                    movement.speed = movementVars.FastAcceleration + movement.speed;
                     return;
                 }
             }
@@ -559,22 +563,22 @@ namespace Player
                     // Acceleration Behaviour while boosting
                     if (movement.boostState == Movement.BoostStates.Boosting)
                     {
-                        if (movement.speed < movementVars.boostSpeed)
+                        if (movement.speed < movementVars.BoostSpeed)
                         {
-                            movement.speed = movement.speed + movementVars.acceleration;
+                            movement.speed = movement.speed + movementVars.Acceleration;
                             //movement.baseAccel = movementVars.acceleration;
                         }
-                        if (movement.speed > movementVars.boostSpeed)
+                        if (movement.speed > movementVars.BoostSpeed)
                         {
-                            movement.speed = movementVars.boostSpeed;
+                            movement.speed = movementVars.BoostSpeed;
                         }
                     }
                     // Acceleration Behaviour while cruising
                     else
                     {
-                        if (movement.speed < movementVars.cruisingSpeed)
+                        if (movement.speed < movementVars.TopSpeed)
                         {
-                            movement.speed = movement.speed + movementVars.acceleration;
+                            movement.speed = movement.speed + movementVars.Acceleration;
                             //movement.baseAccel = movementVars.acceleration;
                         }
                     }
@@ -677,7 +681,7 @@ namespace Player
         {
             if (movement.boostState == Movement.BoostStates.Boost)
             {
-                movement.speed = movementVars.boostSpeed;
+                movement.speed = movementVars.BoostSpeed;
                 movement.boostState = Movement.BoostStates.Boosting;
             }
         }
@@ -728,9 +732,9 @@ namespace Player
             switch(movement.level)
             {
                 case 1:
-                    movementVars.acceleration = statsLevel1.acceleration;
-                    movementVars.boostSpeed = statsLevel1.boostSpeed;
-                    movementVars.cruisingSpeed = statsLevel1.cruisingSpeed;
+                    movementVars.Acceleration = statsLevel1.acceleration;
+                    movementVars.BoostSpeed = statsLevel1.boostSpeed;
+                    movementVars.TopSpeed = statsLevel1.cruisingSpeed;
                     movementVars.turnrate = statsLevel1.turnrate;
                     movementVars.driftBoostSpeed = statsLevel1.driftBoostSpeed;
                     airVars.boostCost = statsLevel1.boostCost;
@@ -740,9 +744,9 @@ namespace Player
                     airVars.passiveAirDrain = statsLevel1.passiveAirDrain;
                     break;
                 case 2:
-                    movementVars.acceleration = statsLevel2.acceleration;
-                    movementVars.boostSpeed = statsLevel2.boostSpeed;
-                    movementVars.cruisingSpeed = statsLevel2.cruisingSpeed;
+                    movementVars.Acceleration = statsLevel2.acceleration;
+                    movementVars.BoostSpeed = statsLevel2.boostSpeed;
+                    movementVars.TopSpeed = statsLevel2.cruisingSpeed;
                     movementVars.turnrate = statsLevel2.turnrate;
                     movementVars.driftBoostSpeed = statsLevel2.driftBoostSpeed;
                     airVars.boostCost = statsLevel2.boostCost;
@@ -752,9 +756,9 @@ namespace Player
                     airVars.passiveAirDrain = statsLevel2.passiveAirDrain;
                     break;
                 case 3:
-                    movementVars.acceleration = statsLevel3.acceleration;
-                    movementVars.boostSpeed = statsLevel3.boostSpeed;
-                    movementVars.cruisingSpeed = statsLevel3.cruisingSpeed;
+                    movementVars.Acceleration = statsLevel3.acceleration;
+                    movementVars.BoostSpeed = statsLevel3.boostSpeed;
+                    movementVars.TopSpeed = statsLevel3.cruisingSpeed;
                     movementVars.turnrate = statsLevel3.turnrate;
                     movementVars.driftBoostSpeed = statsLevel3.driftBoostSpeed;
                     airVars.boostCost = statsLevel3.boostCost;

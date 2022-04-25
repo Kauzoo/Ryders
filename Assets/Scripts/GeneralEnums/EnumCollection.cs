@@ -33,4 +33,9 @@ namespace Enums
     {
         LateBoost, TopSpeed, Combat, Drift, AllRound, Omni
     }
+
+    public enum FuelType
+    {
+        Air, Ring
+    }
 }

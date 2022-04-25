@@ -22,7 +22,7 @@ public class Board : MonoBehaviour
          */
         /// <summary>
         /// Determines the players usual cruising speed. This value is additive with the Character Based TopSpeed Value.
-        /// Also stacks additively with TopSpeed Bonus from LevelUp.
+        /// Also stacks additively with TopSpeed Bonus from LevelUp
         /// </summary>
         [Header("SpeedStats")]
         public int TopSpeed;
@@ -161,33 +161,90 @@ public class Board : MonoBehaviour
         /// Speedmultiplier for bumping of walls
         /// </summary>
         public float wallBumpSpeed;
-
-        [Header("Air")]
-        public float AirGainTrick;
-        public float AirGainShortcut;
-        public float AirGainAutorotate;
-        public float JumpAirLoss;
     }
 
-    /// <summary>
-    /// Contains Level dependent stats
-    /// </summary>
     [System.Serializable]
-    public class ExtremeGearLevelStats
+    public class FuelVars
     {
-        [Header("Air")]
-        public int MaxAir;
-        public int PassiveAirDrain;
-        public int DriftAirCost;
-        public int BoostCost;
-        public int TornadoCost;
-        [Header("Speed&Boost")]
-        public float SpeedGainedFromDriftDash;
-        public float BoostSpeed;
+        /// <summary>
+        /// SRDX
+        /// Determines the type of Fuel used by a gear
+        /// </summary>
+        public Enums.FuelType Fuel;
+        /// <summary>
+        /// SRDX
+        /// Multiplier to PassiveAirDrain while charging jump
+        /// Is applied multiplicatively
+        /// </summary>
+        [Header("Jump")]
+        public float JumpChargeMultiplier;
+        /// <summary>
+        /// SRDX
+        /// Multiplier for the amount of air gained from tricks
+        /// Value is a percentage that is applied to base amounts
+        /// </summary>
+        [Header("FuelGain")]
+        public float TrickFuelGain;
+        /// <summary>
+        /// SRDX
+        /// Multiplier for amount of air gained from type shortcuts
+        /// Value is a percentage that is applied to base amounts
+        /// </summary>
+        public float TypeFuelGain;
+        /// <summary>
+        /// SRDX
+        /// Multiplier for amount of air gained from QTEs
+        /// Value is a percentage that is applied to base amounts
+        /// </summary>
+        public float QTEFuelGain;
+        /// <summary>
+        /// SRDX
+        /// Amount of passive air drain. Scales with Level. Measured in Fuel per second
+        /// Value is a total value
+        /// </summary>
+        [Header("PassiveDrain")]
+        public float PassiveDrainLvl1;
+        public float PassiveDrainLvl2;
+        public float PassiveDrainLvl3;
+        /// <summary>
+        /// SRDX
+        /// Size of the FuelTank. Scales with Level.
+        /// Value is a toatl value
+        /// </summary>
+        [Header("FuelTankSize")]
+        public int FuelTankSizeLevel1;
+        public int FuelTankSizeLevel2;
+        public int FuelTankSizeLevel3;
+        /// <summary>
+        /// SRDX
+        /// Cost of performing a boost. Scales with Level
+        /// Value is a total value.
+        /// </summary>
+        [Header("Boost")]
+        public float BoostCostLvl1;
+        public float BoostCostLvl2;
+        public float BoostCostLvl3;
+        /// <summary>
+        /// SRDX
+        /// FuelDrain while drifting. Scales with Level. Measured in Fuel per Second
+        /// Value is a total value
+        /// </summary>
+        [Header("Drift")]
+        public float DriftCostLvl1;
+        public float DriftCostLvl2;
+        public float DriftCostLvl3;
+        /// <summary>
+        /// SRDX
+        /// Cost for performing a Tornado. Scales with Level.
+        /// Value is a toatl value
+        /// </summary>
+        [Header("Tornado")]
+        public float TornadoCostLvl1;
+        public float TornadoCostLvl2;
+        public float TornadoCostLvl3;
+
     }
 
     public MovementVars movementVars = new MovementVars();
-    public ExtremeGearLevelStats GearStatsLevel1 = new ExtremeGearLevelStats();
-    public ExtremeGearLevelStats GearStatsLevel2 = new ExtremeGearLevelStats();
-    public ExtremeGearLevelStats GearStatsLevel3 = new ExtremeGearLevelStats();
+    public FuelVars fuelVars = new FuelVars();
 }

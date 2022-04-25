@@ -129,8 +129,8 @@ namespace Player
              * OTHER
              */
             // Speed
-            playerBehaviour.movementVars.minSpeed = board.movementVars.MinSpeed;
-            playerBehaviour.movementVars.fastAcceleration = board.movementVars.FastAcceleration;
+            playerBehaviour.movementVars.MinSpeed = board.movementVars.MinSpeed;
+            playerBehaviour.movementVars.FastAcceleration = board.movementVars.FastAcceleration;
             playerBehaviour.movementVars.deceleration = board.movementVars.deceleration;
             playerBehaviour.movementVars.corneringDeceleration = board.movementVars.corneringDeceleration;
             // Boost

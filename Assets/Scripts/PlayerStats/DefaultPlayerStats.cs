@@ -15,11 +15,11 @@ namespace PlayerStats
         /// Speed Threshold below which FastAcceleration is triggered. This is a total value.
         /// </summary>
         [Header("Acceleration")]
-        public int MinSpeed;
+        public int MinSpeedDefault;
         /// <summary>
         /// Acceleration value while the player is in FastAcceleration state. This is a total value.
         /// </summary>
-        public int FastAcceleration;
+        public int FastAccelerationDefault;
         /// <summary>
         /// Will probably be handled as a Function.
         /// The rate at which the player decelerates back to his current MaxSpeed (when above that value). This value scales with CurrentSpeed as well as current MaxSpeed.
@@ -136,5 +136,32 @@ namespace PlayerStats
         /// Speedmultiplier for bumping of walls
         /// </summary>
         public float WallBumpSpeedDefault;
+
+
+        /// <summary>
+        /// DefaultStat
+        /// Default change to Top speed on LevelChange for each player regardless of Gear or Character.
+        /// Change is applied additively
+        /// </summary>
+        [Header("LevelUpChanges")]
+        public int TopSpeedLevelUp;
+        /// <summary>
+        /// DefaultStat
+        /// Default change to DriftCap on LevelChange for each player regardless of Gear or Character
+        /// Change is applied additively
+        /// </summary>
+        public int DriftCapLevelUp;
+        /// <summary>
+        /// DefaultStat
+        /// Default change to BoostDuration on LevelChange for each player regardless of Gear or Character
+        /// Change is applied additively
+        /// </summary>
+        public int BoostDuration;
+        /// <summary>
+        /// DefaultStat
+        /// Default change to RunSpeed on LevelChange for each plaer regardless of Gear or Character
+        /// Change is applied additively
+        /// </summary>
+        public int RunSpeed;
     }
 }
