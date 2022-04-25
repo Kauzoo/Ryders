@@ -29,7 +29,7 @@ namespace PlayerStats
         /// <summary>
         /// Base Value for speed loss while cornering.
         /// </summary>
-        public float corneringDeceleration;
+        public float CorneringDeceleration;
         /// <summary>
         /// Default formula to calculate Deceleration.
         /// First value is current Speed, second value is current MaxSpeed. Returns a value for Deceleration >= 0.
@@ -54,66 +54,87 @@ namespace PlayerStats
 
         [Header("Turning")]
         /// <summary>
-        /// Currently Unused
+        /// HiddenStat
+        /// This is proabaly in the og game but kinda cryptic.
+        /// Base Number affecting how fast the Board turns.
         /// </summary>
-        public float TurnAcceleration;
+        public float TurnrateDefault;
         /// <summary>
-        /// Base Number affecting how fast the Board turns
-        /// </summary>
-        public float Turnrate;
-        /// <summary>
-        /// Affects the amount of speed lost while turning. Currently unused.
-        /// </summary>
-        public float TurnSpeedLoss;
-        /// <summary>
-        /// Currently unused
-        /// </summary>
-        public float SpeedHandlingMultiplier;
-        /// <summary>
-        /// Currently unused
-        /// </summary>
-        public float TurnLowSpeedHandlingMultiplier;
-        /// <summary>
+        /// HiddenStat
         /// Curve determening the speed lost while turning, based of the current speed
         /// </summary>
-        public AnimationCurve TurnSpeedLossCurve;
-        public AnimationCurve TurnrateCurve;
+        public AnimationCurve TurnSpeedLossCurveDefault;
+        /// <summary>
+        /// HiddenStat
+        /// Determines the ratio of Turning relative to current speed.
+        /// This stat is not based of the og game afaik
+        /// </summary>
+        public AnimationCurve TurnrateCurveDefault;
 
         /// <summary>
-        /// SRDX
-        /// 
+        /// HiddenStat
+        /// Rate at which the player passively turns towards a direction while drifting
         /// </summary>
         [Header("Drift")]
-        public float DriftDashChargeDuration;
-        // public float DriftBoostSpeed;    LVL_AFFECTED
-        public float DriftTurnratePassive;
-        public float DriftTurnrateMin;
-        public float DriftTurnrate;
+        public float DriftTurnratePassiveDefault;
+        /// <summary>
+        /// HiddenStat
+        /// Minimum amount the player is able to turn while drifting
+        /// </summary>
+        public float DriftTurnrateMinDefault;
+        /// <summary>
+        /// HiddenStat
+        /// The turnrate used while drifting (if the player inputs a direction)
+        /// </summary>
+        public float DriftTurnrateDefault;
 
-        [Header("Boost")]
-        public float BoostDuration;
-        public float BoostLockTime;
-
+        /// <summary>
+        /// HiddenStat
+        /// Rate of deceleration while breakeing
+        /// </summary>
         [Header("Breake")]
-        public float BreakeDeceleration;
+        public float BreakeDecelerationDefault;
 
+
+        /// <summary>
+        /// HiddenStat
+        /// The maximum amount of speed the player hits while jumping
+        /// </summary>
         [Header("Jump")]
-        public float jumpSpeedMax;          // Controls jump speed relative to time
-        public AnimationCurve jumpAccel;    // Acceleration for a jump
-        public float jumpChargeMinSpeed;
-        public float jumpChargeDeceleration;
+        public float JumpSpeedMaxDefault;          // Controls jump speed relative to time
+        /// <summary>
+        /// HiddenStat
+        /// Controls the acceleration behaviour while jumping
+        /// </summary>
+        public AnimationCurve JumpAccelDefault;    // Acceleration for a jump
+        /// <summary>
+        /// HiddenStat
+        /// The value the player the decelerates towards while charging a jump
+        /// </summary>
+        public float JumpChargeMinSpeedDefault;
+        /// <summary>
+        /// HiddenStat
+        /// Rate of deceleration while charging jump
+        /// </summary>
+        public float JumpChargeDecelerationDefault;
 
+        /// <summary>
+        /// HiddenStat
+        /// Acceleration whith which the player falls while affected by gravity
+        /// </summary>
         [Header("Gravity")]
-        public float gravityMultiplier;
+        public float GravityMultiplierDefault;
 
+        /// <summary>
+        /// HiddenStat
+        /// Duration for which the backwards movement while bumping of a wall lasts
+        /// </summary>
         [Header("WallBump")]
-        public float wallBumpTimer;
-        public float wallBumpSpeed;
-
-        [Header("Air")]
-        public float AirGainTrick;
-        public float AirGainShortcut;
-        public float AirGainAutorotate;
-        public float JumpAirLoss;
+        public float WallBumpTimerDefault;
+        /// <summary>
+        /// HiddenStat
+        /// Speedmultiplier for bumping of walls
+        /// </summary>
+        public float WallBumpSpeedDefault;
     }
 }

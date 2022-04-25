@@ -149,11 +149,11 @@ namespace Player
             playerBehaviour.movementVars.turnrateCurve = board.movementVars.TurnrateCurve;
             playerBehaviour.movementVars.turnSpeedLossCurve = board.movementVars.TurnSpeedLossCurve;
             // Jump & Gravity
-            playerBehaviour.movementVars.jumpSpeedMax = board.movementVars.jumpSpeedMax;
-            playerBehaviour.movementVars.jumpAccel = board.movementVars.jumpAccel;
-            playerBehaviour.movementVars.jumpChargeMinSpeed = board.movementVars.jumpChargeMinSpeed;
-            playerBehaviour.movementVars.jumpChargeDeceleration = board.movementVars.jumpChargeDeceleration;
-            playerBehaviour.movementVars.gravityMultiplier = board.movementVars.gravityMultiplier;
+            playerBehaviour.movementVars.jumpSpeedMax = board.movementVars.JumpSpeedMax;
+            playerBehaviour.movementVars.jumpAccel = board.movementVars.JumpAccel;
+            playerBehaviour.movementVars.jumpChargeMinSpeed = board.movementVars.JumpChargeMinSpeed;
+            playerBehaviour.movementVars.jumpChargeDeceleration = board.movementVars.JumpChargeDeceleration;
+            playerBehaviour.movementVars.gravityMultiplier = board.movementVars.GravityMultiplier;
             // Wall Bump
             playerBehaviour.movementVars.wallBumpTimer = board.movementVars.wallBumpTimer;
             playerBehaviour.movementVars.wallBumpSpeed = board.movementVars.wallBumpSpeed;

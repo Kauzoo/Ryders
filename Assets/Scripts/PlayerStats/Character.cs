@@ -20,52 +20,11 @@ public class Character : MonoBehaviour
         public CharacterType StatsType;
         public CharacterClass CharacterClass;
 
-        public float SpeedMultiplier;
-
-        /// <summary>
-        /// CURRENTLY WIP
-        /// Determines the Players default MaxSpeed value. (Usually this will equal the players cruising speed).
-        /// Scales with Level and is additive.
-        /// </summary>
-        [Header("TopSpeed")]
-        public int TopSpeedLvl1;
-        public int TopSpeedLvl2;
-        public int TopSpeedLvl3;
-
-        /// <summary>
-        /// CURRENTLY WIP
-        /// Sewer56.SonicRiders
-        /// Determines the players base accel.
-        /// </summary>
-        [Header("Acceleration")]
-        public int AccelerationLvl1;
-        public int AccelerationLvl2;
-        public int AccelerationLvl3;
-
-        /// <summary>
-        /// CURRENTLY WIP
-        /// Sewer56.SonicRiders
-        /// Determines the players Cornering ability.
-        /// </summary>
-        [Header("Cornering")]
-        public int CorneringLvl1;
-        public int CorneringLvl2;
-        public int CorneringLvl3;
-
-        /// <summary>
-        /// CURRENTLY WIP
-        /// Sewer56.SonicRiders
-        /// Determines how much the player is affected by going Offroad. Exact workings are kinda unclear and Offroad is currently unimplemented.
-        /// </summary>
-        [Header("Offroad")]
-        public int OffroadLvl1;
-        public int OffroadLvl2;
-        public int OffroadLvl3;
-
         /// <summary>
         /// SRDX
         /// Character Based Boost Duration. Scales with Level and additively affects the Players BoostDuration.
         /// Value is orginally measured in frames. Due to variable framerate support value is measured in seconds here.
+        /// This additively stacks with the Flat additional boost frames from LevelUps (LevelUp Boost frames are seprrate from these value);
         /// </summary>
         [Header("BoostDuration")]
         public float BoostDurationLvl1;
