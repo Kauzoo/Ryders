@@ -29,7 +29,7 @@ public class Board : MonoBehaviour
         /// <summary>
         /// SRDX
         /// The Speed to which the player boosts. MaxSpeed is set to boost speed while boosting.
-        /// Stat changes with Level. Stacks additively with <see cref="Character.CharacterStatsMovement.BoostSpeed"/> from <see cref="Character"/>
+        /// Stat changes with Level. Stacks additively with <see cref="CharacterBase.CharacterStatsMovement.BoostSpeed"/> from <see cref="CharacterBase"/>
         /// </summary>
         public int BoostSpeedLvl1;
         public int BoostSpeedLvl2;

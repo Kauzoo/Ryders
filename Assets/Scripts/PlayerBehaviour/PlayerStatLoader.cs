@@ -23,10 +23,10 @@ namespace Player
             var boardList = boardListObject.GetComponent<BoardListScript>().boardPrefabList;
             var characterList = characterListObject.GetComponent<CharacterListScript>().characterPrefabList;
 
-            Character character = null;
+            CharacterBase character = null;
             foreach(GameObject characterObj in characterList)
             {
-                if(characterObj.TryGetComponent<Character>(out Character characterIter))
+                if(characterObj.TryGetComponent<CharacterBase>(out CharacterBase characterIter))
                 {
                     if(playerBehaviour.character == characterIter.character)
                     {
@@ -131,8 +131,8 @@ namespace Player
             // Speed
             playerBehaviour.movementVars.MinSpeed = board.movementVars.MinSpeed;
             playerBehaviour.movementVars.FastAcceleration = board.movementVars.FastAcceleration;
-            playerBehaviour.movementVars.deceleration = board.movementVars.deceleration;
-            playerBehaviour.movementVars.corneringDeceleration = board.movementVars.corneringDeceleration;
+            playerBehaviour.movementVars.Deceleration = board.movementVars.deceleration;
+            playerBehaviour.movementVars.CorneringDeceleration = board.movementVars.corneringDeceleration;
             // Boost
             playerBehaviour.movementVars.boostDuration = board.movementVars.BoostDuration;
             playerBehaviour.movementVars.boostLockTime = board.movementVars.BoostLockTime;
@@ -144,7 +144,7 @@ namespace Player
             playerBehaviour.movementVars.driftTurnrateMin = board.movementVars.DriftTurnrateMin;
             playerBehaviour.movementVars.driftTurnrate = board.movementVars.DriftTurnrate;
             // Cornering
-            playerBehaviour.movementVars.lowSpeedTurnMultiplier = board.movementVars.TurnLowSpeedHandlingMultiplier;
+            playerBehaviour.movementVars.LowSpeedTurnMultiplier = board.movementVars.TurnLowSpeedHandlingMultiplier;
             playerBehaviour.movementVars.highSpeedTurnMultiplier = board.movementVars.SpeedHandlingMultiplier;
             playerBehaviour.movementVars.turnrateCurve = board.movementVars.TurnrateCurve;
             playerBehaviour.movementVars.turnSpeedLossCurve = board.movementVars.TurnSpeedLossCurve;

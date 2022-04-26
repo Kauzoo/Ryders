@@ -41,23 +41,30 @@ namespace Player
 
         /// <summary>
         /// Contains all movement related vars
-        /// Values are loaded in from a combination of player and gear
+        /// Values are loaded in from a combination of player and gear (and potentially default values)
         /// Can be updated to refelect level changes
+        /// Stat laoding is done in player stat loader
         /// </summary>
         [System.Serializable]
         public class MovementVars
         {
+            /**
+             * 
+             */
+            public Func<float, float> DecelTest;
+
+
             [Header("Speed")]
             public int MinSpeed;            // Speed threshold for fast accel
             public int FastAcceleration;
-            public int Acceleration;        // LVL_AFFECTED
+            public int Acceleration;        // Might be lvl affected but is not in the SRDX datasheets
             /// <summary>
             /// LVL_AFFECTED
             /// basically the players cruising speed
             /// </summary>
             public int TopSpeed;        // LVL_AFFECTED
-            public float deceleration;
-            public float corneringDeceleration;
+            public float Deceleration;
+            public float CorneringDeceleration;
             [Header("Boost")]
             public float BoostSpeed;        // LVL_AFFECTED | Speed to which the player is set while boosting
             public float boostDuration;     // How long the boost lasts
@@ -71,7 +78,7 @@ namespace Player
             public float driftTurnrateMin;      // Minimum amount the player turn while drifting
             public float driftTurnrate;         // maximum rate at which the player can turn while drifting
             [Header("Cornering")]
-            public float lowSpeedTurnMultiplier;    // currently unused
+            public float LowSpeedTurnMultiplier;    // currently unused
             public float highSpeedTurnMultiplier;   // currently unused
             public float turnrate;                  // LVL_AFFECTED
             public AnimationCurve turnrateCurve;    // Determines how your ability to turn is affected by speed
@@ -102,29 +109,6 @@ namespace Player
             public float AirGainShortcut;
             public float AirGainAutorotate;
             public float JumpAirLoss;
-        }
-
-        /// <summary>
-        /// Container for stats that are affected by level
-        /// </summary>
-        [System.Serializable]
-        public class LevelStats
-        {
-            [Header("Speed")]
-            public int acceleration;        // LVL_AFFECTED
-            public int cruisingSpeed;       // LVL_AFFECTED
-            [Header("Boost")]
-            public float boostSpeed;
-            [Header("Drift")]
-            public float driftBoostSpeed;
-            [Header("Cornering")]
-            public float turnrate;
-            [Header("Air")]
-            public int maxAir;                  // LVL_AFFECTED
-            public int passiveAirDrain;         // LVL_AFFECTED
-            public int driftAirCost;            // LVL_AFFECTED
-            public int boostCost;               // LVL_AFFECTED
-            public int tornadoCost;             // LVL_AFFECTED
         }
 
         [System.Serializable]
@@ -212,9 +196,6 @@ namespace Player
         // Variable storage for calcs
         public MovementVars movementVars = new MovementVars();
         public FuelVars airVars = new FuelVars();
-        public LevelStats statsLevel1 = new LevelStats();
-        public LevelStats statsLevel2 = new LevelStats();
-        public LevelStats statsLevel3 = new LevelStats();
         
         // Activly changing
         public Movement movement = new Movement();
@@ -490,7 +471,7 @@ namespace Player
             {
                 if (movement.speed > movementVars.TopSpeed)
                 {
-                    movement.speed = movement.speed - movementVars.deceleration;
+                    movement.speed = movement.speed - movementVars.Deceleration;
                 }
             }
 
@@ -554,7 +535,7 @@ namespace Player
                 // Cornering | Calculate TurnAccel for the frame
                 if (movement.corneringStates == Movement.CorneringStates.Turning)
                 {
-                    movement.speed = movement.speed - (movementVars.turnSpeedLossCurve.Evaluate(movement.speed / 10) * Mathf.Abs(inputVars.horizontalAxis) * movementVars.corneringDeceleration);
+                    movement.speed = movement.speed - (movementVars.turnSpeedLossCurve.Evaluate(movement.speed / 10) * Mathf.Abs(inputVars.horizontalAxis) * movementVars.CorneringDeceleration);
                     //movement.turnAccel = (movementVars.test.Evaluate(movement.speed / 10) * Mathf.Abs(standardInputVars.sidewaysAxis) * movementVars.corneringDeceleration) * (-1);
                 }
                 // Regular Accel
