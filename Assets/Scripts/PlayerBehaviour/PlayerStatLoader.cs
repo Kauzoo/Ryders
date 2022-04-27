@@ -12,6 +12,7 @@ namespace Player
 
         public void LoadStats(PlayerBehaviour playerBehaviour)
         {
+            /*
             if(playerBehaviour == null)
             {
                 Debug.LogError("dafuq");
@@ -70,7 +71,7 @@ namespace Player
             // Load into Level stat first
             /*
              * LEVEL 1
-             */
+             *
             // Speed
             playerBehaviour.statsLevel1.acceleration = character.characterStatsMovement.AccelerationLvl1;
             playerBehaviour.statsLevel1.cruisingSpeed = character.characterStatsMovement.TopSpeedLvl1;
@@ -89,7 +90,7 @@ namespace Player
 
             /*
              * LEVEL 2
-             */
+             *
             // Speed
             playerBehaviour.statsLevel2.acceleration = character.characterStatsMovement.AccelerationLvl2;
             playerBehaviour.statsLevel2.cruisingSpeed = character.characterStatsMovement.TopSpeedLvl2;
@@ -108,7 +109,7 @@ namespace Player
 
             /*
              * LEVEL 3
-             */
+             *
             // Speed
             playerBehaviour.statsLevel3.acceleration = character.characterStatsMovement.AccelerationLvl3;
             playerBehaviour.statsLevel3.cruisingSpeed = character.characterStatsMovement.TopSpeedLvl3;
@@ -127,7 +128,7 @@ namespace Player
 
             /*
              * OTHER
-             */
+             *
             // Speed
             playerBehaviour.movementVars.MinSpeed = board.movementVars.MinSpeed;
             playerBehaviour.movementVars.FastAcceleration = board.movementVars.FastAcceleration;
@@ -162,8 +163,9 @@ namespace Player
             playerBehaviour.airVars.AirGainShortcut = board.movementVars.AirGainShortcut;
             playerBehaviour.airVars.AirGainAutorotate = board.movementVars.AirGainAutorotate;
             playerBehaviour.airVars.JumpAirLoss = board.movementVars.JumpAirLoss;
+            */
 
-
+            throw new System.NotImplementedException();
         }
     }
 }
