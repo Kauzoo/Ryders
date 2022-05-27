@@ -19,10 +19,9 @@ namespace Ryders.Core.Player
             base.UpdateBase();
         }
 
-        public override void MasterMove()
+        private void FixedUpdate()
         {
-            base.MasterMove();
-            playerTransform.Translate(new Vector3(0, 1, 0), Space.World);
+            base.FixedUpdateBase();
         }
     }
 }

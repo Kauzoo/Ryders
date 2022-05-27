@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99935625ae081444282d88a355ab7f18, type: 3}
   m_Name: DefaultPlayerStats
   m_EditorClassIdentifier: 
-  MinSpeedDefault: 0
+  MinSpeedDefault: 130
   FastAccelerationDefault: 0
   Deceleration: 0
   CorneringDeceleration: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   GravityMultiplierDefault: 0
   WallBumpTimerDefault: 0
   WallBumpSpeedDefault: 0
-  TopSpeedLevelUp: 0
-  DriftCapLevelUp: 0
-  BoostDuration: 0
-  RunSpeed: 0
+  TopSpeedLevelUp: 13
+  DriftCapLevelUp: 10
+  BoostDuration: 30
+  RunSpeed: 10
