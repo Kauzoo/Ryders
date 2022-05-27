@@ -8,6 +8,7 @@ namespace Ryders.Core.Player
     /// <summary>
     /// Contains Default Values for all stats that are not usually affected by Character or Board.
     /// </summary>
+    [CreateAssetMenu(fileName = "DefaultPlayerStats", menuName = "ScriptableObjects/DefaultPlayerStats", order = 1)]
     public class DefaultPlayerStats : ScriptableObject
     {
 

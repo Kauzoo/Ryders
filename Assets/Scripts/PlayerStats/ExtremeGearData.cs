@@ -21,6 +21,7 @@ namespace Ryders.Core.Player.ExtremeGear
         Standard, Cruising, HighBoosting, Combat, Drift, Special
     }
 
+    [CreateAssetMenu(fileName = "ExtremeGearData", menuName = "ScriptableObjects/ExtremeGearData", order = 1)]
     public class ExtremeGearData : ScriptableObject
     {
         /**
