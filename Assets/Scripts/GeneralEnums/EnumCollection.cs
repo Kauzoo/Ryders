@@ -24,15 +24,6 @@ namespace Enums
         BlueStar, RedRock
     }
 
-    public enum CharacterType
-    {
-        Speed, Power, Fly
-    }
-
-    public enum CharacterClass
-    {
-        LateBoost, TopSpeed, Combat, Drift, AllRound, Omni
-    }
 
     public enum FuelType
     {

@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace PlayerStats
+namespace Ryders.Core.Player
 {
     /// <summary>
     /// Contains Default Values for all stats that are not usually affected by Character or Board.
     /// </summary>
-    public class DefaultPlayerStats : MonoBehaviour
+    public class DefaultPlayerStats : ScriptableObject
     {
 
         /// <summary>
