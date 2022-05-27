@@ -5,11 +5,12 @@ using Player;
 
 public class JumpOffAreaHandler : MonoBehaviour
 {
-    public RampJumpBehaviour rampJump;
+    //public RampJumpBehaviour rampJump;
 
     /**
      * States
      */
+    /*
     public bool charging = false;
     public bool chargeRelease = false;
 
@@ -40,7 +41,9 @@ public class JumpOffAreaHandler : MonoBehaviour
             }
         }
     }
+    */
 
+    /*
     public void OnTriggerStay(Collider other)
     {
         if(other.gameObject.tag == "Player")
@@ -60,6 +63,7 @@ public class JumpOffAreaHandler : MonoBehaviour
                     /*
                      * Jump now
                      */
+    /*
                     float jumpChargeDuration = playerBehaviour.movement.jumpChargeDuration;
                     RampJumpBehaviour.JumpDirection jumpDirection;
                     if (playerBehaviour.inputVars.verticalAxis > 0.2f)
@@ -75,4 +79,5 @@ public class JumpOffAreaHandler : MonoBehaviour
             }
         }
     }
+    */
 }

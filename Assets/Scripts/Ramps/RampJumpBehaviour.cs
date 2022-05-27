@@ -5,40 +5,50 @@ using Player;
 
 public class RampJumpBehaviour : MonoBehaviour
 {
+    
     /**
      * Settings
      */
+    /*
     public AnimationCurve baseJumpArc;      // Jump arc is parabola shaped
     public float rotMul;
+    */
 
     /**
      * Static Requirements
      */
+    /*
     public GameObject targetArea;
     public GameObject jumpOffArea;
     public GameObject jumpCamera;
     public GameObject mainCamera;
+    */
 
     /**
      * Vars
      */
+    /*
     public GameObject player;
-    public PlayerBehaviour playerBehaviour;
+    //public PlayerBehaviour playerBehaviour;
     public Transform visualPlayer;
     public float jumpChargeDuration;
     public JumpDirection jumpDirection;
     public Vector3 startPoint;  // start point in local space
     public Vector3 endPoint;    // end point in local space
     public bool jumping = false;
+    */
 
     /**
      * Testing
      */
+    /*
     public GameObject testObject;
     public float speed;
     public float currentSpeed;
+    */
 
 
+    /*
     // enums
     public enum JumpDirection
     {
@@ -71,7 +81,9 @@ public class RampJumpBehaviour : MonoBehaviour
         visualPlayer.Rotate(new Vector3(0, Input.GetAxis("Horizontal") * Time.deltaTime * rotMul, 0), Space.Self);
         Debug.Log("tets");
     }
+    */
 
+    /*
     public void DoJump(GameObject player, PlayerBehaviour playerBehaviour, float jumpChargeDuration, JumpDirection jumpDirection)
     {
         jumping = true;
@@ -90,6 +102,7 @@ public class RampJumpBehaviour : MonoBehaviour
         
         DetermineJumpCurve();
     }
+    */
 
     /**
      * Jump parameters
@@ -97,6 +110,7 @@ public class RampJumpBehaviour : MonoBehaviour
      *  
      *  -Precompute a function, which is used as the flight arc (parabola)
      */
+    /*
     public void DetermineJumpCurve()
     {
         GetStartPoint();
@@ -136,4 +150,5 @@ public class RampJumpBehaviour : MonoBehaviour
         endPoint = targetArea.transform.localPosition;
     }
     #endregion
+    */
 }

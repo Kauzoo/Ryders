@@ -20,7 +20,7 @@ namespace Player
         public Enums.Player playerPort;    // Needs to set before startup
         private InputHandler inputHandler;
         public InputHandler.PlayerInput inputVars;
-        private PlayerStatLoader playerStatLoader;
+        //private PlayerStatLoader playerStatLoader;
 
         public Enums.Character character;                 // Needs to set before startup
         public Enums.Board board;                         // Needs to set before startup
@@ -233,7 +233,7 @@ namespace Player
                     break;
             }
 
-            playerStatLoader = gameObject.GetComponent<PlayerStatLoader>();
+            //playerStatLoader = gameObject.GetComponent<PlayerStatLoader>();
 
             //playerStatLoader.LoadStats(this);
 
