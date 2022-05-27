@@ -579,11 +579,47 @@ MonoBehaviour:
   playerRigidbody: {fileID: 1899534166}
   speedStats:
     TopSpeed: 0
+    MinSpeed: 0
+    FastAccelleration: 0
     BoostSpeed: 0
     BoostChainModifier: 0
+    BreakeDecelleration: 0
     DriftDashSpeed: 0
     DriftCap: 0
     DriftDashFrames: 0
+    TurnSpeedLoss:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    JumpChargeMinSpeed: 0
+    JumpChargeDecelleration: 0
+  turnStats:
+    Turnrate: 0
+    TurnSpeedLossCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    TurnrateCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    DriftTurnratePassive: 0
+    DriftTurnrateMin: 0
+    DriftTurnrate: 0
+  jumpStats:
+    JumpSpeedMax: 0
+    JumpAccelleration:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   fuelStats:
     FuelType: 0
     JumpChargeMultiplier: 0
@@ -595,10 +631,29 @@ MonoBehaviour:
     BoostCost: 0
     DriftCost: 0
     TorandoCost: 0
-  MinSpeed: 0
-  FastAcceleration: 0
-  Turnrate: 0
-  Level: 1
+  movement:
+    Speed: 0
+    MaxSpeed: 0
+    BoostTimer: 0
+    BoostLockTimer: 0
+    Rotation: 0
+    TurningRaw: 0
+    Turning: 0
+    DriftTurning: 0
+    DriftTimer: 0
+    JumpChargeDuration: 0
+    JumpSpeed: 0
+    JumpAccelleration: 0
+    Gravity: 0
+    Grounded: 0
+    TranslationState: 0
+    CorneringState: 0
+    JumpState: 0
+    BoostState: 0
+  fuel:
+    CurrentFuel: 0
+    Level: 1
+    Rings: 0
 --- !u!136 &1899534162
 CapsuleCollider:
   m_ObjectHideFlags: 0

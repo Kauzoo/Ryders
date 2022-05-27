@@ -29,7 +29,7 @@ MonoBehaviour:
     DriftDashSpeedLvl3: 100
     DriftCap: 250
     DriftDashChargeDuration: 60
-    MinSpeed: 0
+    MinSpeed: 130
     FastAcceleration: 0
     Turnrate: 0
     TurnSpeedLossCurve:
@@ -63,21 +63,21 @@ MonoBehaviour:
   fuelVars:
     Fuel: 0
     JumpChargeMultiplier: 2
-    TrickFuelGain: 0
-    TypeFuelGain: 0
-    QTEFuelGain: 0
-    PassiveDrainLvl1: 0
-    PassiveDrainLvl2: 0
-    PassiveDrainLvl3: 0
-    FuelTankSizeLevel1: 0
-    FuelTankSizeLevel2: 0
-    FuelTankSizeLevel3: 0
-    BoostCostLvl1: 0
-    BoostCostLvl2: 0
-    BoostCostLvl3: 0
-    DriftCostLvl1: 0
-    DriftCostLvl2: 0
-    DriftCostLvl3: 0
-    TornadoCostLvl1: 0
-    TornadoCostLvl2: 0
-    TornadoCostLvl3: 0
+    TrickFuelGain: 1
+    TypeFuelGain: 1
+    QTEFuelGain: 1
+    PassiveDrainLvl1: 0.96
+    PassiveDrainLvl2: 0.96
+    PassiveDrainLvl3: 0.96
+    FuelTankSizeLevel1: 100
+    FuelTankSizeLevel2: 150
+    FuelTankSizeLevel3: 200
+    BoostCostLvl1: 25
+    BoostCostLvl2: 30
+    BoostCostLvl3: 40
+    DriftCostLvl1: 10
+    DriftCostLvl2: 15
+    DriftCostLvl3: 20
+    TornadoCostLvl1: 25
+    TornadoCostLvl2: 30
+    TornadoCostLvl3: 30
