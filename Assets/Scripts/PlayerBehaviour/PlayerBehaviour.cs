@@ -30,30 +30,47 @@ namespace Ryders.Core.Player.ExtremeGear
          * These values only change on level change
          */
         // SPEED STATS
-        [Header("Speed Stats")]
-        public float TopSpeed;
-        /// <summary>
-        /// Affected by Level (<see cref="ExtremeGear.ExtremeGearData"/>).
-        /// BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.BoostSpeedLvl
-        /// </summary>
-        public float BoostSpeed;
-        public float BoostChainModifier;
-        public float DriftDashSpeed;
-        public float DriftCap;
-        public float DriftDashFrames;
+        [System.Serializable]
+        public class SpeedStats
+        {
+            [Header("Speed")]
+            public float TopSpeed;
+            /// <summary>
+            /// Affected by Level (<see cref="ExtremeGear.ExtremeGearData"/>).
+            /// BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.BoostSpeedLvl
+            /// </summary>
+            [Header("Boost")]
+            public float BoostSpeed;
+            public float BoostChainModifier;
+            [Header("Drift")]
+            public float DriftDashSpeed;
+            public float DriftCap;
+            public float DriftDashFrames;
+        }
+        public SpeedStats speedStats = new SpeedStats();
 
         // FUEL STATS
-        [Header("Fuel Stats")]
-        public FuelType FuelType;
-        public float JumpChargeMultiplier;
-        public float TrickFuelGain;
-        public float TypeFuelGain;
-        public float QTEFuelGain;
-        public float PassiveDrain;
-        public float TankSize;
-        public float BoostCost;
-        public float DriftCost;
-        public float TorandoCost;
+        [System.Serializable]
+        public class FuelStats
+        {
+            [Header("Fuel Stats")]
+            public FuelType FuelType;
+            public float JumpChargeMultiplier;
+            public float TrickFuelGain;
+            public float TypeFuelGain;
+            public float QTEFuelGain;
+            public float PassiveDrain;
+            public float TankSize;
+            public float BoostCost;
+            public float DriftCost;
+            public float TorandoCost;
+        }
+        public FuelStats fuelStats = new FuelStats();
+
+        // HIDDEN STATS
+        public float MinSpeed;
+        public float FastAcceleration;
+        public float Turnrate;
 
         /**
          * CHANGABLE VARS
@@ -75,7 +92,6 @@ namespace Ryders.Core.Player.ExtremeGear
         // Write everything that is supposed to be in Update in here
         public virtual void UpdateBase()
         {
-            MasterMove();
             LoadStats(Level);
         }
 
@@ -100,7 +116,7 @@ namespace Ryders.Core.Player.ExtremeGear
         /// </summary>
         public virtual void LoadTopSpeed(int level)
         {
-            TopSpeed = (DefaultPlayerStats.TopSpeedLevelUp * level) + CharacterData.TopSpeed + ExtremeGearData.movementVars.TopSpeed;
+            speedStats.TopSpeed = (DefaultPlayerStats.TopSpeedLevelUp * level) + CharacterData.TopSpeed + ExtremeGearData.movementVars.TopSpeed;
         }
 
         /// <summary>
@@ -114,13 +130,13 @@ namespace Ryders.Core.Player.ExtremeGear
             switch(level)
             {
                 case 1:
-                    BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.movementVars.BoostSpeedLvl1;
+                    speedStats.BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.movementVars.BoostSpeedLvl1;
                     break;
                 case 2:
-                    BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.movementVars.BoostSpeedLvl2;
+                    speedStats.BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.movementVars.BoostSpeedLvl2;
                     break;
                 case 3:
-                    BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.movementVars.BoostSpeedLvl3;
+                    speedStats.BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.movementVars.BoostSpeedLvl3;
                     break;
                 default:
                     throw new System.NotImplementedException("Invalid Level");
@@ -134,7 +150,7 @@ namespace Ryders.Core.Player.ExtremeGear
         /// <param name="level"></param>
         public virtual void LoadBoostChainModifier()
         {
-            BoostChainModifier = CharacterData.BoostChainModifier + ExtremeGearData.movementVars.BoostChainModifier;
+            speedStats.BoostChainModifier = CharacterData.BoostChainModifier + ExtremeGearData.movementVars.BoostChainModifier;
         }
 
         /// <summary>
@@ -147,13 +163,13 @@ namespace Ryders.Core.Player.ExtremeGear
             switch(level)
             {
                 case 1:
-                    DriftDashSpeed = CharacterData.Drift + ExtremeGearData.movementVars.DriftDashSpeedLvl1;
+                    speedStats.DriftDashSpeed = CharacterData.Drift + ExtremeGearData.movementVars.DriftDashSpeedLvl1;
                     break;
                 case 2:
-                    DriftDashSpeed = CharacterData.Drift + ExtremeGearData.movementVars.DriftDashSpeedLvl2;
+                    speedStats.DriftDashSpeed = CharacterData.Drift + ExtremeGearData.movementVars.DriftDashSpeedLvl2;
                     break;
                 case 3:
-                    DriftDashSpeed = CharacterData.Drift + ExtremeGearData.movementVars.DriftDashSpeedLvl3;
+                    speedStats.DriftDashSpeed = CharacterData.Drift + ExtremeGearData.movementVars.DriftDashSpeedLvl3;
                     break;
                 default:
                     throw new System.NotImplementedException("Invalid Level");
@@ -163,21 +179,48 @@ namespace Ryders.Core.Player.ExtremeGear
 
         public virtual void LoadDriftCap(int level)
         {
-            DriftCap = (DefaultPlayerStats.DriftCapLevelUp * level) + CharacterData.Drift + ExtremeGearData.movementVars.DriftCap;
+            speedStats.DriftCap = (DefaultPlayerStats.DriftCapLevelUp * level) + CharacterData.Drift + ExtremeGearData.movementVars.DriftCap;
         }
 
         public virtual void LoadDrifDashFrames()
         {
-            DriftDashFrames = ExtremeGearData.movementVars.DriftDashChargeDuration;
+            speedStats.DriftDashFrames = ExtremeGearData.movementVars.DriftDashChargeDuration;
         }
         #endregion
 
         /// <summary>
-        /// MasterMethod for Movement. Here the player is actually moved.
+        /// MasterMethod for Movement. Orientation and Position are updated here.
         /// </summary>
-        public virtual void MasterMove()
+        public virtual void MasterMove(Quaternion orientation, Vector3 forwardVector, Vector3 gravityVector, Vector3 jumpVector)
         {
-            playerTransform.Translate(new Vector3(1, 0, 0), Space.World);
+            playerRigidbody.rotation = orientation;
+            playerRigidbody.velocity = forwardVector + gravityVector + jumpVector;
+        }
+
+        /// <summary>
+        /// Calculate the speed value that is multiplied with the playerTransform forwardVector and then applied to tge playerRigidbody velocity
+        /// </summary>
+        public virtual void CalculateSpeed()
+        {
+
+        }
+
+        /// <summary>
+        /// Calculate the rotation Quaternion that is applied to the playerRigidbody
+        /// </summary>
+        public virtual void CalculateOrientation()
+        {
+
+        }
+
+        public virtual void CalculateJumpVector()
+        {
+
+        }
+
+        public virtual void CalculateGravityVector()
+        {
+
         }
 
         public virtual void Drift()
