@@ -27,8 +27,10 @@ namespace Ryders.Core.Player.ExtremeGear
 
         /**
          * STATIC VARS
+         * These values only change on level change
          */
         // SPEED STATS
+        [Header("Speed Stats")]
         public float TopSpeed;
         /// <summary>
         /// Affected by Level (<see cref="ExtremeGear.ExtremeGearData"/>).
@@ -41,7 +43,17 @@ namespace Ryders.Core.Player.ExtremeGear
         public float DriftDashFrames;
 
         // FUEL STATS
-
+        [Header("Fuel Stats")]
+        public FuelType FuelType;
+        public float JumpChargeMultiplier;
+        public float TrickFuelGain;
+        public float TypeFuelGain;
+        public float QTEFuelGain;
+        public float PassiveDrain;
+        public float TankSize;
+        public float BoostCost;
+        public float DriftCost;
+        public float TorandoCost;
 
         /**
          * CHANGABLE VARS

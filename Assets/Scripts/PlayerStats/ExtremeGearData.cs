@@ -21,6 +21,11 @@ namespace Ryders.Core.Player.ExtremeGear
         Standard, Cruising, HighBoosting, Combat, Drift, Special
     }
 
+    public enum FuelType
+    {
+        Air, Ring
+    }
+
     [CreateAssetMenu(fileName = "ExtremeGearData", menuName = "ScriptableObjects/ExtremeGearData", order = 1)]
     public class ExtremeGearData : ScriptableObject
     {
@@ -197,7 +202,7 @@ namespace Ryders.Core.Player.ExtremeGear
             /// SRDX
             /// Determines the type of Fuel used by a gear
             /// </summary>
-            public Enums.FuelType Fuel;
+            public FuelType Fuel;
             /// <summary>
             /// SRDX
             /// Multiplier to PassiveAirDrain while charging jump
@@ -272,6 +277,7 @@ namespace Ryders.Core.Player.ExtremeGear
 
         }
 
+        public BasicInfo basicInfo = new BasicInfo();
         public MovementVars movementVars = new MovementVars();
         public FuelVars fuelVars = new FuelVars();
     }

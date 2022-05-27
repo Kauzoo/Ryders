@@ -25,8 +25,5 @@ namespace Enums
     }
 
 
-    public enum FuelType
-    {
-        Air, Ring
-    }
+
 }
