@@ -16,6 +16,9 @@ namespace Player
     /// </summary>
     public class PlayerBehaviour : PlayerBehaviourBase
     {
-
+        private new void Update()
+        {
+            base.Update();
+        }
     }
 }

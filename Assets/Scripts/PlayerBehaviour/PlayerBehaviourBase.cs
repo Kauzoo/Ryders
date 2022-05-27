@@ -241,7 +241,7 @@ namespace Player
         }
 
         // Update is called once per frame
-        void Update()
+        public void Update()
         {
             EnableConstantStatReload();
             if (!movement.overrideControl)
