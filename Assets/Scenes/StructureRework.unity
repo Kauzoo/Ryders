@@ -572,7 +572,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   InputModule: {fileID: 0}
-  CharacterData: {fileID: 11400000, guid: a09c7817e4d5c664195e65f3249d406e, type: 2}
+  CharacterData: {fileID: 11400000, guid: 4e385a1055e3ad94aa8485b23e6d8f76, type: 2}
   DefaultPlayerStats: {fileID: 11400000, guid: 691ccab9c0c54a941afcb502a198639a, type: 2}
   ExtremeGearData: {fileID: 11400000, guid: 7a52960fbfdffa94d983196b8e4761d2, type: 2}
   playerTransform: {fileID: 1899534165}

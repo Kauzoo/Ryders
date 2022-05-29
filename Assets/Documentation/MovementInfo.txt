@@ -1,0 +1,47 @@
+Acerleration:
+
+
+Deceleration:
+
+
+MaxSpeed:
+If you are above or below your max speed, you begin to acclerate/decelerate back to it. Max speed depends on the state you are in. The rate of accel/decel depends on how great the difference is between your current and max speed.
+While cruising: Max Speed = Top Speed
+While boosting: Max Speed = Boost Speed
+While riding turbulence: Max Speed = 250 + bonuses from twirl and turbulence tricks
+While Flying: Max Speed = Top Speed (You will still decel below Top Speed but higher top speed results in lower decel)
+While Falling: Max Speed= Top Speed
+
+Speed:
+The Speed at which the player is currently moving. (Meters/Second according to dev but seems to be km/h)
+
+TopSpeed:
+This value is determined by a combination of character and gear. This will usually be used as the MaxSpeed value.
+
+
+BOOSTING
+
+Boost:
+Speed is set to BoostSpeed. MaxSpeed is set to BoostSpeed. Player enters BoostState (Duration is based of BoostDuration).
+
+BoostSpeed:
+Value used for MaxSpeed while boosting.
+
+BoostState:
+Duration is based of BoostDuration. Player can not extend BoostState / reenter it while in BoostState. BoostState can be extied by:
+a) After passing the BoostDuration
+b) Charging Jump
+c) Becoming Airborne
+
+
+
+Cruising:
+Default state.
+
+
+
+Translation:
+
+
+Accel & Decell:
+-Values for Acel and Decel depent on MaxSpeed

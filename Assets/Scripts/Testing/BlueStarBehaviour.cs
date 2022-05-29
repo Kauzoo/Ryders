@@ -17,6 +17,7 @@ namespace Ryders.Core.Player
         void Update() 
         {
             base.UpdateBase();
+            
         }
 
         private void FixedUpdate()
