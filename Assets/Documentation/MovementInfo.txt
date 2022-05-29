@@ -1,7 +1,21 @@
-Acerleration:
+Aceleration:
+Rate at which player acels towards the current MaxSpeed. Rate might be based of the difference between current speed and MaxSpeed.
+Acceleration gets cancled when turning.
+
+FastAccel:
+Increased Accel when below the Fast Accel Threshhold. Does not get cancled by turning.
 
 
-Deceleration:
+
+Deceleration (MaxSpeed):
+The rate at which you decelerate back to your current maximum speed when above that value. This rate increases with your current maximum speed. 
+Formula: 
+Max Speed > 200: Speed loss per frame = ( (Overmax Speed / 60 )^2 +0.2)/1000
+Max Speed < 200: Speed loss per frame = (( Overmax Speed / (260 - Max Speed) )^2 +0.2 )/1000
+Overmax Speed = Speed - MaxSpeed (while Speed > MaxSpeed)
+Example: High Booster with Sonic has 157 top speed at level 1, and 183 top speed at level 3, therefore it decelerates faster at level 3 while cruising. 
+However at all levels, its boost speed is above 200, so it always decelerates at the same rate while boosting regardless of level.
+Decel is capped at 10 per frame.
 
 
 MaxSpeed:
@@ -17,6 +31,9 @@ The Speed at which the player is currently moving. (Meters/Second according to d
 
 TopSpeed:
 This value is determined by a combination of character and gear. This will usually be used as the MaxSpeed value.
+
+Drift(State):
+Disables most kinds of Accel (including FastAccel), but also does not inherrently contribute Decel (regular Decel still applies). When the player Turns(Input) in the DriftDirection regular TurnDecel gets applied. 
 
 
 BOOSTING

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Ryders.Core.Player.Character;
+using Ryders.Core.Player.ExtremeGear.Movement;
 
 namespace Ryders.Core.Player.ExtremeGear
 {
@@ -119,26 +120,13 @@ namespace Ryders.Core.Player.ExtremeGear
         [System.Serializable]
         public class Movement
         {
-            public enum TranslationStates
-            {
-                Stationary, LowSpeed, HighSpeed
-            }
-            public enum CorneringStates
-            {
-                None, Turning, DriftingL, DriftingR, Breaking
-            }
-            public enum JumpStates
-            {
-                None, JumpCharging, Jumping, JumpLanding
-            }
-            public enum BoostStates
-            {
-                None, Boost, Boosting, BoostLock
-            }
-
             [Header("Speed")]
             public float Speed;
             public float MaxSpeed;
+
+            [Header("Acceleration")] 
+            public float Acceleration;  // The sum of all acceleration effects
+            public float Deceleration;  // The sum of all decelerations
 
             [Header("Boost")]
             public float BoostTimer;
@@ -155,6 +143,7 @@ namespace Ryders.Core.Player.ExtremeGear
 
             [Header("Jump")]
             public float JumpChargeDuration;
+            public float JumpCharge;
             public float JumpSpeed;
             public float JumpAccelleration;
 
@@ -164,9 +153,11 @@ namespace Ryders.Core.Player.ExtremeGear
             [Header("MovementStates")]
             public bool Grounded;
             public TranslationStates TranslationState = TranslationStates.Stationary;
-            public CorneringStates CorneringState = CorneringStates.None;
+            public DriftStates DriftState = DriftStates.None;
             public JumpStates JumpState = JumpStates.None;
-            public BoostStates BoostState = BoostStates.None;
+            public CorneringStates CorneringState = CorneringStates.None;
+            public SpeedStates SpeedState = SpeedStates.LowSpeed;
+            public GroundedStates GroundedState = GroundedStates.None;
         }
         public Movement movement = new Movement();
 
@@ -399,7 +390,7 @@ namespace Ryders.Core.Player.ExtremeGear
         }
         #endregion
 
-        #region 
+        #region StateDetermination
         public virtual void DetermineStates()
         {
 
@@ -418,10 +409,19 @@ namespace Ryders.Core.Player.ExtremeGear
 
         /// <summary>
         /// Calculate the speed value that is multiplied with the playerTransform forwardVector and then applied to tge playerRigidbody velocity
+        /// This method takes Accel and Decel into account
         /// </summary>
         public virtual void CalculateSpeed()
         {
+            
+        }
 
+        /// <summary>
+        /// Determine the current value for MaxSpeed, based of the TranslationState
+        /// </summary>
+        public virtual float DetermineMaxSpeed()
+        {
+            return movement.TranslationState == TranslationStates.Boosting ? speedStats.BoostSpeed : speedStats.TopSpeed;
         }
 
         /// <summary>
@@ -429,7 +429,7 @@ namespace Ryders.Core.Player.ExtremeGear
         /// </summary>
         public virtual void CalculateOrientation()
         {
-
+            
         }
 
         public virtual void CalculateJumpVector()
@@ -495,5 +495,33 @@ namespace Ryders.Core.Player.ExtremeGear
         }
         #endregion
 
+    }
+}
+
+namespace Ryders.Core.Player.ExtremeGear.Movement
+{
+    public enum TranslationStates
+    {
+        Stationary, Cruising, Boosting
+    }
+    public enum SpeedStates
+    {
+        LowSpeed, HighSpeed
+    }
+    public enum DriftStates
+    {
+        None, DriftingL, DriftingR
+    }
+    public enum JumpStates
+    {
+        None, JumpCharging, Jumping, JumpLanding
+    }
+    public enum CorneringStates
+    {
+        None, TurningL, TurningR
+    }
+    public enum GroundedStates
+    {
+        None, Grounded
     }
 }
