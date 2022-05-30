@@ -39,6 +39,7 @@ namespace Ryders.Core.Player.ExtremeGear
             public float TopSpeed;
             [Header("Accelleration")]
             public float MinSpeed;
+            public float Acceleration;
             public float FastAccelleration;
             /// <summary>
             /// Affected by Level (<see cref="ExtremeGear.ExtremeGearData"/>).
@@ -64,7 +65,7 @@ namespace Ryders.Core.Player.ExtremeGear
             public float JumpChargeMinSpeed;
             public float JumpChargeDecelleration;
         }
-        public SpeedStats speedStats = new SpeedStats();
+        public SpeedStats speedStats = new();
 
         // TURN STATS
         /// <summary>
@@ -83,7 +84,7 @@ namespace Ryders.Core.Player.ExtremeGear
             public float DriftTurnrateMin;
             public float DriftTurnrate;
         }
-        public TurnStats turnStats = new TurnStats();
+        public TurnStats turnStats = new();
 
         [System.Serializable]
         public class JumpStats
@@ -91,7 +92,7 @@ namespace Ryders.Core.Player.ExtremeGear
             public float JumpSpeedMax;
             public AnimationCurve JumpAccelleration;
         }
-        public JumpStats jumpStats = new JumpStats();
+        public JumpStats jumpStats = new();
 
         // FUEL STATS
         [System.Serializable]
@@ -109,7 +110,7 @@ namespace Ryders.Core.Player.ExtremeGear
             public float DriftCost;
             public float TorandoCost;
         }
-        public FuelStats fuelStats = new FuelStats();
+        public FuelStats fuelStats = new();
         #endregion
 
         #region ChangableVars
@@ -159,7 +160,7 @@ namespace Ryders.Core.Player.ExtremeGear
             public SpeedStates SpeedState = SpeedStates.LowSpeed;
             public GroundedStates GroundedState = GroundedStates.None;
         }
-        public Movement movement = new Movement();
+        public Movement movement = new();
 
         [System.Serializable]
         public class Fuel
@@ -168,7 +169,7 @@ namespace Ryders.Core.Player.ExtremeGear
             public int Level;
             public int Rings;
         }
-        public Fuel fuel = new Fuel();
+        [Tooltip("Contains info about fuel")] public Fuel fuel = new();
         #endregion
 
         // Start is called before the first frame update
@@ -196,9 +197,9 @@ namespace Ryders.Core.Player.ExtremeGear
 
         public virtual void FixedUpdateBase()
         {
-            Vector3 fowardVector = new Vector3(0, 0, 1);
-            Vector3 gravityVector = new Vector3(0, 0, 0);
-            Vector3 jumpVector = new Vector3(0, 0, 0);
+            Vector3 fowardVector = new(0, 0, 1);
+            Vector3 gravityVector = new(0, 0, 0);
+            Vector3 jumpVector = new(0, 0, 0);
             Quaternion orientation = playerTransform.rotation;
             MasterMove(orientation, fowardVector, gravityVector, jumpVector); 
         }
@@ -405,6 +406,11 @@ namespace Ryders.Core.Player.ExtremeGear
         {
             playerRigidbody.rotation = orientation;
             playerRigidbody.velocity = forwardVector + gravityVector + jumpVector;
+        }
+
+        public virtual void MasterAcceleration()
+        {
+            
         }
 
         /// <summary>

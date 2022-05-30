@@ -10,7 +10,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
     /// This class contains all Methods to calculate all kinds of Accelleration and Deceleration
     /// All methods are virtual
     /// </summary>
-    public class AccellerationPack
+    public interface IAccelerationPack
     {
         /// <summary>
         /// This includes both Regular as well as FastAccel
@@ -18,7 +18,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
         /// <param name="speed"></param>
         /// <param name="maxSpeed"></param>
         /// <returns></returns>
-        public virtual float StandardAcceleration(float speed, float maxSpeed, float fastAccel, float regAccel,
+        public static float StandardAccelerationFunc(float speed, float maxSpeed, float fastAccel, float regAccel,
             CorneringStates corneringStates, DriftStates driftStates, GroundedStates groundedStates)
         {
             // Calculate BelowMaxSpeed
@@ -44,9 +44,23 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             return speedGainPerFrame;
         }
 
-        public virtual float DownhillAccelleration()
+        public virtual float StandardAcceleration(PlayerBehaviour pb)
+        {
+            return StandardAccelerationFunc(pb.movement.Speed, pb.movement.MaxSpeed, pb.speedStats.FastAccelleration,
+                pb.speedStats.Acceleration, pb.movement.CorneringState, pb.movement.DriftState,
+                pb.movement.GroundedState);
+        }
+
+        
+        public static float DownhillAcceleration()
         {
             // TODO: Implement DownhillDeceleration
+            throw new NotImplementedException();
+        }
+
+        public virtual float DownhillAcceleration(PlayerBehaviour pb)
+        {
+            // return DownhillAcceleration();
             throw new NotImplementedException();
         }
 
@@ -57,7 +71,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
         /// <param name="speed"> Expects the Speed value from movement</param>
         /// <param name="maxSpeed"> Expects the MaxSpeed value from movement</param>
         /// <returns> Value between 0 and 10</returns>
-        public virtual float StandardDeceleration(float speed, float maxSpeed)
+        public static float StandardDeceleration(float speed, float maxSpeed)
         {
             // Calculate OvermaxSpeed
             float overmaxSpeed = speed - maxSpeed;
@@ -87,33 +101,63 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             return speedLossPerFrame;
         }
 
-        public virtual float CorneringDeceleration(float speed, CorneringStates corneringStates)
+        public virtual float StandardDeceleration(PlayerBehaviour pb)
+        {
+            return StandardDeceleration(pb.movement.Speed, pb.movement.MaxSpeed);
+        }
+
+        public static float CorneringDeceleration(float speed, CorneringStates corneringStates)
         {
             // TODO: Implement CorneringDeceleration
             throw new NotImplementedException();
         }
 
-        public virtual float BreakingDeceleration(float speed)
+        public virtual float CorneringDeceleration(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static float BreakingDeceleration(float speed)
         {
             // TODO: Implement BreakingDeceleration
             throw new NotImplementedException();
         }
 
-        public virtual float JumpChargeDeceleration(float speed)
+        public virtual float BreakingDeceleration(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static float JumpChargeDeceleration(float speed)
         {
             // TODO: Implement JumpChargeDeceleration
             throw new NotImplementedException();
         }
 
-        public virtual float UphillDeceleration(float speed)
+        public virtual float JumpChargeDeceleration(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static float UphillDeceleration(float speed)
         {
             // TODO: Implement UphillDeceleration
             throw new NotImplementedException();
         }
 
-        public virtual float OffroadDeceleration(float speed)
+        public virtual float UphillDeceleration(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static float OffroadDeceleration(float speed)
         {
             // TODO: Implement OffroadDeceleration
+            throw new NotImplementedException();
+        }
+
+        public virtual float OffroadDeceleration()
+        {
             throw new NotImplementedException();
         }
     }

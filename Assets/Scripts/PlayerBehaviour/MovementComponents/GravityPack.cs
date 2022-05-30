@@ -9,7 +9,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
     /// If you are implementing ExtremeGear that uses different Ground/Gravity Behaviour,
     /// derive from this class
     /// </summary>
-    public class GravityPack
+    public interface GravityPack
     {
         // TODO: Implement Gravity Pack
         public virtual bool Grounded(Transform playerTransform, float maxGroundDistance, int groundLayerMask)
@@ -17,12 +17,12 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             int layerMask = 1 << groundLayerMask;
             if (Physics.Raycast(playerTransform.position, playerTransform.up * (-1), out RaycastHit hit, maxGroundDistance, layerMask))
             {
-                if (HasGroundChanged(hit.transform.gameObject))
+                //if (//HasGroundChanged(hit.transform.gameObject))
                 {
                     //HandleGroundChanged(hit.transform.gameObject);
-                    NewGroundChanged(hit.transform.gameObject);
+                    //NewGroundChanged(hit.transform.gameObject);
                 }
-                CorrectGroundDistance(hit.distance);
+                //CorrectGroundDistance(hit.distance);
                 return true;
             }
             /*
@@ -42,6 +42,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             return false;
         }
 
+        /*
         private void CorrectGroundDistance(float distance)
         {
             if (distance < grounded.maxDistance - grounded.tollerance)
@@ -55,11 +56,11 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
                 //playerRigidbody.MovePosition(playerTransform.up * (grounded.maxDistance - distance));
                 playerRigidbody.isKinematic = false;
             }
-        }
+        }*/
 
-        private int Gravity()
+        private int Gravity(bool grounded)
         {
-            if (movement.grounded)
+            if (grounded)
             {
                 return 0;
             }
@@ -69,13 +70,13 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             }
         }
 
-        private bool HasGroundChanged(GameObject newGround)
+        private bool HasGroundChanged(GameObject newGround, GameObject currentGround, Transform playerTransform)
         {
-            if (groundInfo.currentGround == null)
+            if (currentGround == null)
             {
-                groundInfo.currentGround = playerTransform.gameObject;
+                currentGround = playerTransform.gameObject;
             }
-            if (!groundInfo.currentGround.Equals(newGround))
+            if (!currentGround.Equals(newGround))
             {
                 return true;
             }
@@ -87,43 +88,45 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
         /// WIP: Make it work with ground that is not world axis alligned
         /// </summary>
         /// <param name="newGround"></param>
-        private void HandleGroundChanged(GameObject newGround)
+        private void HandleGroundChanged(GameObject newGround, GameObject previousGround, GameObject currentGround, Transform playerTransform)
         {
             Debug.Log("HandleGroundChanged is being executed");
-            groundInfo.previousGround = groundInfo.currentGround;
-            groundInfo.currentGround = newGround;
+            previousGround = currentGround;
+            currentGround = newGround;
 
             float currentRotationAngle = playerTransform.rotation.eulerAngles.y; //+ groundInfo.previousGround.transform.rotation.eulerAngles.y;
             Vector3 currentRotationVector = new Vector3(0, currentRotationAngle, 0);
 
             // Alligns player to the new ground
-            Quaternion targetRotation = Quaternion.LookRotation(groundInfo.currentGround.transform.forward, groundInfo.currentGround.transform.up);
+            Quaternion targetRotation = Quaternion.LookRotation(currentGround.transform.forward, currentGround.transform.up);
             playerTransform.rotation = targetRotation;
 
             //playerTransform.rotation = Quaternion.LookRotation(groundInfo.previousGround.transform.forward, groundInfo.currentGround.transform.up);
             playerTransform.Rotate(currentRotationVector, Space.Self);
         }
 
-        private void NewGroundChanged(GameObject newGround)
+        private void NewGroundChanged(GameObject newGround, GameObject previousGround, GameObject currentGround, Transform playerTransform)
         {
-            groundInfo.previousGround = groundInfo.currentGround;
-            groundInfo.currentGround = newGround;
+            previousGround = currentGround;
+            currentGround = newGround;
 
-            Vector3 localSpacePlayerForward = groundInfo.previousGround.transform.InverseTransformDirection(playerTransform.forward);
+            Vector3 localSpacePlayerForward = previousGround.transform.InverseTransformDirection(playerTransform.forward);
 
             //Quaternion targetRotation = Quaternion.LookRotation(groundInfo.currentGround.transform.forward, groundInfo.currentGround.transform.up);
             //playerTransform.rotation = targetRotation;
 
-            Vector3 wordlSpaceForward = groundInfo.currentGround.transform.TransformDirection(localSpacePlayerForward);
-            playerTransform.rotation = Quaternion.LookRotation(wordlSpaceForward, groundInfo.currentGround.transform.up);
+            Vector3 wordlSpaceForward = currentGround.transform.TransformDirection(localSpacePlayerForward);
+            playerTransform.rotation = Quaternion.LookRotation(wordlSpaceForward, currentGround.transform.up);
         }
 
+        /*
         private void ConstantGroundAllignment()
         {
             if (groundInfo.currentGround != null)
                 playerTransform.rotation = Quaternion.LookRotation(playerTransform.forward, groundInfo.currentGround.transform.up);
-        }
+        }*/
 
+        /*
         private bool TryGetGroundObject(out GameObject groundObject)
         {
             int layerMask = 1 << grounded.layerMask;
@@ -134,6 +137,6 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             }
             groundObject = null;
             return false;
-        }
+        }*/
     }
 }
