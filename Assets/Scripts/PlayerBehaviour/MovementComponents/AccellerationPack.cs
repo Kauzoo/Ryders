@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,6 +44,12 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             return speedGainPerFrame;
         }
 
+        public virtual float DownhillAccelleration()
+        {
+            // TODO: Implement DownhillDeceleration
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Calcualte the current Decel using Formula from SRDX.
         /// StandardDeceleration is always applied when the player is above MaxSpeed
@@ -82,17 +89,32 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
 
         public virtual float CorneringDeceleration(float speed, CorneringStates corneringStates)
         {
-            return 0;
+            // TODO: Implement CorneringDeceleration
+            throw new NotImplementedException();
         }
 
         public virtual float BreakingDeceleration(float speed)
         {
-            return 0;
+            // TODO: Implement BreakingDeceleration
+            throw new NotImplementedException();
         }
 
         public virtual float JumpChargeDeceleration(float speed)
         {
-            return 0;
+            // TODO: Implement JumpChargeDeceleration
+            throw new NotImplementedException();
+        }
+
+        public virtual float UphillDeceleration(float speed)
+        {
+            // TODO: Implement UphillDeceleration
+            throw new NotImplementedException();
+        }
+
+        public virtual float OffroadDeceleration(float speed)
+        {
+            // TODO: Implement OffroadDeceleration
+            throw new NotImplementedException();
         }
     }
 }
