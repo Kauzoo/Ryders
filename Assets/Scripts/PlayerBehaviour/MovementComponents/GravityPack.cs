@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,10 +10,10 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
     /// If you are implementing ExtremeGear that uses different Ground/Gravity Behaviour,
     /// derive from this class
     /// </summary>
-    public interface GravityPack
+    public interface IGravityPack
     {
         // TODO: Implement Gravity Pack
-        public virtual bool Grounded(Transform playerTransform, float maxGroundDistance, int groundLayerMask)
+        public static bool Grounded(Transform playerTransform, float maxGroundDistance, int groundLayerMask)
         {
             int layerMask = 1 << groundLayerMask;
             if (Physics.Raycast(playerTransform.position, playerTransform.up * (-1), out RaycastHit hit, maxGroundDistance, layerMask))
@@ -40,6 +41,11 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             }
             */
             return false;
+        }
+
+        public virtual bool Grounded()
+        {
+            throw new NotImplementedException();
         }
 
         /*

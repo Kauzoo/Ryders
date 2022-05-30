@@ -67,6 +67,8 @@ namespace Ryders.Core.Player.ExtremeGear
         }
         public SpeedStats speedStats = new();
 
+        public IAccelerationPack<PlayerBehaviour> accelPack = new TestAccel<PlayerBehaviour>();
+
         // TURN STATS
         /// <summary>
         /// All the stats that affect the calculations for rotation (arround local y-axis)
