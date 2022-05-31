@@ -25,7 +25,6 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
         public static float StandardAcceleration(float speed, float maxSpeed, float fastAccel, float regAccel,
             CorneringStates corneringStates, DriftStates driftStates, GroundedStates groundedStates)
         {
-            throw new ApplicationException();
             // Calculate BelowMaxSpeed
             float belowMaxSpeed = maxSpeed - speed;
             float speedGainPerFrame = 0;
