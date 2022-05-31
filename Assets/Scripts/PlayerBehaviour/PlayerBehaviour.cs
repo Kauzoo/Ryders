@@ -24,47 +24,40 @@ namespace Ryders.Core.Player.DefaultBehaviour
     [RequireComponent(typeof(Fuel))]
     public abstract class PlayerBehaviour : MonoBehaviour
     {
-        // Class that handles all thing input
-        public GameObject InputModule;
-        // Contains basic character data
-        public CharacterData CharacterData;
-        // Contains basic player stats
-        public DefaultPlayerStats DefaultPlayerStats;
-        // Contains basic extreme gear data
-        public ExtremeGearData ExtremeGearData;
-
-        public SpeedStats speedStats;
-        
         public Transform playerTransform;
         public Rigidbody playerRigidbody;
 
-        public AccelerationPack AccelerationPack;
-        //public IStatLoader StatLoader;
+        [Header("Input")] public GameObject inputModule;
+        
+        [Header("ScriptableObjects")]
+        // Contains basic character data
+        public CharacterData characterData;
+        // Contains basic player stats
+        public DefaultPlayerStats defaultPlayerStats;
+        // Contains basic extreme gear data
+        public ExtremeGearData extremeGearData;
 
-
-        #region StaticVars
-        /**
-         * STATIC VARS
-         * These values only change on level change
-         */
+        [Header("Stats")]
+        [Tooltip("Contains all stats that are used for Translation at runtime")]
+        public SpeedStats speedStats;
         public TurnStats turnStats;
         public JumpStats jumpStats;
         public FuelStats fuelStats;
-        #endregion
-
-        #region ChangableVars
-        /**
-         * CHANGABLE VARS
-         */
+        
+        [Header("Packs")]
+        public AccelerationPack accelerationPack;
+        public StatLoaderPack statLoaderPack;
+        
+        [Header("RuntimeVarContainers")]
         public Movement movement;
-        [Tooltip("Contains info about fuel")] public Fuel fuel;
-        #endregion
+        [Tooltip("Contains info about fuel")]
+        public Fuel fuel;
 
         public virtual void BaseStart()
         {
             speedStats = GetComponent<SpeedStats>();
             playerRigidbody = GetComponent<Rigidbody>();
-            AccelerationPack = GetComponent<AccelerationPack>();
+            accelerationPack = GetComponent<AccelerationPack>();
             InherritanceTest();
         }
 
@@ -72,7 +65,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         {
             Debug.Log("wtf");
             Debug.Log(this.ToString());
-            Debug.Log("" + AccelerationPack.StandardAcceleration(this));
+            Debug.Log("" + accelerationPack.StandardAcceleration(this));
         }
 
         public override string ToString()

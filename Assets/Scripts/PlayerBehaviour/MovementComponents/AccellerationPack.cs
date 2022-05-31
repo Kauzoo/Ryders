@@ -108,7 +108,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             return speedLossPerFrame;
         }
 
-        public virtual float StandardDeceleration(PlayerBehaviour dataContainer)
+        public virtual float StandardDeceleration(PlayerBehaviour dataContainer, dynamic additionalArgument = null)
         {
             if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
             var pb = dataContainer as PlayerBehaviour;

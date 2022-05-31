@@ -12,4 +12,10 @@ public class TestAccel : AccelerationPack
         Debug.Log("Override Test");
         return base.StandardAcceleration(dataContainer);
     }
+
+    public override float StandardDeceleration(PlayerBehaviour dataContainer, dynamic additionalArgument = null)
+    {
+        int i = 0;
+        return base.StandardDeceleration(dataContainer);
+    }
 }

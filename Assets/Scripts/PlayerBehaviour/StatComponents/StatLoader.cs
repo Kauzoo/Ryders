@@ -1,33 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Ryders.Core.Player.Character;
+using Ryders.Core.Player.DefaultBehaviour;
 using Ryders.Core.Player.ExtremeGear;
 using UnityEngine;
 
 namespace Ryders.Core.Player
 {
-    /*
-    public interface IStatLoader
+    public abstract class StatLoaderPack : MonoBehaviour
     {
-        public virtual void LoadStats(int level)
-        {
-            LoadTopSpeed(level);
-            LoadBoostSpeed(level);
-            LoadBoostChainModifier();
-            LoadDriftDashSpeed(level);
-            LoadDriftCap(level);
-            LoadDrifDashFrames();
-        }
-
-        protected static float FloatLoaderAdditive(int level, IEnumerable<float[]> statList)
-        {
-            return statList.Sum(stats => stats[level]);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public static float LoadTopSpeed(int level, float defaultTopSpeedLevelUp, float characterTopSpeed, float gearTopSpeed)
+        public static float LoadTopSpeed(int level, float defaultTopSpeedLevelUp, float characterTopSpeed,
+            float gearTopSpeed)
         {
             return (defaultTopSpeedLevelUp * level) + characterTopSpeed + gearTopSpeed;
         }
@@ -41,85 +26,162 @@ namespace Ryders.Core.Player
         {
             return defaultFastAccelerationDefault;
         }
+
         /// <summary>
         /// Affected by Level (ExtremeGear).
         /// BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.BoostSpeedLvl
         /// <see cref="PlayerBehaviour.BoostSpeed"/>
         /// </summary>
         /// <param name="level"></param>
-        public static float LoadBoostSpeed(int level, float characterBoostSpeed, float[] gearBoostSpeed)
+        public static float LoadBoostSpeed(int level, float characterBoostSpeed, float gearBoostSpeedLvl1,
+            float gearBoostSpeedLvl2, float gearBoostSpeedLvl3)
         {
-            switch(level)
+            switch (level)
             {
                 case 1:
-                    speedStats.BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.movementVars.BoostSpeedLvl1;
-                    break;
+                    return characterBoostSpeed + gearBoostSpeedLvl1;
                 case 2:
-                    speedStats.BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.movementVars.BoostSpeedLvl2;
-                    break;
+                    return characterBoostSpeed + gearBoostSpeedLvl2;
                 case 3:
-                    speedStats.BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.movementVars.BoostSpeedLvl3;
-                    break;
+                    return characterBoostSpeed + gearBoostSpeedLvl3;
                 default:
+                    Debug.LogWarning("Unimplemented Player level");
                     throw new System.NotImplementedException("Invalid Level");
             }
         }
-        
-        public static float LoadBoostSpeed(PlayerBehaviour pb)
-        
+
         /// <summary>
         /// BoostChainModifier = CharacterData.BoostChainModifier + ExtremeGearData.BoostChainModifier
         /// </summary>
-        public virtual void LoadBoostChainModifier() { speedStats.BoostChainModifier = CharacterData.BoostChainModifier + ExtremeGearData.movementVars.BoostChainModifier; }
-        public virtual void LoadBreakeDecelleration() { speedStats.BreakeDecelleration = DefaultPlayerStats.BreakeDecelerationDefault; }
+        public static float LoadBoostChainModifier(float characterBoostChainModifier, float gearBoostChainModifier)
+        {
+            return characterBoostChainModifier + gearBoostChainModifier;
+        }
+
+        public static float LoadBreakeDecelleration(float defaultBreakeDecelleration)
+        {
+            return defaultBreakeDecelleration;
+        }
+
         /// <summary>
         /// Affected by Level (ExtremeGear).
         /// DriftDashSpeed = CharacterData.Drift + ExtremeGearData.DriftDashSpeedLvl;
         /// </summary>
         /// <param name="level"></param>
-        public virtual void LoadDriftDashSpeed(int level)
+        public static float LoadDriftDashSpeed(int level, float characterDrift, float gearDriftDashSpeedLvl1,
+            float gearDriftDashSpeedLvl2, float gearDriftDashSpeedLvl3)
         {
-            switch(level)
+            switch (level)
             {
                 case 1:
-                    speedStats.DriftDashSpeed = CharacterData.Drift + ExtremeGearData.movementVars.DriftDashSpeedLvl1;
-                    break;
+                    return characterDrift + gearDriftDashSpeedLvl1;
                 case 2:
-                    speedStats.DriftDashSpeed = CharacterData.Drift + ExtremeGearData.movementVars.DriftDashSpeedLvl2;
-                    break;
+                    return characterDrift + gearDriftDashSpeedLvl2;
                 case 3:
-                    speedStats.DriftDashSpeed = CharacterData.Drift + ExtremeGearData.movementVars.DriftDashSpeedLvl3;
+                    return characterDrift + gearDriftDashSpeedLvl3;
                     break;
                 default:
+                    Debug.LogWarning("Invalid Level");
                     throw new System.NotImplementedException("Invalid Level");
             }
-            
         }
 
-        public virtual void LoadDriftCap(int level) { speedStats.DriftCap = (DefaultPlayerStats.DriftCapLevelUp * level) + CharacterData.Drift + ExtremeGearData.movementVars.DriftCap; }
-        public virtual void LoadDrifDashFrames() { speedStats.DriftDashFrames = ExtremeGearData.movementVars.DriftDashChargeDuration; }
-        public virtual void LoadTurnSpeedLoss() { speedStats.TurnSpeedLoss = DefaultPlayerStats.TurnSpeedLossCurveDefault; }
-        public virtual void LoadJumpChargeMinSpeed() { speedStats.JumpChargeMinSpeed = DefaultPlayerStats.JumpChargeMinSpeedDefault; }
-        public virtual void LoadJumpChargeDecelleration() { speedStats.JumpChargeDecelleration = DefaultPlayerStats.JumpChargeDecelerationDefault; }
+        public static float LoadDriftCap(int level, float defaultDriftCapLevelUp, float characterDrift,
+            float gearDriftCap)
+        {
+            return (defaultDriftCapLevelUp * level) + characterDrift + gearDriftCap;
+        }
 
-        //turning
-        public virtual void LoadTurnrate() { turnStats.Turnrate = DefaultPlayerStats.TurnrateDefault; }
-        public virtual void LoadTurnSpeedLossCurve() { turnStats.TurnSpeedLossCurve = DefaultPlayerStats.TurnSpeedLossCurveDefault; }
-        public virtual void LoadTurnrateCurve() { turnStats.TurnrateCurve = DefaultPlayerStats.TurnrateCurveDefault; }
-        public virtual void LoadDriftTurnratePassive() { turnStats.DriftTurnratePassive = DefaultPlayerStats.DriftTurnrateDefault; }
-        public virtual void LoadDriftTurnrateMin() { turnStats.DriftTurnrateMin = DefaultPlayerStats.DriftTurnrateMinDefault; }
-        public virtual void LoadDriftTurnrate() { turnStats.DriftTurnrate = DefaultPlayerStats.DriftTurnrateDefault; }
+        public static float LoadDrifDashFrames(float gearDriftDashChargeDuration)
+        {
+            return gearDriftDashChargeDuration;
+        }
+
+        public static AnimationCurve LoadTurnSpeedLoss(AnimationCurve defaultTurnSpeedLossCurveDefault)
+        {
+            return defaultTurnSpeedLossCurveDefault;
+        }
+
+        public static float LoadJumpChargeMinSpeed(float defaultJumpChargeMinSpeedDefault)
+        {
+            return defaultJumpChargeMinSpeedDefault;
+        }
+
+        public static float LoadJumpChargeDecelleration(float defaultJumpChargeDecelerationDefault)
+        {
+            return defaultJumpChargeDecelerationDefault;
+        }
+
+        // TURNING
+        public static float LoadTurnrate(float defaultTurnrateDefault)
+        {
+            return defaultTurnrateDefault;
+        }
+
+        public static AnimationCurve LoadTurnSpeedLossCurve(AnimationCurve defaultTurnSpeedLossCurveDefault)
+        {
+            return defaultTurnSpeedLossCurveDefault;
+        }
+
+        public static AnimationCurve LoadTurnrateCurve(AnimationCurve defaultTurnrateCurveDefault)
+        {
+            return defaultTurnrateCurveDefault;
+        }
+
+        public static float LoadDriftTurnratePassive(float defaultDriftTurnrateDefault)
+        {
+            return defaultDriftTurnrateDefault;
+        }
+
+        public static float LoadDriftTurnrateMin(float defaultDriftTurnrateMinDefault)
+        {
+            return defaultDriftTurnrateMinDefault;
+        }
+
+        public static float LoadDriftTurnrate(float defaultDriftTurnrateDefault)
+        {
+            return defaultDriftTurnrateDefault;
+        }
 
         //Jump
-        public virtual void LoadJumpSpeedMax() { jumpStats.JumpSpeedMax = DefaultPlayerStats.JumpSpeedMaxDefault; }
-        public virtual void LoadJumpAccelleration() { jumpStats.JumpAccelleration = DefaultPlayerStats.JumpAccelDefault; }
+        public static float LoadJumpSpeedMax(float defaultJumpSpeedMaxDefault)
+        {
+            return defaultJumpSpeedMaxDefault;
+        }
 
-        //Fuel
-        public virtual void LoadFuelType() { fuelStats.FuelType = ExtremeGearData.fuelVars.Fuel; }
-        public virtual void LoadJumpChargeMultiplier() { fuelStats.JumpChargeMultiplier = ExtremeGearData.fuelVars.JumpChargeMultiplier; }
-        public virtual void LoadTrickFuelGain() { fuelStats.TrickFuelGain = ExtremeGearData.fuelVars.TrickFuelGain; }
-        public virtual void LoadTypeFuelGain() { fuelStats.TypeFuelGain = ExtremeGearData.fuelVars.TypeFuelGain;  }
-        public virtual void LoadQTEFuelGain() { fuelStats.QTEFuelGain = ExtremeGearData.fuelVars.QTEFuelGain; }
+        public static float LoadJumpAccelleration(float defaultJumpAccelDefault)
+        {
+            return defaultJumpAccelDefault;
+        }
+
+        // FUEL
+        // TODO Implement Loader for Fuel
+        /*
+        public virtual void LoadFuelType()
+        {
+            fuelStats.FuelType = ExtremeGearData.fuelVars.Fuel;
+        }
+    
+        public virtual void LoadJumpChargeMultiplier()
+        {
+            fuelStats.JumpChargeMultiplier = ExtremeGearData.fuelVars.JumpChargeMultiplier;
+        }
+    
+        public virtual void LoadTrickFuelGain()
+        {
+            fuelStats.TrickFuelGain = ExtremeGearData.fuelVars.TrickFuelGain;
+        }
+    
+        public virtual void LoadTypeFuelGain()
+        {
+            fuelStats.TypeFuelGain = ExtremeGearData.fuelVars.TypeFuelGain;
+        }
+    
+        public virtual void LoadQTEFuelGain()
+        {
+            fuelStats.QTEFuelGain = ExtremeGearData.fuelVars.QTEFuelGain;
+        }
+    
         public virtual void LoadPassiveDrain(int level)
         {
             switch (level)
@@ -137,6 +199,7 @@ namespace Ryders.Core.Player
                     throw new System.NotImplementedException("Invalid Level");
             }
         }
+    
         public virtual void LoadTankSize(int level)
         {
             switch (level)
@@ -154,6 +217,7 @@ namespace Ryders.Core.Player
                     throw new System.NotImplementedException("Invalid Level");
             }
         }
+    
         public virtual void LoadBoostCost(int level)
         {
             switch (level)
@@ -171,6 +235,7 @@ namespace Ryders.Core.Player
                     throw new System.NotImplementedException("Invalid Level");
             }
         }
+    
         public virtual void LoadDriftCost(int level)
         {
             switch (level)
@@ -188,6 +253,7 @@ namespace Ryders.Core.Player
                     throw new System.NotImplementedException("Invalid Level");
             }
         }
+    
         public virtual void LoadTornadoCost(int level)
         {
             switch (level)
@@ -205,6 +271,119 @@ namespace Ryders.Core.Player
                     throw new System.NotImplementedException("Invalid Level");
             }
         }
+        */
+
+        #region VirtualMemebers
+
+        public virtual void LoadTopSpeed(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadMinSpeed(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadFastAcceleration(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadBoostSpeed(PlayerBehaviour pb)
+        {
+            pb.speedStats.BoostSpeed = pb.speedStats.BoostSpeed = LoadBoostSpeed(pb.fuel.Level,
+                pb.characterData.BoostSpeed,
+                pb.extremeGearData.movementVars.BoostSpeedLvl1, pb.extremeGearData.movementVars.BoostSpeedLvl2,
+                pb.extremeGearData.movementVars.BoostSpeedLvl3);
+        }
+
+        /// <summary>
+        /// BoostChainModifier = CharacterData.BoostChainModifier + ExtremeGearData.BoostChainModifier
+        /// </summary>
+        public virtual void LoadBoostChainModifier(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadBreakeDecelleration(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public virtual void LoadDriftDashSpeed(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadDriftCap(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadDrifDashFrames(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadTurnSpeedLoss(PlayerBehaviour pb)
+        {  
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadJumpChargeMinSpeed(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadJumpChargeDecelleration(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        // TURNING
+        public virtual void LoadTurnrate(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadTurnSpeedLossCurve(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadTurnrateCurve(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadDriftTurnratePassive(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadDriftTurnrateMin(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadDriftTurnrate(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        //Jump
+        public virtual void LoadJumpSpeedMax(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void LoadJumpAccelleration(PlayerBehaviour pb)
+        {
+            throw new NotImplementedException();
+        }
+        
+        // TODO Implement virtual members for Fuel
+        #endregion
     }
-*/
 }
