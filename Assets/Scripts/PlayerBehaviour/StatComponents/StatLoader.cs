@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Ryders.Core.Player.ExtremeGear;
 using UnityEngine;
 
 namespace Ryders.Core.Player
 {
+    /*
     public interface IStatLoader
     {
         public virtual void LoadStats(int level)
@@ -16,19 +19,35 @@ namespace Ryders.Core.Player
             LoadDrifDashFrames();
         }
 
+        protected static float FloatLoaderAdditive(int level, IEnumerable<float[]> statList)
+        {
+            return statList.Sum(stats => stats[level]);
+        }
+
         /// <summary>
         /// 
         /// </summary>
-        public virtual void LoadTopSpeed(int level) { speedStats.TopSpeed = (DefaultPlayerStats.TopSpeedLevelUp * level) + CharacterData.TopSpeed + ExtremeGearData.movementVars.TopSpeed; }
-        public virtual void LoadMinSpeed() { speedStats.MinSpeed = DefaultPlayerStats.MinSpeedDefault; }
-        public virtual void LoadFastAccelleration() { speedStats.FastAccelleration = DefaultPlayerStats.FastAccelerationDefault; }
+        public static float LoadTopSpeed(int level, float defaultTopSpeedLevelUp, float characterTopSpeed, float gearTopSpeed)
+        {
+            return (defaultTopSpeedLevelUp * level) + characterTopSpeed + gearTopSpeed;
+        }
+
+        public static float LoadMinSpeed(int level, float defaultMinSpeedDefault)
+        {
+            return defaultMinSpeedDefault;
+        }
+
+        public static float LoadFastAcceleration(int level, float defaultFastAccelerationDefault)
+        {
+            return defaultFastAccelerationDefault;
+        }
         /// <summary>
         /// Affected by Level (ExtremeGear).
         /// BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.BoostSpeedLvl
         /// <see cref="PlayerBehaviour.BoostSpeed"/>
         /// </summary>
         /// <param name="level"></param>
-        public virtual void LoadBoostSpeed(int level)
+        public static float LoadBoostSpeed(int level, float characterBoostSpeed, float[] gearBoostSpeed)
         {
             switch(level)
             {
@@ -44,8 +63,10 @@ namespace Ryders.Core.Player
                 default:
                     throw new System.NotImplementedException("Invalid Level");
             }
-            
         }
+        
+        public static float LoadBoostSpeed(PlayerBehaviour pb)
+        
         /// <summary>
         /// BoostChainModifier = CharacterData.BoostChainModifier + ExtremeGearData.BoostChainModifier
         /// </summary>
@@ -81,9 +102,7 @@ namespace Ryders.Core.Player
         public virtual void LoadJumpChargeMinSpeed() { speedStats.JumpChargeMinSpeed = DefaultPlayerStats.JumpChargeMinSpeedDefault; }
         public virtual void LoadJumpChargeDecelleration() { speedStats.JumpChargeDecelleration = DefaultPlayerStats.JumpChargeDecelerationDefault; }
 
-        /**
-         * TURNING
-         */
+        //turning
         public virtual void LoadTurnrate() { turnStats.Turnrate = DefaultPlayerStats.TurnrateDefault; }
         public virtual void LoadTurnSpeedLossCurve() { turnStats.TurnSpeedLossCurve = DefaultPlayerStats.TurnSpeedLossCurveDefault; }
         public virtual void LoadTurnrateCurve() { turnStats.TurnrateCurve = DefaultPlayerStats.TurnrateCurveDefault; }
@@ -91,15 +110,11 @@ namespace Ryders.Core.Player
         public virtual void LoadDriftTurnrateMin() { turnStats.DriftTurnrateMin = DefaultPlayerStats.DriftTurnrateMinDefault; }
         public virtual void LoadDriftTurnrate() { turnStats.DriftTurnrate = DefaultPlayerStats.DriftTurnrateDefault; }
 
-        /**
-         * JUMP
-         */
+        //Jump
         public virtual void LoadJumpSpeedMax() { jumpStats.JumpSpeedMax = DefaultPlayerStats.JumpSpeedMaxDefault; }
         public virtual void LoadJumpAccelleration() { jumpStats.JumpAccelleration = DefaultPlayerStats.JumpAccelDefault; }
 
-        /**
-         * FUEL
-         */
+        //Fuel
         public virtual void LoadFuelType() { fuelStats.FuelType = ExtremeGearData.fuelVars.Fuel; }
         public virtual void LoadJumpChargeMultiplier() { fuelStats.JumpChargeMultiplier = ExtremeGearData.fuelVars.JumpChargeMultiplier; }
         public virtual void LoadTrickFuelGain() { fuelStats.TrickFuelGain = ExtremeGearData.fuelVars.TrickFuelGain; }
@@ -191,4 +206,5 @@ namespace Ryders.Core.Player
             }
         }
     }
+*/
 }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Runtime.Serialization;
+using Ryders.Core.Player.DefaultBehaviour;
+using Ryders.Core.Player.DefaultBehaviour.Components;
 using Ryders.Core.Player.ExtremeGear.Movement;
 
 namespace Ryders.Core.Player.ExtremeGear.Movement
@@ -14,7 +16,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
     /// The non-static methods that can be overridden if needed all contain a default Implementation
     /// that uses their static Variant
     /// </summary>
-    public interface IAccelerationPack<in T>
+    public abstract class AccelerationPack : MonoBehaviour 
     {
         /// <summary>
         /// This includes both Regular as well as FastAccel
@@ -48,13 +50,11 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             return speedGainPerFrame;
         }
 
-        public virtual float StandardAcceleration(T dataContainer)
+        public virtual float StandardAcceleration(PlayerBehaviour dataContainer)
         {
-            if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
-            var pb = dataContainer as PlayerBehaviour;
-            return StandardAcceleration(pb.movement.Speed, pb.movement.MaxSpeed, pb.speedStats.FastAccelleration,
-                pb.speedStats.Acceleration, pb.movement.CorneringState, pb.movement.DriftState,
-                pb.movement.GroundedState);
+            return StandardAcceleration(dataContainer.movement.Speed, dataContainer.movement.MaxSpeed, dataContainer.speedStats.FastAccelleration,
+                dataContainer.speedStats.Acceleration, dataContainer.movement.CorneringState, dataContainer.movement.DriftState,
+                dataContainer.movement.GroundedState);
         }
 
         
@@ -64,7 +64,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             throw new NotImplementedException();
         }
 
-        public virtual float DownhillAcceleration(T dataContainer)
+        public virtual float DownhillAcceleration(PlayerBehaviour dataContainer)
         {
             if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
             var pb = dataContainer as PlayerBehaviour;
@@ -108,7 +108,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             return speedLossPerFrame;
         }
 
-        public virtual float StandardDeceleration(T dataContainer)
+        public virtual float StandardDeceleration(PlayerBehaviour dataContainer)
         {
             if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
             var pb = dataContainer as PlayerBehaviour;
@@ -121,7 +121,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             throw new NotImplementedException();
         }
 
-        public virtual float CorneringDeceleration(T dataContainer)
+        public virtual float CorneringDeceleration(PlayerBehaviour dataContainer)
         {
             if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
             var pb = dataContainer as PlayerBehaviour;
@@ -134,7 +134,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             throw new NotImplementedException();
         }
 
-        public virtual float BreakingDeceleration(T dataContainer)
+        public virtual float BreakingDeceleration(PlayerBehaviour dataContainer)
         {
             if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
             var pb = dataContainer as PlayerBehaviour;
@@ -147,7 +147,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             throw new NotImplementedException();
         }
 
-        public virtual float JumpChargeDeceleration(T dataContainer)
+        public virtual float JumpChargeDeceleration(PlayerBehaviour dataContainer)
         {
             if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
             var pb = dataContainer as PlayerBehaviour;
@@ -160,7 +160,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             throw new NotImplementedException();
         }
 
-        public virtual float UphillDeceleration(T dataContainer)
+        public virtual float UphillDeceleration(PlayerBehaviour dataContainer)
         {
             if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
             var pb = dataContainer as PlayerBehaviour;
@@ -173,7 +173,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             throw new NotImplementedException();
         }
 
-        public virtual float OffroadDeceleration(T dataContainer)
+        public virtual float OffroadDeceleration(PlayerBehaviour dataContainer)
         {
             if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
             var pb = dataContainer as PlayerBehaviour;
