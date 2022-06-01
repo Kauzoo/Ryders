@@ -140,6 +140,11 @@ GameObject:
   - component: {fileID: 60184862}
   - component: {fileID: 60184863}
   - component: {fileID: 60184864}
+  - component: {fileID: 60184865}
+  - component: {fileID: 60184868}
+  - component: {fileID: 60184867}
+  - component: {fileID: 60184866}
+  - component: {fileID: 60184869}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -352,6 +357,103 @@ MonoBehaviour:
   CorneringState: 0
   SpeedState: 0
   GroundedState: 0
+--- !u!114 &60184865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60184855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1d424a5a71c88640be7a910b5fbf699, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerBehaviour: {fileID: 0}
+--- !u!114 &60184866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60184855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3af4e79e6d1ac1c4c98c3c0b59d2c3bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentFuel: 0
+  Level: 0
+  Rings: 0
+--- !u!114 &60184867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60184855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d17d4d7f6bce8d7449d0bc848e04089a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FuelType: 0
+  JumpChargeMultiplier: 0
+  TrickFuelGain: 0
+  TypeFuelGain: 0
+  QTEFuelGain: 0
+  PassiveDrain: 0
+  TankSize: 0
+  BoostCost: 0
+  DriftCost: 0
+  TorandoCost: 0
+--- !u!114 &60184868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60184855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92cda3967088ed447804b21a99f040f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  JumpSpeedMax: 0
+  JumpAccelleration:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &60184869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60184855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 908d020c5acbe1d4ea0e1f7891755807, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Turnrate: 0
+  TurnSpeedLossCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  TurnrateCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  DriftTurnratePassive: 0
+  DriftTurnrateMin: 0
+  DriftTurnrate: 0
 --- !u!1 &508370742
 GameObject:
   m_ObjectHideFlags: 0

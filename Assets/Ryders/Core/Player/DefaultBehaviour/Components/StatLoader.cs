@@ -13,6 +13,45 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     {
         public PlayerBehaviour playerBehaviour;
 
+        public virtual void Setup()
+        {
+            playerBehaviour = GetComponent<PlayerBehaviour>();
+        }
+
+        public virtual void LoadStatsMaster()
+        {
+            LoadTopSpeed();
+            LoadMinSpeed();
+            LoadFastAcceleration();
+            LoadBoostSpeed();
+            LoadBoostChainModifier();
+            LoadBreakeDecelleration();
+            LoadDriftDashSpeed();
+            LoadDriftCap();
+            LoadDrifDashFrames();
+            LoadTurnSpeedLoss();
+            LoadJumpChargeMinSpeed();
+            LoadJumpChargeDecelleration();
+            LoadTurnrate();
+            LoadTurnSpeedLossCurve();
+            LoadTurnrateCurve();
+            LoadDriftTurnratePassive();
+            LoadDriftTurnrateMin();
+            LoadDriftTurnrate();
+            LoadJumpSpeedMax();
+            LoadJumpAccelleration();
+            LoadFuelType();
+            LoadJumpChargeMultiplier();
+            LoadTrickFuelGain();
+            LoadTypeFuelGain();
+            LoadQTEFuelGain();
+            LoadPassiveDrain();
+            LoadTankSize();
+            LoadBoostCost();
+            LoadDriftCost();
+            LoadTornadoCost();
+        }
+
         #region StaticMethods
 
         public static float LoadTopSpeed(int level, float defaultTopSpeedLevelUp, float characterTopSpeed,

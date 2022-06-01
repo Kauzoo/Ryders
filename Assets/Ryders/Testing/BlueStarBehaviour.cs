@@ -13,16 +13,12 @@ namespace Ryders.Core.Player
         void Start()
         {
             base.Setup();
+            base.statLoaderPack.Setup();
         }
-
-        // Update is called once per frame
-        void Update() 
-        {
-            
-        }
-
+        
         private void FixedUpdate()
         {
+            
             base.FixedUpdateTest();   
         }
     }

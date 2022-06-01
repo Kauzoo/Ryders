@@ -157,6 +157,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public virtual void FixedUpdateTest()
         {
+            statLoaderPack.LoadStatsMaster();
             TestMove();
             MasterMoveTest();
         }
