@@ -153,7 +153,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             return defaultJumpSpeedMaxDefault;
         }
 
-        public static float LoadJumpAccelleration(float defaultJumpAccelDefault)
+        public static AnimationCurve LoadJumpAccelleration(AnimationCurve defaultJumpAccelDefault)
         {
             return defaultJumpAccelDefault;
         }
@@ -294,76 +294,90 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 LoadBreakeDecelleration(playerBehaviour.defaultPlayerStats.BreakeDecelerationDefault);
         }
 
-        public virtual void LoadDriftDashSpeedT()
+        public virtual void LoadDriftDashSpeed()
         {
-            playerBehaviour.speedStats.DriftDashSpeed = LoadDriftDashSpeed(playerBehaviour.fuel.Level, )
+            playerBehaviour.speedStats.DriftDashSpeed = LoadDriftDashSpeed(playerBehaviour.fuel.Level,
+                playerBehaviour.characterData.Drift, playerBehaviour.extremeGearData.movementVars.DriftDashSpeedLvl1,
+                playerBehaviour.extremeGearData.movementVars.DriftDashSpeedLvl2,
+                playerBehaviour.extremeGearData.movementVars.DriftDashSpeedLvl3);
         }
 
         public virtual void LoadDriftCap()
         {
-            throw new NotImplementedException();
+            playerBehaviour.speedStats.DriftCap = LoadDriftCap(playerBehaviour.fuel.Level,
+                playerBehaviour.defaultPlayerStats.DriftCapLevelUp, playerBehaviour.characterData.Drift,
+                playerBehaviour.extremeGearData.movementVars.DriftCap);
         }
 
         public virtual void LoadDrifDashFrames()
         {
-            throw new NotImplementedException();
+            playerBehaviour.speedStats.DriftDashFrames =
+                LoadDrifDashFrames(playerBehaviour.extremeGearData.movementVars.DriftDashChargeDuration);
         }
 
         public virtual void LoadTurnSpeedLoss()
         {
-            throw new NotImplementedException();
+            playerBehaviour.speedStats.TurnSpeedLoss =
+                LoadTurnSpeedLoss(playerBehaviour.defaultPlayerStats.TurnSpeedLossCurveDefault);
         }
 
         public virtual void LoadJumpChargeMinSpeed()
         {
-            throw new NotImplementedException();
+            playerBehaviour.speedStats.JumpChargeMinSpeed =
+                LoadJumpChargeMinSpeed(playerBehaviour.defaultPlayerStats.JumpChargeMinSpeedDefault);
         }
 
         public virtual void LoadJumpChargeDecelleration()
         {
-            throw new NotImplementedException();
+            playerBehaviour.speedStats.JumpChargeDecelleration =
+                LoadJumpChargeDecelleration(playerBehaviour.defaultPlayerStats.JumpChargeDecelerationDefault);
         }
 
         // TURNING
         public virtual void LoadTurnrate()
         {
-            throw new NotImplementedException();
+            playerBehaviour.turnStats.Turnrate = LoadTurnrate(playerBehaviour.defaultPlayerStats.TurnrateDefault);
         }
 
         public virtual void LoadTurnSpeedLossCurve()
         {
-            throw new NotImplementedException();
+            playerBehaviour.turnStats.TurnSpeedLossCurve =
+                LoadTurnSpeedLossCurve(playerBehaviour.defaultPlayerStats.TurnSpeedLossCurveDefault);
         }
 
         public virtual void LoadTurnrateCurve()
         {
-            throw new NotImplementedException();
+            playerBehaviour.turnStats.TurnrateCurve = LoadTurnrateCurve(playerBehaviour.defaultPlayerStats.TurnrateCurveDefault);
         }
 
         public virtual void LoadDriftTurnratePassive()
         {
-            throw new NotImplementedException();
+            playerBehaviour.turnStats.DriftTurnratePassive =
+                LoadDriftTurnratePassive(playerBehaviour.defaultPlayerStats.DriftTurnratePassiveDefault);
         }
 
         public virtual void LoadDriftTurnrateMin()
         {
-            throw new NotImplementedException();
+            playerBehaviour.turnStats.DriftTurnrateMin =
+                LoadDriftTurnrateMin(playerBehaviour.defaultPlayerStats.DriftTurnrateMinDefault);
         }
 
         public virtual void LoadDriftTurnrate()
         {
-            throw new NotImplementedException();
+            playerBehaviour.turnStats.DriftTurnrate =
+                LoadDriftTurnrate(playerBehaviour.defaultPlayerStats.DriftTurnrateDefault);
         }
 
         //Jump
         public virtual void LoadJumpSpeedMax()
         {
-            throw new NotImplementedException();
+            playerBehaviour.jumpStats.JumpSpeedMax = LoadJumpSpeedMax(playerBehaviour.defaultPlayerStats.JumpSpeedMaxDefault);
         }
 
         public virtual void LoadJumpAccelleration()
         {
-            throw new NotImplementedException();
+            playerBehaviour.jumpStats.JumpAccelleration =
+                LoadJumpAccelleration(playerBehaviour.defaultPlayerStats.JumpAccelDefault);
         }
 
         // FUEL
