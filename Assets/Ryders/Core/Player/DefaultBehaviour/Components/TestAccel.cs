@@ -15,6 +15,12 @@ public class TestAccel : AccelerationPack
     public override float StandardDeceleration(PlayerBehaviour dataContainer)
     {
         int i = 0;
+        base.Setup();
         return base.StandardDeceleration(dataContainer);
+    }
+
+    public override void Setup()
+    {
+        base.Setup();
     }
 }

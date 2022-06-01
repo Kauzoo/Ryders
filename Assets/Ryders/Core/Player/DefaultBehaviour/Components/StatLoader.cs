@@ -11,6 +11,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
     public abstract class StatLoaderPack : MonoBehaviour
     {
+        public PlayerBehaviour playerBehaviour;
+
+        #region StaticMethods
+
         public static float LoadTopSpeed(int level, float defaultTopSpeedLevelUp, float characterTopSpeed,
             float gearTopSpeed)
         {
@@ -156,234 +160,282 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         // FUEL
         // TODO Implement Loader for Fuel
-        /*
-        public virtual void LoadFuelType()
+        public static FuelType LoadFuelType(FuelType gearFuelType)
         {
-            fuelStats.FuelType = ExtremeGearData.fuelVars.Fuel;
+            return gearFuelType;
         }
-    
-        public virtual void LoadJumpChargeMultiplier()
+
+        public static float LoadJumpChargeMultiplier(float gearJumpChargeMultiplier)
         {
-            fuelStats.JumpChargeMultiplier = ExtremeGearData.fuelVars.JumpChargeMultiplier;
+            return gearJumpChargeMultiplier;
         }
-    
-        public virtual void LoadTrickFuelGain()
+
+        public static float LoadTrickFuelGain(float gearTrickFuelGain)
         {
-            fuelStats.TrickFuelGain = ExtremeGearData.fuelVars.TrickFuelGain;
+            return gearTrickFuelGain;
         }
-    
-        public virtual void LoadTypeFuelGain()
+
+        public static float LoadTypeFuelGain(float gearTypeFuelGain)
         {
-            fuelStats.TypeFuelGain = ExtremeGearData.fuelVars.TypeFuelGain;
+            return gearTypeFuelGain;
         }
-    
-        public virtual void LoadQTEFuelGain()
+
+        public static float LoadQTEFuelGain(float gearQTEFuelGain)
         {
-            fuelStats.QTEFuelGain = ExtremeGearData.fuelVars.QTEFuelGain;
+            return gearQTEFuelGain;
         }
-    
-        public virtual void LoadPassiveDrain(int level)
+
+        public static float LoadPassiveDrain(int level, float gearPassiveDrainLvl1, float gearPassiveDrainLvl2,
+            float gearPassiveDrainLvl3)
         {
-            switch (level)
+            return level switch
             {
-                case 1:
-                    fuelStats.PassiveDrain = ExtremeGearData.fuelVars.PassiveDrainLvl1;
-                    break;
-                case 2:
-                    fuelStats.PassiveDrain = ExtremeGearData.fuelVars.PassiveDrainLvl2;
-                    break;
-                case 3:
-                    fuelStats.PassiveDrain = ExtremeGearData.fuelVars.PassiveDrainLvl3;
-                    break;
-                default:
-                    throw new System.NotImplementedException("Invalid Level");
-            }
+                1 => gearPassiveDrainLvl1,
+                2 => gearPassiveDrainLvl2,
+                3 => gearPassiveDrainLvl3,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
         }
-    
-        public virtual void LoadTankSize(int level)
+
+        public static float LoadTankSize(int level, float gearFuelTankSizeLvl1, float gearFuelTankSizeLvl2,
+            float gearFuelTankSizeLvl3)
         {
-            switch (level)
+            return level switch
             {
-                case 1:
-                    fuelStats.TankSize = ExtremeGearData.fuelVars.FuelTankSizeLevel1;
-                    break;
-                case 2:
-                    fuelStats.TankSize = ExtremeGearData.fuelVars.FuelTankSizeLevel2;
-                    break;
-                case 3:
-                    fuelStats.TankSize = ExtremeGearData.fuelVars.FuelTankSizeLevel3;
-                    break;
-                default:
-                    throw new System.NotImplementedException("Invalid Level");
-            }
+                1 => gearFuelTankSizeLvl1,
+                2 => gearFuelTankSizeLvl2,
+                3 => gearFuelTankSizeLvl3,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
         }
-    
-        public virtual void LoadBoostCost(int level)
+
+        public static float LoadBoostCost(int level, float gearBoostCostLvl1, float gearBoostCostLvl2,
+            float gearBoostCostLvl3)
         {
-            switch (level)
+            return level switch
             {
-                case 1:
-                    fuelStats.BoostCost = ExtremeGearData.fuelVars.BoostCostLvl1;
-                    break;
-                case 2:
-                    fuelStats.BoostCost = ExtremeGearData.fuelVars.BoostCostLvl2;
-                    break;
-                case 3:
-                    fuelStats.BoostCost = ExtremeGearData.fuelVars.BoostCostLvl3;
-                    break;
-                default:
-                    throw new System.NotImplementedException("Invalid Level");
-            }
+                1 => gearBoostCostLvl1,
+                2 => gearBoostCostLvl2,
+                3 => gearBoostCostLvl3,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
         }
-    
-        public virtual void LoadDriftCost(int level)
+
+        public static float LoadDriftCost(int level, float gearDriftCostLvl1, float gearDriftCostLvl2,
+            float gearDriftCostLvl3)
         {
-            switch (level)
+            return level switch
             {
-                case 1:
-                    fuelStats.DriftCost = ExtremeGearData.fuelVars.DriftCostLvl1;
-                    break;
-                case 2:
-                    fuelStats.DriftCost = ExtremeGearData.fuelVars.DriftCostLvl2;
-                    break;
-                case 3:
-                    fuelStats.DriftCost = ExtremeGearData.fuelVars.DriftCostLvl3;
-                    break;
-                default:
-                    throw new System.NotImplementedException("Invalid Level");
-            }
+                1 => gearDriftCostLvl1,
+                2 => gearDriftCostLvl2,
+                3 => gearDriftCostLvl3,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
         }
-    
-        public virtual void LoadTornadoCost(int level)
+
+        public static float LoadTornadoCost(int level, float gearTornadoCostLvl1, float gearTornadoCostLvl2,
+            float gearTornadoCostLvl3)
         {
-            switch (level)
+            return level switch
             {
-                case 1:
-                    fuelStats.TorandoCost = ExtremeGearData.fuelVars.TornadoCostLvl1;
-                    break;
-                case 2:
-                    fuelStats.TorandoCost = ExtremeGearData.fuelVars.TornadoCostLvl2;
-                    break;
-                case 3:
-                    fuelStats.TorandoCost = ExtremeGearData.fuelVars.TornadoCostLvl3;
-                    break;
-                default:
-                    throw new System.NotImplementedException("Invalid Level");
-            }
+                1 => gearTornadoCostLvl1,
+                2 => gearTornadoCostLvl2,
+                3 => gearTornadoCostLvl3,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
         }
-        */
+
+        #endregion
 
         #region VirtualMemebers
 
-        public virtual void LoadTopSpeed(PlayerBehaviour pb)
+        public virtual void LoadTopSpeed()
         {
-            throw new NotImplementedException();
+            playerBehaviour.speedStats.TopSpeed = LoadTopSpeed(playerBehaviour.fuel.Level,
+                playerBehaviour.defaultPlayerStats.TopSpeedLevelUp, playerBehaviour.characterData.TopSpeed,
+                playerBehaviour.extremeGearData.movementVars.TopSpeed);
         }
 
-        public virtual void LoadMinSpeed(PlayerBehaviour pb)
+        public virtual void LoadMinSpeed()
         {
-            throw new NotImplementedException();
+            playerBehaviour.speedStats.MinSpeed = LoadMinSpeed(playerBehaviour.fuel.Level,
+                playerBehaviour.defaultPlayerStats.MinSpeedDefault);
         }
 
-        public virtual void LoadFastAcceleration(PlayerBehaviour pb)
+        public virtual void LoadFastAcceleration()
         {
-            throw new NotImplementedException();
+            playerBehaviour.speedStats.FastAccelleration = LoadFastAcceleration(playerBehaviour.fuel.Level,
+                playerBehaviour.defaultPlayerStats.FastAccelerationDefault);
         }
 
-        public virtual void LoadBoostSpeed(PlayerBehaviour pb)
+        public virtual void LoadBoostSpeed()
         {
-            pb.speedStats.BoostSpeed = pb.speedStats.BoostSpeed = LoadBoostSpeed(pb.fuel.Level,
-                pb.characterData.BoostSpeed,
-                pb.extremeGearData.movementVars.BoostSpeedLvl1, pb.extremeGearData.movementVars.BoostSpeedLvl2,
-                pb.extremeGearData.movementVars.BoostSpeedLvl3);
+            playerBehaviour.speedStats.BoostSpeed = playerBehaviour.speedStats.BoostSpeed = LoadBoostSpeed(
+                playerBehaviour.fuel.Level,
+                playerBehaviour.characterData.BoostSpeed,
+                playerBehaviour.extremeGearData.movementVars.BoostSpeedLvl1,
+                playerBehaviour.extremeGearData.movementVars.BoostSpeedLvl2,
+                playerBehaviour.extremeGearData.movementVars.BoostSpeedLvl3);
         }
 
         /// <summary>
         /// BoostChainModifier = CharacterData.BoostChainModifier + ExtremeGearData.BoostChainModifier
         /// </summary>
-        public virtual void LoadBoostChainModifier(PlayerBehaviour pb)
+        public virtual void LoadBoostChainModifier()
+        {
+            playerBehaviour.speedStats.BoostChainModifier = LoadBoostChainModifier(
+                playerBehaviour.characterData.BoostChainModifier,
+                playerBehaviour.extremeGearData.movementVars.BoostChainModifier);
+        }
+
+        public virtual void LoadBreakeDecelleration()
+        {
+            playerBehaviour.speedStats.BreakeDecelleration =
+                LoadBreakeDecelleration(playerBehaviour.defaultPlayerStats.BreakeDecelerationDefault);
+        }
+
+        public virtual void LoadDriftDashSpeedT()
+        {
+            playerBehaviour.speedStats.DriftDashSpeed = LoadDriftDashSpeed(playerBehaviour.fuel.Level, )
+        }
+
+        public virtual void LoadDriftCap()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void LoadBreakeDecelleration(PlayerBehaviour pb)
-        {
-            throw new NotImplementedException();
-        }
-        
-        public virtual void LoadDriftDashSpeed(PlayerBehaviour pb)
+        public virtual void LoadDrifDashFrames()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void LoadDriftCap(PlayerBehaviour pb)
+        public virtual void LoadTurnSpeedLoss()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void LoadDrifDashFrames(PlayerBehaviour pb)
+        public virtual void LoadJumpChargeMinSpeed()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void LoadTurnSpeedLoss(PlayerBehaviour pb)
-        {  
-            throw new NotImplementedException();
-        }
-
-        public virtual void LoadJumpChargeMinSpeed(PlayerBehaviour pb)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual void LoadJumpChargeDecelleration(PlayerBehaviour pb)
+        public virtual void LoadJumpChargeDecelleration()
         {
             throw new NotImplementedException();
         }
 
         // TURNING
-        public virtual void LoadTurnrate(PlayerBehaviour pb)
+        public virtual void LoadTurnrate()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void LoadTurnSpeedLossCurve(PlayerBehaviour pb)
+        public virtual void LoadTurnSpeedLossCurve()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void LoadTurnrateCurve(PlayerBehaviour pb)
+        public virtual void LoadTurnrateCurve()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void LoadDriftTurnratePassive(PlayerBehaviour pb)
+        public virtual void LoadDriftTurnratePassive()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void LoadDriftTurnrateMin(PlayerBehaviour pb)
+        public virtual void LoadDriftTurnrateMin()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void LoadDriftTurnrate(PlayerBehaviour pb)
+        public virtual void LoadDriftTurnrate()
         {
             throw new NotImplementedException();
         }
 
         //Jump
-        public virtual void LoadJumpSpeedMax(PlayerBehaviour pb)
+        public virtual void LoadJumpSpeedMax()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void LoadJumpAccelleration(PlayerBehaviour pb)
+        public virtual void LoadJumpAccelleration()
         {
             throw new NotImplementedException();
         }
-        
-        // TODO Implement virtual members for Fuel
+
+        // FUEL
+        public virtual void LoadFuelType()
+        {
+            playerBehaviour.fuelStats.FuelType = LoadFuelType(playerBehaviour.extremeGearData.fuelVars.Fuel);
+        }
+
+        public virtual void LoadJumpChargeMultiplier()
+        {
+            playerBehaviour.fuelStats.JumpChargeMultiplier =
+                LoadJumpChargeMultiplier(playerBehaviour.extremeGearData.fuelVars.JumpChargeMultiplier);
+        }
+
+        public virtual void LoadTrickFuelGain()
+        {
+            playerBehaviour.fuelStats.TrickFuelGain =
+                LoadTrickFuelGain(playerBehaviour.extremeGearData.fuelVars.TrickFuelGain);
+        }
+
+        public virtual void LoadTypeFuelGain()
+        {
+            playerBehaviour.fuelStats.TypeFuelGain =
+                LoadTypeFuelGain(playerBehaviour.extremeGearData.fuelVars.TypeFuelGain);
+        }
+
+        public virtual void LoadQTEFuelGain()
+        {
+            playerBehaviour.fuelStats.QTEFuelGain =
+                LoadTypeFuelGain(playerBehaviour.extremeGearData.fuelVars.QTEFuelGain);
+        }
+
+        public virtual void LoadPassiveDrain()
+        {
+            playerBehaviour.fuelStats.PassiveDrain = LoadPassiveDrain(playerBehaviour.fuel.Level,
+                playerBehaviour.extremeGearData.fuelVars.PassiveDrainLvl1,
+                playerBehaviour.extremeGearData.fuelVars.PassiveDrainLvl2,
+                playerBehaviour.extremeGearData.fuelVars.PassiveDrainLvl3);
+        }
+
+        public virtual void LoadTankSize()
+        {
+            playerBehaviour.fuelStats.TankSize = LoadTankSize(playerBehaviour.fuel.Level,
+                playerBehaviour.extremeGearData.fuelVars.FuelTankSizeLevel1,
+                playerBehaviour.extremeGearData.fuelVars.FuelTankSizeLevel2,
+                playerBehaviour.extremeGearData.fuelVars.FuelTankSizeLevel3);
+        }
+
+        public virtual void LoadBoostCost()
+        {
+            playerBehaviour.fuelStats.BoostCost = LoadBoostCost(playerBehaviour.fuel.Level,
+                playerBehaviour.extremeGearData.fuelVars.BoostCostLvl1,
+                playerBehaviour.extremeGearData.fuelVars.BoostCostLvl2,
+                playerBehaviour.extremeGearData.fuelVars.BoostCostLvl3);
+        }
+
+        public virtual void LoadDriftCost()
+        {
+            playerBehaviour.fuelStats.DriftCost = LoadDriftCost(playerBehaviour.fuel.Level,
+                playerBehaviour.extremeGearData.fuelVars.DriftCostLvl1,
+                playerBehaviour.extremeGearData.fuelVars.DriftCostLvl2,
+                playerBehaviour.extremeGearData.fuelVars.DriftCostLvl3);
+        }
+
+        public virtual void LoadTornadoCost()
+        {
+            playerBehaviour.fuelStats.TorandoCost = LoadTornadoCost(playerBehaviour.fuel.Level,
+                playerBehaviour.extremeGearData.fuelVars.TornadoCostLvl1,
+                playerBehaviour.extremeGearData.fuelVars.TornadoCostLvl2,
+                playerBehaviour.extremeGearData.fuelVars.TornadoCostLvl3);
+        }
+
         #endregion
     }
 }

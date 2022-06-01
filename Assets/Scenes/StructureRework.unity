@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 60184856}
   - component: {fileID: 60184862}
   - component: {fileID: 60184863}
+  - component: {fileID: 60184864}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -158,17 +159,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9b562e519321b4e982241ca39ff3c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InputModule: {fileID: 0}
-  CharacterData: {fileID: 0}
-  DefaultPlayerStats: {fileID: 0}
-  ExtremeGearData: {fileID: 0}
-  speedStats: {fileID: 0}
   playerTransform: {fileID: 0}
   playerRigidbody: {fileID: 0}
-  AccelerationPack: {fileID: 0}
+  inputModule: {fileID: 0}
+  characterData: {fileID: 11400000, guid: 4e385a1055e3ad94aa8485b23e6d8f76, type: 2}
+  defaultPlayerStats: {fileID: 11400000, guid: 691ccab9c0c54a941afcb502a198639a, type: 2}
+  extremeGearData: {fileID: 11400000, guid: 7a52960fbfdffa94d983196b8e4761d2, type: 2}
+  speedStats: {fileID: 0}
   turnStats: {fileID: 0}
   jumpStats: {fileID: 0}
   fuelStats: {fileID: 0}
+  accelerationPack: {fileID: 0}
+  statLoaderPack: {fileID: 0}
+  gravityPack: {fileID: 0}
+  stateDeterminationPack: {fileID: 0}
+  jumpPack: {fileID: 0}
+  wallCollisionPack: {fileID: 0}
+  fuelPack: {fileID: 0}
+  driftPack: {fileID: 0}
   movement: {fileID: 0}
   fuel: {fileID: 0}
 --- !u!54 &60184857
@@ -182,7 +190,7 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
@@ -291,8 +299,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TopSpeed: 0
   MinSpeed: 0
-  Acceleration: 0
-  FastAccelleration: 0
+  Acceleration: 1
+  FastAccelleration: 1
   BoostSpeed: 0
   BoostChainModifier: 0
   BreakeDecelleration: 0
@@ -309,6 +317,41 @@ MonoBehaviour:
   JumpChargeDecelleration: 0
   CoolNewStat: 0
   MoreNewStats: 0
+--- !u!114 &60184864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60184855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18710a88d5f30474d928d577d08b4d7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 0
+  MaxSpeed: 1000
+  Acceleration: 0
+  Deceleration: 0
+  BoostTimer: 0
+  BoostLockTimer: 0
+  Rotation: 0
+  TurningRaw: 0
+  Turning: 0
+  DriftTurning: 0
+  DriftTimer: 0
+  JumpChargeDuration: 0
+  JumpCharge: 0
+  JumpSpeed: 0
+  JumpAccelleration: 0
+  Gravity: 0
+  Grounded: 0
+  TranslationState: 0
+  DriftState: 0
+  JumpState: 0
+  CorneringState: 0
+  SpeedState: 0
+  GroundedState: 0
 --- !u!1 &508370742
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,17 +481,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c9b562e519321b4e982241ca39ff3c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InputModule: {fileID: 0}
-  CharacterData: {fileID: 0}
-  DefaultPlayerStats: {fileID: 0}
-  ExtremeGearData: {fileID: 0}
-  speedStats: {fileID: 0}
   playerTransform: {fileID: 0}
   playerRigidbody: {fileID: 0}
-  AccelerationPack: {fileID: 0}
+  inputModule: {fileID: 0}
+  characterData: {fileID: 0}
+  defaultPlayerStats: {fileID: 0}
+  extremeGearData: {fileID: 0}
+  speedStats: {fileID: 0}
   turnStats: {fileID: 0}
   jumpStats: {fileID: 0}
   fuelStats: {fileID: 0}
+  accelerationPack: {fileID: 0}
+  statLoaderPack: {fileID: 0}
+  gravityPack: {fileID: 0}
+  stateDeterminationPack: {fileID: 0}
+  jumpPack: {fileID: 0}
+  wallCollisionPack: {fileID: 0}
+  fuelPack: {fileID: 0}
+  driftPack: {fileID: 0}
   movement: {fileID: 0}
   fuel: {fileID: 0}
 --- !u!114 &508370749

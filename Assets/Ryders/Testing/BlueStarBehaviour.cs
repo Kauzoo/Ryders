@@ -12,7 +12,7 @@ namespace Ryders.Core.Player
         // Start is called before the first frame update
         void Start()
         {
-            base.BaseStart();
+            base.Setup();
         }
 
         // Update is called once per frame
@@ -23,7 +23,7 @@ namespace Ryders.Core.Player
 
         private void FixedUpdate()
         {
-            
+            base.FixedUpdateTest();   
         }
     }
 }

@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Data;
+using System.IO;
 using System.Runtime.Serialization;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
@@ -13,8 +15,16 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     /// The non-static methods that can be overridden if needed all contain a default Implementation
     /// that uses their static Variant
     /// </summary>
-    public abstract class AccelerationPack : MonoBehaviour 
+    public abstract class AccelerationPack : MonoBehaviour
     {
+        protected PlayerBehaviour playerBehaviour;
+
+        public virtual void Setup()
+        {
+            if(TryGetComponent<PlayerBehaviour>(out var playerBehaviourOut))
+                playerBehaviour = playerBehaviourOut;
+        }
+
         /// <summary>
         /// This includes both Regular as well as FastAccel
         /// </summary>
