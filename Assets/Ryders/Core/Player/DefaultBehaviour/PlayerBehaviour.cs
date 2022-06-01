@@ -54,8 +54,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         public WallCollisionPack wallCollisionPack;
         public FuelPack fuelPack;
         public DriftPack driftPack;
-
-
+        
         [Header("RuntimeVarContainers")] public Movement movement;
         [Tooltip("Contains info about fuel")] public Fuel fuel;
 

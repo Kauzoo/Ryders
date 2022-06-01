@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: DefaultPlayerStats
   m_EditorClassIdentifier: 
   MinSpeedDefault: 130
-  FastAccelerationDefault: 0
-  Deceleration: 0
-  CorneringDeceleration: 0
-  TurnrateDefault: 0
+  FastAccelerationDefault: 1
+  Deceleration: 1
+  CorneringDeceleration: 1
+  TurnrateDefault: 1
   TurnSpeedLossCurveDefault:
     serializedVersion: 2
     m_Curve: []
@@ -29,22 +29,22 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  DriftTurnratePassiveDefault: 0
-  DriftTurnrateMinDefault: 0
-  DriftTurnrateDefault: 0
-  BreakeDecelerationDefault: 0
-  JumpSpeedMaxDefault: 0
+  DriftTurnratePassiveDefault: 1
+  DriftTurnrateMinDefault: 1
+  DriftTurnrateDefault: 1
+  BreakeDecelerationDefault: 1
+  JumpSpeedMaxDefault: 1
   JumpAccelDefault:
     serializedVersion: 2
     m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  JumpChargeMinSpeedDefault: 0
-  JumpChargeDecelerationDefault: 0
-  GravityMultiplierDefault: 0
-  WallBumpTimerDefault: 0
-  WallBumpSpeedDefault: 0
+  JumpChargeMinSpeedDefault: 1
+  JumpChargeDecelerationDefault: 1
+  GravityMultiplierDefault: 1
+  WallBumpTimerDefault: 1
+  WallBumpSpeedDefault: 1
   TopSpeedLevelUp: 13
   DriftCapLevelUp: 10
   BoostDuration: 30

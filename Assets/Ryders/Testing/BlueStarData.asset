@@ -31,7 +31,7 @@ MonoBehaviour:
     DriftDashChargeDuration: 60
     MinSpeed: 130
     FastAcceleration: 0
-    Turnrate: 0
+    Turnrate: 1
     TurnSpeedLossCurve:
       serializedVersion: 2
       m_Curve: []
@@ -44,22 +44,22 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    DriftTurnratePassive: 0
-    DriftTurnrateMin: 0
-    DriftTurnrate: 0
-    BreakeDeceleration: 0
-    JumpSpeedMax: 0
+    DriftTurnratePassive: 1
+    DriftTurnrateMin: 1
+    DriftTurnrate: 1
+    BreakeDeceleration: 1
+    JumpSpeedMax: 1
     JumpAccel:
       serializedVersion: 2
       m_Curve: []
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    JumpChargeMinSpeed: 0
-    JumpChargeDeceleration: 0
-    GravityMultiplier: 0
-    wallBumpTimer: 0
-    wallBumpSpeed: 0
+    JumpChargeMinSpeed: 1
+    JumpChargeDeceleration: 1
+    GravityMultiplier: 1
+    wallBumpTimer: 1
+    wallBumpSpeed: 1
   fuelVars:
     Fuel: 0
     JumpChargeMultiplier: 2
