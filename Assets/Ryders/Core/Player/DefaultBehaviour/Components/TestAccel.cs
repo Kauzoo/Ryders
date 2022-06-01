@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Ryders.Core.Player.DefaultBehaviour;
-using Ryders.Core.Player.ExtremeGear.Movement;
-using Ryders.Core.Player.ExtremeGear;
+using Ryders.Core.Player.DefaultBehaviour.Components;
 using UnityEngine;
 
 public class TestAccel : AccelerationPack
@@ -13,7 +12,7 @@ public class TestAccel : AccelerationPack
         return base.StandardAcceleration(dataContainer);
     }
 
-    public override float StandardDeceleration(PlayerBehaviour dataContainer, dynamic additionalArgument = null)
+    public override float StandardDeceleration(PlayerBehaviour dataContainer)
     {
         int i = 0;
         return base.StandardDeceleration(dataContainer);

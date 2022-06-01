@@ -4,11 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Runtime.Serialization;
-using Ryders.Core.Player.DefaultBehaviour;
-using Ryders.Core.Player.DefaultBehaviour.Components;
-using Ryders.Core.Player.ExtremeGear.Movement;
 
-namespace Ryders.Core.Player.ExtremeGear.Movement
+namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
     /// <summary>
     /// This Interface contains methods to calculate all kinds of Acceleration and Deceleration
@@ -66,8 +63,6 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
 
         public virtual float DownhillAcceleration(PlayerBehaviour dataContainer)
         {
-            if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
-            var pb = dataContainer as PlayerBehaviour;
             return DownhillAcceleration();
         }
 
@@ -108,11 +103,9 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             return speedLossPerFrame;
         }
 
-        public virtual float StandardDeceleration(PlayerBehaviour dataContainer, dynamic additionalArgument = null)
+        public virtual float StandardDeceleration(PlayerBehaviour dataContainer)
         {
-            if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
-            var pb = dataContainer as PlayerBehaviour;
-            return StandardDeceleration(pb.movement.Speed, pb.movement.MaxSpeed);
+            return StandardDeceleration(dataContainer.movement.Speed, dataContainer.movement.MaxSpeed);
         }
 
         public static float CorneringDeceleration(float speed, CorneringStates corneringStates)
@@ -123,9 +116,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
 
         public virtual float CorneringDeceleration(PlayerBehaviour dataContainer)
         {
-            if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
-            var pb = dataContainer as PlayerBehaviour;
-            return CorneringDeceleration(pb.movement.Speed, pb.movement.CorneringState);
+            return CorneringDeceleration(dataContainer.movement.Speed, dataContainer.movement.CorneringState);
         }
 
         public static float BreakingDeceleration(float speed)
@@ -136,9 +127,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
 
         public virtual float BreakingDeceleration(PlayerBehaviour dataContainer)
         {
-            if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
-            var pb = dataContainer as PlayerBehaviour;
-            return BreakingDeceleration(pb.movement.Speed);
+            return BreakingDeceleration(dataContainer.movement.Speed);
         }
 
         public static float JumpChargeDeceleration(float speed)
@@ -149,9 +138,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
 
         public virtual float JumpChargeDeceleration(PlayerBehaviour dataContainer)
         {
-            if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
-            var pb = dataContainer as PlayerBehaviour;
-            return JumpChargeDeceleration(pb.movement.Speed);
+            return JumpChargeDeceleration(dataContainer.movement.Speed);
         }
 
         public static float UphillDeceleration(float speed)
@@ -162,9 +149,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
 
         public virtual float UphillDeceleration(PlayerBehaviour dataContainer)
         {
-            if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
-            var pb = dataContainer as PlayerBehaviour;
-            return UphillDeceleration(pb.movement.Speed);
+            return UphillDeceleration(dataContainer.movement.Speed);
         }
 
         public static float OffroadDeceleration(float speed)
@@ -175,38 +160,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
 
         public virtual float OffroadDeceleration(PlayerBehaviour dataContainer)
         {
-            if (dataContainer is not PlayerBehaviour) throw new UnsupportedDataContainerException();
-            var pb = dataContainer as PlayerBehaviour;
-            return OffroadDeceleration(pb.movement.Speed);
-        }
-    }
-
-    [Serializable]
-    public class UnsupportedDataContainerException : Exception
-    {
-        //
-        // For guidelines regarding the creation of new exception types, see
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconerrorraisinghandlingguidelines.asp
-        // and
-        //    http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dncscol/html/csharp07192001.asp
-        //
-
-        public UnsupportedDataContainerException()
-        {
-        }
-
-        public UnsupportedDataContainerException(string message) : base(message)
-        {
-        }
-
-        public UnsupportedDataContainerException(string message, Exception inner) : base(message, inner)
-        {
-        }
-
-        protected UnsupportedDataContainerException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context)
-        {
+            return OffroadDeceleration(dataContainer.movement.Speed);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
     /// If you are implementing ExtremeGear that uses different Ground/Gravity Behaviour,
     /// derive from this class
     /// </summary>
-    public interface IGravityPack
+    public abstract class GravityPack : MonoBehaviour
     {
         // TODO: Implement Gravity Pack
         public static bool Grounded(Transform playerTransform, float maxGroundDistance, int groundLayerMask)

@@ -7,7 +7,7 @@ using Ryders.Core.Player.DefaultBehaviour;
 using Ryders.Core.Player.ExtremeGear;
 using UnityEngine;
 
-namespace Ryders.Core.Player
+namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
     public abstract class StatLoaderPack : MonoBehaviour
     {

@@ -2,10 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Ryders.Core.Player.ExtremeGear.Movement
+namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
-
-    public class JumpPack
+    public abstract class JumpPack : MonoBehaviour
     {
         // TODO: Implement JumpPack
     }

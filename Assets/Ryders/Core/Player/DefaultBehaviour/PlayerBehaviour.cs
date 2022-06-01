@@ -6,7 +6,6 @@ using Ryders.Core.Player.Character;
 using Ryders.Core.Player.ExtremeGear.Movement;
 using Ryders.Core.Player.ExtremeGear;
 using Ryders.Core.Player.DefaultBehaviour.Components;
-using Object = UnityEngine.Object;
 
 namespace Ryders.Core.Player.DefaultBehaviour
 {
@@ -47,6 +46,13 @@ namespace Ryders.Core.Player.DefaultBehaviour
         [Header("Packs")]
         public AccelerationPack accelerationPack;
         public StatLoaderPack statLoaderPack;
+        public GravityPack gravityPack;
+        public StateDeterminationPack stateDeterminationPack;
+        public JumpPack jumpPack;
+        public WallCollisionPack wallCollisionPack;
+        public FuelPack fuelPack;
+        public DriftPack driftPack;
+        
         
         [Header("RuntimeVarContainers")]
         public Movement movement;
@@ -65,7 +71,17 @@ namespace Ryders.Core.Player.DefaultBehaviour
         {
             Debug.Log("wtf");
             Debug.Log(this.ToString());
-            Debug.Log("" + accelerationPack.StandardAcceleration(this));
+            //Debug.Log("" + accelerationPack.StandardAcceleration(this));
+        }
+
+        public virtual void TestAcceleration()
+        {
+            movement.Speed = accelerationPack.StandardAcceleration(this);
+        }
+
+        public virtual void TestMove()
+        {
+            TestAcceleration();
         }
 
         public override string ToString()
