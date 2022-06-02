@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -18,8 +19,31 @@ namespace Ryders.Core.InputManagement
         {
             
         }
+
+        private void FixedUpdate()
+        {
+            throw new NotImplementedException();
+        }
         
         
+    }
+    
+    public class InputContainer : MonoBehaviour
+    {
+        [Header("Axis")]
+        public float VerticalAxis;
+        public float HorizontalAxis;
+
+        [Header("Directions")]
+        public bool Up;
+        public bool Down;
+        public bool Left;
+        public bool Right;
+
+        [Header("Functions")]
+        public bool Jump;
+        public bool Boost;
+        public bool Drift;     
     }
 
     [CreateAssetMenu(fileName = "PlayerInputData", menuName = "ScriptableObjects/PlayerInputBinds", order = 1)]
@@ -29,12 +53,15 @@ namespace Ryders.Core.InputManagement
         public string VerticalAxis;
         public string HorizontalAxis;
 
+        [Header("Directions")]
         public KeyCode Up;
         public KeyCode Down;
         public KeyCode Left;
         public KeyCode Right;
 
-        public bool Jump;
-        public bool 
+        [Header("Functions")]
+        public KeyCode Jump;
+        public KeyCode Boost;
+        public KeyCode Drift;
     }
 }
