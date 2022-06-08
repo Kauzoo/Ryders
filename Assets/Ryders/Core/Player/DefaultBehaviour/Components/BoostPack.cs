@@ -17,6 +17,8 @@ public abstract class BoostPack : MonoBehaviour
 
     /// <summary>
     /// Careful: Changes TranslationState to Boosting
+    /// This Method should always be written in such a way that it can only enter BoostState when not currently in
+    /// BoostState. It's not responsible for exiting BoostState again. 
     /// </summary>
     public virtual void Boost()
     {
@@ -34,11 +36,22 @@ public abstract class BoostPack : MonoBehaviour
         }
     }
 
-    public virtual void BoostTimer()
+    /// <summary>
+    /// Responsible for CountingDown the BoostTimer. Only counts down while in BoostState.
+    /// If BoostTimer drops below 0 it's reset to Zero.
+    /// BoostTimer is also reset to 0 when BoostState is left.
+    /// </summary>
+    public virtual void CountdownBoostTimer()
     {
-        if (playerBehaviour.movement.TranslationState == TranslationStates.Boosting && playerBehaviour.movement.BoostTimer > 0)
+        if (playerBehaviour.movement.TranslationState == TranslationStates.Boosting &&
+            playerBehaviour.movement.BoostTimer > 0)
         {
             playerBehaviour.movement.BoostTimer--;
+        }
+        // Reset BoostTimer to 0
+        if (playerBehaviour.movement.BoostTimer < 0 || playerBehaviour.movement.TranslationState != TranslationStates.Boosting)
+        {
+            playerBehaviour.movement.BoostTimer = 0;
         }
     }
     
