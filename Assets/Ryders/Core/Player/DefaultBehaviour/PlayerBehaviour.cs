@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Ryders.Core.InputManagement;
 using UnityEngine;
 using Ryders.Core.Player.Character;
 using Ryders.Core.Player.ExtremeGear.Movement;
@@ -28,7 +29,10 @@ namespace Ryders.Core.Player.DefaultBehaviour
         public Transform playerTransform;
         public Rigidbody playerRigidbody;
 
-        [Header("Input")] public GameObject inputModule;
+        [Header("Input")] public PlayerSignifier playerSignifier;
+        [SerializeReference] public MasterInput masterInput;
+        protected InputPlayer inputPlayer;
+        
 
         [Header("ScriptableObjects")]
         // Contains basic character data
@@ -128,7 +132,21 @@ namespace Ryders.Core.Player.DefaultBehaviour
                 fuel = fuelOut;
             else
                 Debug.LogError($"@{this.ToString()}.Setup(): Failed to find Fuel");
-            
+
+            masterInput = FindObjectOfType<MasterInput>();
+            if (!masterInput.Equals(null))
+            {
+                if (masterInput.players.TryGetValue(playerSignifier, out var inputPlayerOut))
+                {
+                    inputPlayer = inputPlayerOut;
+                }
+                Debug.LogError($"@{this.ToString()}.Setup(): Failed to retrieve InputPlayer");
+            }
+            else
+            {
+                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find MastInput Object in Scene");
+            }
+
             InherritanceTest();
         }
 
@@ -159,6 +177,11 @@ namespace Ryders.Core.Player.DefaultBehaviour
             statLoaderPack.LoadStatsMaster();
             TestMove();
             MasterMoveTest();
+            inputPlayer.GetInput();
+            if (inputPlayer.GetInputContainer().Boost)
+            {
+                Debug.Log("Boost");
+            }
         }
     }
 }

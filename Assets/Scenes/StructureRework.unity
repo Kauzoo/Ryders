@@ -167,7 +167,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 0}
   playerRigidbody: {fileID: 0}
-  inputModule: {fileID: 0}
+  playerSignifier: 0
+  masterInput: {fileID: 0}
   characterData: {fileID: 11400000, guid: 4e385a1055e3ad94aa8485b23e6d8f76, type: 2}
   defaultPlayerStats: {fileID: 11400000, guid: 691ccab9c0c54a941afcb502a198639a, type: 2}
   extremeGearData: {fileID: 11400000, guid: 7a52960fbfdffa94d983196b8e4761d2, type: 2}
@@ -600,7 +601,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 0}
   playerRigidbody: {fileID: 0}
-  inputModule: {fileID: 0}
+  playerSignifier: 0
+  masterInput: {fileID: 0}
   characterData: {fileID: 0}
   defaultPlayerStats: {fileID: 0}
   extremeGearData: {fileID: 0}
@@ -650,6 +652,53 @@ MonoBehaviour:
   JumpChargeDecelleration: 0
   CoolNewStat: 0
   MoreNewStats: 0
+--- !u!1 &588766021
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 588766022}
+  - component: {fileID: 588766023}
+  m_Layer: 0
+  m_Name: InputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &588766022
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 588766021}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.40999985, y: 0.25, z: -7.08}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &588766023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 588766021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6198f6505f71a844e93098b46deade51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  initialPlayers: 0100000000000000
+  DefaultPlayerInputBindsKeyboard: {fileID: 11400000, guid: 0fef71bd13e84db49b25d788adbd4b8a, type: 2}
+  DefaultPlayerInputBindsGamepad: {fileID: 11400000, guid: 24924c7a797bc1346ae53d930421261a, type: 2}
 --- !u!1 &1759128871
 GameObject:
   m_ObjectHideFlags: 0
