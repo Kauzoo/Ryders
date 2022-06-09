@@ -48,13 +48,16 @@ public abstract class BoostPack : MonoBehaviour
         {
             playerBehaviour.movement.BoostTimer--;
         }
-        // Reset BoostTimer to 0
-        if (playerBehaviour.movement.BoostTimer < 0 || playerBehaviour.movement.TranslationState != TranslationStates.Boosting)
+        else
         {
+            // Otherwise Reset BoostTimer to 0
             playerBehaviour.movement.BoostTimer = 0;
         }
     }
     
+    /// <summary>
+    /// This method should only be called from inside the Boost method
+    /// </summary>
     public virtual void BoostChain()
     {
         playerBehaviour.movement.Speed *= playerBehaviour.speedStats.BoostChainModifier;
