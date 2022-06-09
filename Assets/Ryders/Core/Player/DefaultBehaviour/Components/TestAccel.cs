@@ -6,20 +6,13 @@ using UnityEngine;
 
 public class TestAccel : AccelerationPack
 {
-    public override float StandardAcceleration(PlayerBehaviour dataContainer)
+    public override float StandardAcceleration()
     {
-        return base.StandardAcceleration(dataContainer);
+        return base.StandardAcceleration();
     }
 
-    public override float StandardDeceleration(PlayerBehaviour dataContainer)
+    public override float StandardDeceleration()
     {
-        int i = 0;
-        base.Setup();
-        return base.StandardDeceleration(dataContainer);
-    }
-
-    public override void Setup()
-    {
-        base.Setup();
+        return base.StandardDeceleration();
     }
 }

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DefaultPlayerStats
   m_EditorClassIdentifier: 
   MinSpeedDefault: 130
-  FastAccelerationDefault: 1
-  Deceleration: 1
+  FastAccelerationDefault: 5
+  Deceleration: 5
   CorneringDeceleration: 1
   TurnrateDefault: 1
   TurnSpeedLossCurveDefault:

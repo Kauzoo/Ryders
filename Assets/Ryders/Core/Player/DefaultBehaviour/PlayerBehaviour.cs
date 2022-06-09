@@ -164,7 +164,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         
         public virtual void TestAcceleration()
         {
-            movement.Speed += accelerationPack.StandardAcceleration(this) + accelerationPack.StandardDeceleration(this);
+            movement.Speed += accelerationPack.StandardAcceleration() + accelerationPack.StandardDeceleration();
         }
 
         public virtual void TestBoost()
@@ -175,6 +175,10 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public virtual void TestMove()
         {
+            if (movement.BoostTimer == 0)
+            {
+                movement.MaxSpeed = speedStats.TopSpeed;
+            }
             TestAcceleration();
             TestBoost();
         }

@@ -19,12 +19,12 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     {
         protected PlayerBehaviour playerBehaviour;
 
-        public virtual void Setup()
+        private void Start()
         {
-            if(TryGetComponent<PlayerBehaviour>(out var playerBehaviourOut))
-                playerBehaviour = playerBehaviourOut;
+            playerBehaviour = GetComponent<PlayerBehaviour>();
         }
-
+        
+        // TODO Add in MediumAccel
         /// <summary>
         /// This includes both Regular as well as FastAccel
         /// </summary>
@@ -56,26 +56,13 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
             return speedGainPerFrame;
         }
-
-        public virtual float StandardAcceleration(PlayerBehaviour dataContainer)
-        {
-            return StandardAcceleration(dataContainer.movement.Speed, dataContainer.movement.MaxSpeed, dataContainer.speedStats.FastAccelleration,
-                dataContainer.speedStats.Acceleration, dataContainer.movement.CorneringState, dataContainer.movement.DriftState,
-                dataContainer.movement.GroundedState);
-        }
-
         
         public static float DownhillAcceleration()
         {
             // TODO: Implement DownhillDeceleration
             throw new NotImplementedException();
         }
-
-        public virtual float DownhillAcceleration(PlayerBehaviour dataContainer)
-        {
-            return DownhillAcceleration();
-        }
-
+        
         /// <summary>
         /// Calcualte the current Decel using Formula from SRDX.
         /// StandardDeceleration is always applied when the player is above MaxSpeed
@@ -86,7 +73,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public static float StandardDeceleration(float speed, float maxSpeed)
         {
             // Calculate OvermaxSpeed
-            float overmaxSpeed = speed - maxSpeed;
+            var overmaxSpeed = speed - maxSpeed;
             float speedLossPerFrame = 0;
             // Do not Decelerate when the player is not over MaxSpeed
             if (overmaxSpeed < 0)
@@ -97,11 +84,13 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // Determine which formula to use based on MaxSpeed and apply
             if (maxSpeed > 200)
             {
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f) / 1000;
+                // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f) / 1000; OG SRDX
+                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f) / 10;
             }
             else
             {
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f) / 1000;
+                //speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f) / 1000; OG SRDX
+                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f) / 10;
             }
 
             // SpeedLoss is capped at 10 units per frame
@@ -109,57 +98,32 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             {
                 speedLossPerFrame = 10;
             }
-
-            return speedLossPerFrame;
+            Debug.Log("SpeedLossPerFrame:" + speedLossPerFrame);
+            return speedLossPerFrame * (-1);
         }
-
-        public virtual float StandardDeceleration(PlayerBehaviour dataContainer)
-        {
-            return StandardDeceleration(dataContainer.movement.Speed, dataContainer.movement.MaxSpeed);
-        }
-
+        
         public static float CorneringDeceleration(float speed, CorneringStates corneringStates)
         {
             // TODO: Implement CorneringDeceleration
             throw new NotImplementedException();
         }
-
-        public virtual float CorneringDeceleration(PlayerBehaviour dataContainer)
-        {
-            return CorneringDeceleration(dataContainer.movement.Speed, dataContainer.movement.CorneringState);
-        }
-
+        
         public static float BreakingDeceleration(float speed)
         {
             // TODO: Implement BreakingDeceleration
             throw new NotImplementedException();
         }
-
-        public virtual float BreakingDeceleration(PlayerBehaviour dataContainer)
-        {
-            return BreakingDeceleration(dataContainer.movement.Speed);
-        }
-
+        
         public static float JumpChargeDeceleration(float speed)
         {
             // TODO: Implement JumpChargeDeceleration
             throw new NotImplementedException();
         }
-
-        public virtual float JumpChargeDeceleration(PlayerBehaviour dataContainer)
-        {
-            return JumpChargeDeceleration(dataContainer.movement.Speed);
-        }
-
+        
         public static float UphillDeceleration(float speed)
         {
             // TODO: Implement UphillDeceleration
             throw new NotImplementedException();
-        }
-
-        public virtual float UphillDeceleration(PlayerBehaviour dataContainer)
-        {
-            return UphillDeceleration(dataContainer.movement.Speed);
         }
 
         public static float OffroadDeceleration(float speed)
@@ -167,10 +131,17 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO: Implement OffroadDeceleration
             throw new NotImplementedException();
         }
-
-        public virtual float OffroadDeceleration(PlayerBehaviour dataContainer)
+        
+        public virtual float StandardAcceleration()
         {
-            return OffroadDeceleration(dataContainer.movement.Speed);
+            return StandardAcceleration(playerBehaviour.movement.Speed, playerBehaviour.movement.MaxSpeed, playerBehaviour.speedStats.FastAccelleration,
+                playerBehaviour.speedStats.Acceleration, playerBehaviour.movement.CorneringState, playerBehaviour.movement.DriftState,
+                playerBehaviour.movement.GroundedState);
+        }
+        
+        public virtual float StandardDeceleration()
+        {
+            return StandardDeceleration(playerBehaviour.movement.Speed, playerBehaviour.movement.MaxSpeed);
         }
     }
 }

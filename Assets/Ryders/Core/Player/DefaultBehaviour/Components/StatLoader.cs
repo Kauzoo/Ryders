@@ -7,22 +7,35 @@ using Ryders.Core.Player.DefaultBehaviour;
 using Ryders.Core.Player.ExtremeGear;
 using UnityEngine;
 
+
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
     public abstract class StatLoaderPack : MonoBehaviour
     {
+        /*
+        * NOTES
+        * Apparently this is
+         * The math is:
+            (TypeTopSpeedAtLevel * CharacterTopSpeedMultiplier) + GearTopSpeedBonus
+
+            It just so happens I make TypeTopSpeedAtLevel increase by 13 per level.
+            for the calc of the CharacterTopSpeed (offset) (Source: AirKingNeo)
+            TypeTopSpeedAtLevel is apparently 216 (Source: AirKingNeo)
+         */
+
         // TODO Implement this in a mors sensible way
         /**
          *  HIDDEN GLOBAL STATS
          */
         private const int FlyTypeTopSpeedLoss = -7;
+
         private const int PowerTypeSpeedLoss = -4;
-        private const int GlobalBoostDuration = 30;
-        
+        private const int GlobalBoostDuration = 120; // BaseBoostDuration if Frames
+
         public PlayerBehaviour playerBehaviour;
 
         // TODO Implement FastAccel for SpeedTypes and Off-Road resistance for PowerType 
-        
+
         public virtual void Setup()
         {
             playerBehaviour = GetComponent<PlayerBehaviour>();
@@ -78,12 +91,13 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             return statsType switch
             {
-                CharacterType.Speed =>  (defaultTopSpeedLevelUp * (level - 1)) + characterTopSpeed + gearTopSpeed,
-                CharacterType.Fly => (defaultTopSpeedLevelUp * (level - 1)) + characterTopSpeed + gearTopSpeed - 7,
-                CharacterType.Power => (defaultTopSpeedLevelUp * (level - 1)) + characterTopSpeed + gearTopSpeed -4,
+                CharacterType.Speed => (defaultTopSpeedLevelUp * (level - 1)) + characterTopSpeed + gearTopSpeed,
+                CharacterType.Fly => (defaultTopSpeedLevelUp * (level - 1)) + characterTopSpeed + gearTopSpeed +
+                                     FlyTypeTopSpeedLoss,
+                CharacterType.Power => (defaultTopSpeedLevelUp * (level - 1)) + characterTopSpeed + gearTopSpeed +
+                                       PowerTypeSpeedLoss,
                 _ => throw new System.NotImplementedException("Invalid Level")
             };
-            return (defaultTopSpeedLevelUp * (level - 1)) + characterTopSpeed + gearTopSpeed;
         }
 
         public static float LoadMinSpeed(int level, float defaultMinSpeedDefault)
@@ -129,9 +143,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             return level switch
             {
-                1 => defaultBoostDuration * (level - 1) + characterBoostDurationLvl1,
-                2 => defaultBoostDuration * (level - 1) + characterBoostDurationLvl2,
-                3 => defaultBoostDuration * (level - 1) + characterBoostDurationLvl3,
+                1 => defaultBoostDuration * (level - 1) + characterBoostDurationLvl1 + GlobalBoostDuration,
+                2 => defaultBoostDuration * (level - 1) + characterBoostDurationLvl2 + GlobalBoostDuration,
+                3 => defaultBoostDuration * (level - 1) + characterBoostDurationLvl3 + GlobalBoostDuration,
                 _ => throw new System.NotImplementedException("Invalid Level")
             };
         }
@@ -438,7 +452,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         public virtual void LoadTurnrateCurve()
         {
-            playerBehaviour.turnStats.TurnrateCurve = LoadTurnrateCurve(playerBehaviour.defaultPlayerStats.TurnrateCurveDefault);
+            playerBehaviour.turnStats.TurnrateCurve =
+                LoadTurnrateCurve(playerBehaviour.defaultPlayerStats.TurnrateCurveDefault);
         }
 
         public virtual void LoadDriftTurnratePassive()
@@ -462,7 +477,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         //Jump
         public virtual void LoadJumpSpeedMax()
         {
-            playerBehaviour.jumpStats.JumpSpeedMax = LoadJumpSpeedMax(playerBehaviour.defaultPlayerStats.JumpSpeedMaxDefault);
+            playerBehaviour.jumpStats.JumpSpeedMax =
+                LoadJumpSpeedMax(playerBehaviour.defaultPlayerStats.JumpSpeedMaxDefault);
         }
 
         public virtual void LoadJumpAccelleration()
