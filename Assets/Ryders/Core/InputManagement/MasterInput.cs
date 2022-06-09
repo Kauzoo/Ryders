@@ -20,12 +20,16 @@ namespace Ryders.Core.InputManagement
         
         public PlayerInputBinds DefaultPlayerInputBindsKeyboard;
         public PlayerInputBinds DefaultPlayerInputBindsGamepad;
-        
+
+        private void Awake()
+        {
+            Setup();
+        }
 
         // Start is called before the first frame update
         void Start()
         {
-            Setup();
+            //Setup();
         }
 
         // Update is called once per frame
@@ -41,6 +45,7 @@ namespace Ryders.Core.InputManagement
             {
                 if (initialPlayers[i])
                 {
+                    Debug.Log("test");
                     players.Add((PlayerSignifier)i,
                         new InputPlayer((PlayerSignifier)i,
                             new List<PlayerInputBinds>()

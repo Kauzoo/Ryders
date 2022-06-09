@@ -17,9 +17,16 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         public virtual void DetermineTranslationState()
         {
-            if (playerBehaviour.movement.TranslationState == TranslationStates.Boosting)
+            // Change State to stationary when the players Speed is 0
+            if (playerBehaviour.movement.Speed == 0)
             {
-
+                playerBehaviour.movement.TranslationState = TranslationStates.Stationary;
+            }
+            // Only enter go to EnterBoost when player is not Boosting
+            if (playerBehaviour.inputPlayer.GetInputContainer().Boost && playerBehaviour.movement.TranslationState != TranslationStates.Boosting)
+            {
+                // EnteredBoost State is responsible for entering a Boost
+                playerBehaviour.movement.TranslationState = TranslationStates.EnteredBoost;
             }
         }
     }

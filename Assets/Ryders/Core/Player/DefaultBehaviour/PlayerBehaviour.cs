@@ -139,11 +139,17 @@ namespace Ryders.Core.Player.DefaultBehaviour
                 Debug.LogError($"@{this.ToString()}.Setup(): Failed to find Fuel");
 
             masterInput = FindObjectOfType<MasterInput>();
+            Debug.Log("hello");
             if (!masterInput.Equals(null))
             {
+                if (masterInput.players.Equals(null))
+                {
+                    Debug.Log("Wtf");
+                }
                 if (masterInput.players.TryGetValue(playerSignifier, out var inputPlayerOut))
                 {
                     inputPlayer = inputPlayerOut;
+                    Debug.Log("Was geht");
                 }
                 else
                 {
@@ -163,10 +169,8 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public virtual void TestBoost()
         {
-            if (inputPlayer.GetInputContainer().Boost)
-            {
-                boostPack.Boost();
-            }
+            boostPack.DetermineBoostState();
+            boostPack.Boost();
         }
 
         public virtual void TestMove()
@@ -306,7 +310,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             Stationary,
             Cruising,
-            Boosting
+            Boosting,
+            EnteredBoost
         }
 
         public enum SpeedStates

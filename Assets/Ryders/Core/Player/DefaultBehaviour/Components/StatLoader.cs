@@ -11,8 +11,18 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
     public abstract class StatLoaderPack : MonoBehaviour
     {
+        // TODO Implement this in a mors sensible way
+        /**
+         *  HIDDEN GLOBAL STATS
+         */
+        private const int FlyTypeTopSpeedLoss = -7;
+        private const int PowerTypeSpeedLoss = -4;
+        private const int GlobalBoostDuration = 30;
+        
         public PlayerBehaviour playerBehaviour;
 
+        // TODO Implement FastAccel for SpeedTypes and Off-Road resistance for PowerType 
+        
         public virtual void Setup()
         {
             playerBehaviour = GetComponent<PlayerBehaviour>();
@@ -55,10 +65,25 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         #region StaticMethods
 
+        /// <summary>
+        /// Note: Since this involves a LvLUp Stat the LvL is reduced by one
+        /// </summary>
+        /// <param name="level"></param>
+        /// <param name="defaultTopSpeedLevelUp"></param>
+        /// <param name="characterTopSpeed"></param>
+        /// <param name="gearTopSpeed"></param>
+        /// <returns></returns>
         public static float LoadTopSpeed(int level, float defaultTopSpeedLevelUp, float characterTopSpeed,
-            float gearTopSpeed)
+            float gearTopSpeed, CharacterType statsType)
         {
-            return (defaultTopSpeedLevelUp * level) + characterTopSpeed + gearTopSpeed;
+            return statsType switch
+            {
+                CharacterType.Speed =>  (defaultTopSpeedLevelUp * (level - 1)) + characterTopSpeed + gearTopSpeed,
+                CharacterType.Fly => (defaultTopSpeedLevelUp * (level - 1)) + characterTopSpeed + gearTopSpeed - 7,
+                CharacterType.Power => (defaultTopSpeedLevelUp * (level - 1)) + characterTopSpeed + gearTopSpeed -4,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
+            return (defaultTopSpeedLevelUp * (level - 1)) + characterTopSpeed + gearTopSpeed;
         }
 
         public static float LoadMinSpeed(int level, float defaultMinSpeedDefault)
@@ -90,7 +115,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         }
 
         /// <summary>
-        /// 
+        /// Note: Since this involves a LvLUp Stat the LvL is reduced by one
         /// </summary>
         /// <param name="level"></param>
         /// <param name="defaultBoostDuration"></param>
@@ -104,9 +129,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             return level switch
             {
-                1 => defaultBoostDuration * level + characterBoostDurationLvl1,
-                2 => defaultBoostDuration * level + characterBoostDurationLvl2,
-                3 => defaultBoostDuration * level + characterBoostDurationLvl3,
+                1 => defaultBoostDuration * (level - 1) + characterBoostDurationLvl1,
+                2 => defaultBoostDuration * (level - 1) + characterBoostDurationLvl2,
+                3 => defaultBoostDuration * (level - 1) + characterBoostDurationLvl3,
                 _ => throw new System.NotImplementedException("Invalid Level")
             };
         }
@@ -141,10 +166,18 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             };
         }
 
+        /// <summary>
+        /// Note: Since this involves a LvLUp Stat the LvL is reduced by one
+        /// </summary>
+        /// <param name="level"></param>
+        /// <param name="defaultDriftCapLevelUp"></param>
+        /// <param name="characterDrift"></param>
+        /// <param name="gearDriftCap"></param>
+        /// <returns></returns>
         public static float LoadDriftCap(int level, float defaultDriftCapLevelUp, float characterDrift,
             float gearDriftCap)
         {
-            return (defaultDriftCapLevelUp * level) + characterDrift + gearDriftCap;
+            return (defaultDriftCapLevelUp * (level - 1)) + characterDrift + gearDriftCap;
         }
 
         public static float LoadDrifDashFrames(float gearDriftDashChargeDuration)
@@ -304,7 +337,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             playerBehaviour.speedStats.TopSpeed = LoadTopSpeed(playerBehaviour.fuel.Level,
                 playerBehaviour.defaultPlayerStats.TopSpeedLevelUp, playerBehaviour.characterData.TopSpeed,
-                playerBehaviour.extremeGearData.movementVars.TopSpeed);
+                playerBehaviour.extremeGearData.movementVars.TopSpeed, playerBehaviour.characterData.StatsType);
         }
 
         public virtual void LoadMinSpeed()
