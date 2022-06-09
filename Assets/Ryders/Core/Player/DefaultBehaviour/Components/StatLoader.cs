@@ -25,7 +25,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             LoadFastAcceleration();
             LoadBoostSpeed();
             LoadBoostChainModifier();
-            LoadBoostDuration();
             LoadBreakeDecelleration();
             LoadDriftDashSpeed();
             LoadDriftCap();
@@ -80,35 +79,18 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public static float LoadBoostSpeed(int level, float characterBoostSpeed, float gearBoostSpeedLvl1,
             float gearBoostSpeedLvl2, float gearBoostSpeedLvl3)
         {
-            return level switch
+            switch (level)
             {
-                1 => characterBoostSpeed + gearBoostSpeedLvl1,
-                2 => characterBoostSpeed + gearBoostSpeedLvl2,
-                3 => characterBoostSpeed + gearBoostSpeedLvl3,
-                _ => throw new System.NotImplementedException("Invalid Level")
-            };
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="level"></param>
-        /// <param name="defaultBoostDuration"></param>
-        /// <param name="characterBoostDurationLvl1"></param>
-        /// <param name="characterBoostDurationLvl2"></param>
-        /// <param name="characterBoostDurationLvl3"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public static float LoadBoostDuration(int level, float defaultBoostDuration, float characterBoostDurationLvl1,
-            float characterBoostDurationLvl2, float characterBoostDurationLvl3)
-        {
-            return level switch
-            {
-                1 => defaultBoostDuration * level + characterBoostDurationLvl1,
-                2 => defaultBoostDuration * level + characterBoostDurationLvl2,
-                3 => defaultBoostDuration * level + characterBoostDurationLvl3,
-                _ => throw new System.NotImplementedException("Invalid Level")
-            };
+                case 1:
+                    return characterBoostSpeed + gearBoostSpeedLvl1;
+                case 2:
+                    return characterBoostSpeed + gearBoostSpeedLvl2;
+                case 3:
+                    return characterBoostSpeed + gearBoostSpeedLvl3;
+                default:
+                    Debug.LogWarning("Unimplemented Player level");
+                    throw new System.NotImplementedException("Invalid Level");
+            }
         }
 
         /// <summary>
@@ -132,13 +114,19 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public static float LoadDriftDashSpeed(int level, float characterDrift, float gearDriftDashSpeedLvl1,
             float gearDriftDashSpeedLvl2, float gearDriftDashSpeedLvl3)
         {
-            return level switch
+            switch (level)
             {
-                1 => characterDrift + gearDriftDashSpeedLvl1,
-                2 => characterDrift + gearDriftDashSpeedLvl2,
-                3 => characterDrift + gearDriftDashSpeedLvl3,
-                _ => throw new System.NotImplementedException("Invalid Level")
-            };
+                case 1:
+                    return characterDrift + gearDriftDashSpeedLvl1;
+                case 2:
+                    return characterDrift + gearDriftDashSpeedLvl2;
+                case 3:
+                    return characterDrift + gearDriftDashSpeedLvl3;
+                    break;
+                default:
+                    Debug.LogWarning("Invalid Level");
+                    throw new System.NotImplementedException("Invalid Level");
+            }
         }
 
         public static float LoadDriftCap(int level, float defaultDriftCapLevelUp, float characterDrift,
@@ -337,13 +325,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             playerBehaviour.speedStats.BoostChainModifier = LoadBoostChainModifier(
                 playerBehaviour.characterData.BoostChainModifier,
                 playerBehaviour.extremeGearData.movementVars.BoostChainModifier);
-        }
-
-        public virtual void LoadBoostDuration()
-        {
-            playerBehaviour.speedStats.BoostDuration = LoadBoostDuration(playerBehaviour.fuel.Level,
-                playerBehaviour.defaultPlayerStats.BoostDuration, playerBehaviour.characterData.BoostDurationLvl1,
-                playerBehaviour.characterData.BoostDurationLvl2, playerBehaviour.characterData.BoostDurationLvl3);
         }
 
         public virtual void LoadBreakeDecelleration()

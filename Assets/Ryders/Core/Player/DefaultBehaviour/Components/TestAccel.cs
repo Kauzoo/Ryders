@@ -8,6 +8,7 @@ public class TestAccel : AccelerationPack
 {
     public override float StandardAcceleration(PlayerBehaviour dataContainer)
     {
+        Debug.Log("Override Test");
         return base.StandardAcceleration(dataContainer);
     }
 

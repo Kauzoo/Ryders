@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Ryders.Core.InputManagement;
 using UnityEngine;
 using Ryders.Core.Player.Character;
 using Ryders.Core.Player.ExtremeGear.Movement;
@@ -29,10 +28,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         public Transform playerTransform;
         public Rigidbody playerRigidbody;
 
-        [Header("Input")] public PlayerSignifier playerSignifier;
-        [SerializeReference] public MasterInput masterInput;
-        public InputPlayer inputPlayer;
-        
+        [Header("Input")] public GameObject inputModule;
 
         [Header("ScriptableObjects")]
         // Contains basic character data
@@ -58,7 +54,6 @@ namespace Ryders.Core.Player.DefaultBehaviour
         public WallCollisionPack wallCollisionPack;
         public FuelPack fuelPack;
         public DriftPack driftPack;
-        public BoostPack boostPack;
         
         [Header("RuntimeVarContainers")] public Movement movement;
         [Tooltip("Contains info about fuel")] public Fuel fuel;
@@ -123,10 +118,6 @@ namespace Ryders.Core.Player.DefaultBehaviour
                 driftPack = driftPackOut;
             else
                 Debug.LogError($"@{this.ToString()}.Setup(): Failed to find DriftPack");
-            if (TryGetComponent<BoostPack>(out var boostPackOut))
-                boostPack = boostPackOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find BoostPack");
             
             // RUNTIME
             if(TryGetComponent<Movement>(out var movementOut))
@@ -137,42 +128,25 @@ namespace Ryders.Core.Player.DefaultBehaviour
                 fuel = fuelOut;
             else
                 Debug.LogError($"@{this.ToString()}.Setup(): Failed to find Fuel");
-
-            masterInput = FindObjectOfType<MasterInput>();
-            if (!masterInput.Equals(null))
-            {
-                if (masterInput.players.TryGetValue(playerSignifier, out var inputPlayerOut))
-                {
-                    inputPlayer = inputPlayerOut;
-                }
-                else
-                {
-                    Debug.LogError($"@{this.ToString()}.Setup(): Failed to retrieve InputPlayer");
-                }
-            }
-            else
-            {
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find MastInput Object in Scene");
-            }
+            
+            InherritanceTest();
         }
-        
+
+        public virtual void InherritanceTest()
+        {
+            Debug.Log("wtf");
+            Debug.Log(this.ToString());
+            //Debug.Log("" + accelerationPack.StandardAcceleration(this));
+        }
+
         public virtual void TestAcceleration()
         {
-            movement.Speed += accelerationPack.StandardAcceleration(this) + accelerationPack.StandardDeceleration(this);
-        }
-
-        public virtual void TestBoost()
-        {
-            if (inputPlayer.GetInputContainer().Boost)
-            {
-                boostPack.Boost();
-            }
+            movement.Speed += accelerationPack.StandardAcceleration(this);
         }
 
         public virtual void TestMove()
         {
             TestAcceleration();
-            TestBoost();
         }
 
         public virtual void MasterMoveTest()
@@ -185,11 +159,6 @@ namespace Ryders.Core.Player.DefaultBehaviour
             statLoaderPack.LoadStatsMaster();
             TestMove();
             MasterMoveTest();
-            inputPlayer.GetInput();
-            if (inputPlayer.GetInputContainer().Boost)
-            {
-                Debug.Log("Boost");
-            }
         }
     }
 }
@@ -215,7 +184,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             /// From SRDX Datasheets
             /// </summary>
             public float BoostChainModifier;
-            public float BoostDuration;
 
             [Header("Breake")] public float BreakeDecelleration;
             [Header("Drift")] public float DriftDashSpeed;
@@ -312,7 +280,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public enum SpeedStates
         {
             LowSpeed,
-            MediumSpeed,
             HighSpeed
         }
 
