@@ -17,11 +17,11 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     /// </summary>
     public abstract class AccelerationPack : MonoBehaviour
     {
-        protected PlayerBehaviour playerBehaviour;
+        private PlayerBehaviour _playerBehaviour;
 
         private void Start()
         {
-            playerBehaviour = GetComponent<PlayerBehaviour>();
+            _playerBehaviour = GetComponent<PlayerBehaviour>();
         }
         
         // TODO Add in MediumAccel
@@ -130,17 +130,25 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO: Implement OffroadDeceleration
             throw new NotImplementedException();
         }
-        
-        public virtual float StandardAcceleration()
+
+        public virtual void MasterAcceleration()
         {
-            return StandardAcceleration(playerBehaviour.movement.Speed, playerBehaviour.movement.MaxSpeed, playerBehaviour.speedStats.FastAccelleration,
-                playerBehaviour.speedStats.Acceleration, playerBehaviour.movement.CorneringState, playerBehaviour.movement.DriftState,
-                playerBehaviour.movement.GroundedState);
+            // TODO Add other Accelerations and Decelerations
+            // TODO Make sure Standards only accelerate / decelerate to MaxSpeed
+            _playerBehaviour.movement.Speed += StandardAcceleration() + StandardDeceleration();
+        }
+            
+        protected virtual float StandardAcceleration()
+        {
+            return StandardAcceleration(_playerBehaviour.movement.Speed, _playerBehaviour.movement.MaxSpeed, _playerBehaviour.speedStats.FastAccelleration,
+                _playerBehaviour.speedStats.Acceleration, _playerBehaviour.movement.CorneringState, _playerBehaviour.movement.DriftState,
+                _playerBehaviour.movement.GroundedState);
+            
         }
         
-        public virtual float StandardDeceleration()
+        protected virtual float StandardDeceleration()
         {
-            return StandardDeceleration(playerBehaviour.movement.Speed, playerBehaviour.movement.MaxSpeed);
+            return StandardDeceleration(_playerBehaviour.movement.Speed, _playerBehaviour.movement.MaxSpeed);
         }
     }
 }

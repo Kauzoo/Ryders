@@ -79,6 +79,6 @@ public abstract class BoostPack : MonoBehaviour
     /// </summary>
     protected virtual void BoostChain()
     {
-        playerBehaviour.movement.Speed *= playerBehaviour.speedStats.BoostChainModifier;
+        playerBehaviour.movement.Speed += playerBehaviour.movement.Speed * playerBehaviour.speedStats.BoostChainModifier;
     }
 }

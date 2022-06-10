@@ -164,7 +164,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         
         public virtual void TestAcceleration()
         {
-            movement.Speed += accelerationPack.StandardAcceleration() + accelerationPack.StandardDeceleration();
+            accelerationPack.MasterAcceleration();
         }
 
         public virtual void TestBoost()
