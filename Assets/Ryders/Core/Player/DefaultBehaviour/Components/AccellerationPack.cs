@@ -17,12 +17,13 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     public abstract class AccelerationPack : MonoBehaviour
     {
         private PlayerBehaviour _playerBehaviour;
+        private const int JumpChargeTargetSpeed = 80;
 
         private void Start()
         {
             _playerBehaviour = GetComponent<PlayerBehaviour>();
         }
-        
+
         // TODO Add in MediumAccel
         /// <summary>
         /// This includes both Regular as well as FastAccel
@@ -55,13 +56,13 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
             return speedGainPerFrame;
         }
-        
+
         public static float DownhillAcceleration()
         {
             // TODO: Implement DownhillDeceleration
             throw new NotImplementedException();
         }
-        
+
         /// <summary>
         /// Calcualte the current Decel using Formula from SRDX.
         /// StandardDeceleration is always applied when the player is above MaxSpeed
@@ -84,12 +85,12 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             if (maxSpeed > 200)
             {
                 // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f) / 1000; OG SRDX
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f) / 10;
+                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f);
             }
             else
             {
                 //speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f) / 1000; OG SRDX
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f) / 10;
+                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f);
             }
 
             // SpeedLoss is capped at 10 units per frame
@@ -97,27 +98,28 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             {
                 speedLossPerFrame = 10;
             }
+
             return speedLossPerFrame * (-1);
         }
-        
+
         public static float CorneringDeceleration(float speed, CorneringStates corneringStates)
         {
             // TODO: Implement CorneringDeceleration
             throw new NotImplementedException();
         }
-        
+
         public static float BreakingDeceleration(float speed)
         {
             // TODO: Implement BreakingDeceleration
             throw new NotImplementedException();
         }
-        
-        public static float JumpChargeDeceleration(float speed)
+
+        public static float JumpChargeDeceleration(float speed, float minSpeed, bool grounded, bool jumpInput)
         {
             // TODO: Implement JumpChargeDeceleration
             throw new NotImplementedException();
         }
-        
+
         public static float UphillDeceleration(float speed)
         {
             // TODO: Implement UphillDeceleration
@@ -134,22 +136,30 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             // TODO Add other Accelerations and Decelerations
             // TODO Make sure Standards only accelerate / decelerate to MaxSpeed
+            JumpChargeDeceleration();
             _playerBehaviour.movement.Speed += StandardAcceleration() + StandardDeceleration();
         }
-            
+
         protected virtual float StandardAcceleration()
         {
-            return StandardAcceleration(_playerBehaviour.movement.Speed, _playerBehaviour.movement.MaxSpeed, _playerBehaviour.speedStats.FastAccelleration,
-                _playerBehaviour.speedStats.Acceleration, _playerBehaviour.movement.CorneringState, _playerBehaviour.movement.DriftState,
+            return StandardAcceleration(_playerBehaviour.movement.Speed,
+                _playerBehaviour.movement.MaxSpeed, _playerBehaviour.speedStats.FastAccelleration,
+                _playerBehaviour.speedStats.Acceleration, _playerBehaviour.movement.CorneringState,
+                _playerBehaviour.movement.DriftState,
                 _playerBehaviour.movement.GroundedState);
-            
         }
-        
+
         protected virtual float StandardDeceleration()
         {
             return StandardDeceleration(_playerBehaviour.movement.Speed, _playerBehaviour.movement.MaxSpeed);
         }
+
+        protected virtual void JumpChargeDeceleration()
+        {
+            if (_playerBehaviour.inputPlayer.GetInputContainer().Jump && _playerBehaviour.movement.Grounded)
+            {
+                _playerBehaviour.movement.MaxSpeed = JumpChargeTargetSpeed;
+            }
+        }
     }
 }
-
-

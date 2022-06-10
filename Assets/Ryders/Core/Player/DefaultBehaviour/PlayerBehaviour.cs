@@ -192,14 +192,14 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public virtual void TestMove()
         {
+            TestDrift();
+            TestBoost();
+            TestAcceleration();
+            /*
             if (movement.BoostTimer == 0)
             {
                 movement.MaxSpeed = speedStats.TopSpeed;
-            }
-            TestAcceleration();
-            TestDrift();
-            TestBoost();
-
+            }*/
         }
 
         public virtual void MasterTurnTest()
