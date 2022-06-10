@@ -329,7 +329,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             None,
             DriftingL,
-            DriftingR
+            DriftingR,
+            Break
         }
 
         public enum JumpStates
