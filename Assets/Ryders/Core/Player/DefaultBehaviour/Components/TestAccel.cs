@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class TestAccel : AccelerationPack
 {
-    public override float StandardAcceleration()
+    protected override float StandardAcceleration()
     {
         return base.StandardAcceleration();
     }
 
-    public override float StandardDeceleration()
+    protected override float StandardDeceleration()
     {
         return base.StandardDeceleration();
     }

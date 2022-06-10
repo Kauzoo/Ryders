@@ -8,6 +8,7 @@ using Ryders.Core.Player.ExtremeGear.Movement;
 using Ryders.Core.Player.ExtremeGear;
 using Ryders.Core.Player.DefaultBehaviour.Components;
 using Ryders.Core.Player.DefaultBehaviour;
+using Ryders.Core.Player.DefaultBehaviour.Telemetry;
 
 namespace Ryders.Core.Player.DefaultBehaviour
 {
@@ -26,13 +27,21 @@ namespace Ryders.Core.Player.DefaultBehaviour
     // TODO Update RequireComponents
     public abstract class PlayerBehaviour : MonoBehaviour
     {
+        /**
+         * DEBUG 
+         */
+        [Header("Debug")]
+        public TMPro.TextMeshProUGUI playerTransformTelemetry;
+        public TMPro.TextMeshProUGUI playerRigidbodyTelemetry;
+        public TMPro.TextMeshProUGUI playerMovementTelemetry; 
+        
         public Transform playerTransform;
         public Rigidbody playerRigidbody;
 
         [Header("Input")] public PlayerSignifier playerSignifier;
         [SerializeReference] public MasterInput masterInput;
         public InputPlayer inputPlayer;
-        
+
 
         [Header("ScriptableObjects")]
         // Contains basic character data
@@ -72,6 +81,9 @@ namespace Ryders.Core.Player.DefaultBehaviour
             playerRigidbody = GetComponent<Rigidbody>();
             playerRigidbody.useGravity = false;
             
+            // TRANSFORM
+            playerTransform = GetComponent<Transform>();
+
             // STAT CONTAINERS
             if(TryGetComponent<SpeedStats>(out var speedStatsOut))
                 speedStats = speedStatsOut;
@@ -190,9 +202,17 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         }
 
+        public virtual void MasterTurnTest()
+        {
+            var yAngle = inputPlayer.GetInputContainer().HorizontalAxis;
+            playerTransform.Rotate(0, yAngle, 0, Space.Self);
+            playerRigidbody.MoveRotation(playerTransform.rotation);
+        }
+            
         public virtual void MasterMoveTest()
         {
-            playerRigidbody.velocity = new Vector3(0, 0, movement.Speed);
+            var forwardVector = movement.Speed * Time.fixedDeltaTime * playerTransform.forward;
+            playerRigidbody.velocity = forwardVector;
         }
 
         public virtual void FixedUpdateTest()
@@ -200,8 +220,42 @@ namespace Ryders.Core.Player.DefaultBehaviour
             inputPlayer.GetInput();
             statLoaderPack.LoadStatsMaster();
             TestMove();
+            MasterTurnTest();
             MasterMoveTest();
         }
+
+        public virtual void UpdateTest()
+        {
+            PrintTelemetry();
+        }
+
+        #region Debug
+
+        public virtual void PrintTelemetry()
+        {
+            // TODO Improve this
+            playerMovementTelemetry.text = "Movement" + Environment.NewLine + movement.GetTelemetry();
+            playerRigidbodyTelemetry.text = "Rigidbody" + Environment.NewLine + GetRigidbodyTelemetry();
+            playerTransformTelemetry.text = "Transform" + Environment.NewLine + GetTransformTelemetry();
+        }
+            
+        public virtual string GetTransformTelemetry()
+        {
+            // TODO Expand this
+            string str = $"Position: {TelemetryHelper.GetVector3Formated(playerTransform.position)}"
+                         + $"{Environment.NewLine}Rotation: {TelemetryHelper.GetVector3Formated(playerTransform.rotation.eulerAngles)}";
+            return str;
+        }
+
+        public virtual string GetRigidbodyTelemetry()
+        {
+            // TODO Expand this
+            string str = $"Velocity: {TelemetryHelper.GetVector3Formated(playerRigidbody.velocity)}";
+            return str;
+        }
+        
+
+        #endregion
     }
 }
 
@@ -304,6 +358,16 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             public CorneringStates CorneringState = CorneringStates.None;
             public SpeedStates SpeedState = SpeedStates.LowSpeed;
             public GroundedStates GroundedState = GroundedStates.None;
+
+            // TODO Add more stuff to Telemetry
+            public virtual string GetTelemetry()
+            {
+                var str = $"Speed: {Speed}" + $"{Environment.NewLine}MaxSpeed: {MaxSpeed}"
+                                             + $"{Environment.NewLine}BoostTimer: {BoostTimer}"
+                                             + $"{Environment.NewLine}DriftTimer: {DriftTimer}"
+                                             + $"{Environment.NewLine}DriftState: {DriftState}";
+                return str;
+            }
         }
 
         public abstract class Fuel : MonoBehaviour
