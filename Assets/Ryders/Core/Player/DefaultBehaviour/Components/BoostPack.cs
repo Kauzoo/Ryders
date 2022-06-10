@@ -67,6 +67,8 @@ public abstract class BoostPack : MonoBehaviour
             playerBehaviour.movement.BoostTimer--;
             if (playerBehaviour.movement.BoostTimer <= 0)
             {
+                // Enable Cruising flag and set MaxSpeed to TopSpeed
+                playerBehaviour.movement.Cruising = false;
                 playerBehaviour.movement.MaxSpeed = playerBehaviour.speedStats.TopSpeed;
             }
         }

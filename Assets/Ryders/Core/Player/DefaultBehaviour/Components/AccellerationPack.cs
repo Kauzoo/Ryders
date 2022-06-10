@@ -159,6 +159,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             if (_playerBehaviour.inputPlayer.GetInputContainer().Jump && _playerBehaviour.movement.Grounded)
             {
                 _playerBehaviour.movement.MaxSpeed = JumpChargeTargetSpeed;
+                _playerBehaviour.movement.Cruising = false;
             }
         }
     }
