@@ -40,7 +40,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             // TODO this logic can probably be refined
             // Can not Drift while Airborne
-            if (playerBehaviour.movement.Grounded)
+            if (!playerBehaviour.movement.Grounded)
             {
                 // Exit Drift / Break State and set DriftTimer to 0
                 playerBehaviour.movement.DriftState = DriftStates.None;
@@ -75,7 +75,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 }
 
                 // Otherwise Break
-                if (MathF.Abs(playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis) < DriftInputThreshold ||
+                if (MathF.Abs(playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis) <= DriftInputThreshold ||
                     playerBehaviour.movement.DriftState == DriftStates.Break)
                 {
                     Break();
@@ -134,6 +134,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             {
                 DriftDash();
             }
+            // Reset DriftTimer
+            playerBehaviour.movement.DriftTimer = 0;
         }
 
         // TODO Implement a static function style version

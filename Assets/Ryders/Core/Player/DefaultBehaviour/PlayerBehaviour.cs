@@ -173,6 +173,11 @@ namespace Ryders.Core.Player.DefaultBehaviour
             boostPack.Boost();
         }
 
+        public virtual void TestDrift()
+        {
+            driftPack.MasterDrift();
+        }
+
         public virtual void TestMove()
         {
             if (movement.BoostTimer == 0)
@@ -180,7 +185,9 @@ namespace Ryders.Core.Player.DefaultBehaviour
                 movement.MaxSpeed = speedStats.TopSpeed;
             }
             TestAcceleration();
+            TestDrift();
             TestBoost();
+
         }
 
         public virtual void MasterMoveTest()
@@ -190,14 +197,10 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public virtual void FixedUpdateTest()
         {
+            inputPlayer.GetInput();
             statLoaderPack.LoadStatsMaster();
             TestMove();
             MasterMoveTest();
-            inputPlayer.GetInput();
-            if (inputPlayer.GetInputContainer().Boost)
-            {
-                Debug.Log("Boost");
-            }
         }
     }
 }
