@@ -37,9 +37,11 @@ public abstract class BoostPack : MonoBehaviour
     /// </summary>
     public virtual void Boost()
     {
-        if (playerBehaviour.inputPlayer.GetInputContainer().Boost && playerBehaviour.movement.BoostTimer == 0)
+        if (playerBehaviour.inputPlayer.GetInputContainer().Boost &&
+            playerBehaviour.movement.MaxSpeedState != MaxSpeedState.Boosting)
         {
-            playerBehaviour.movement.MaxSpeed = playerBehaviour.speedStats.BoostSpeed;
+            playerBehaviour.movement.MaxSpeedState = MaxSpeedState.Boosting;
+            //playerBehaviour.movement.MaxSpeed = playerBehaviour.speedStats.BoostSpeed;
             playerBehaviour.movement.Speed = playerBehaviour.speedStats.BoostSpeed;
             playerBehaviour.movement.BoostTimer = playerBehaviour.speedStats.BoostDuration;
             if (playerBehaviour.movement.DriftState is DriftStates.DriftingL or DriftStates.DriftingR)
@@ -65,8 +67,8 @@ public abstract class BoostPack : MonoBehaviour
         if (playerBehaviour.inputPlayer.GetInputContainer().Jump || !playerBehaviour.movement.Grounded)
         {
             playerBehaviour.movement.BoostTimer = 0;
-            // This would be the correct behaviour for becoming airborne but not for jump
-            playerBehaviour.movement.MaxSpeed = playerBehaviour.speedStats.TopSpeed;
+            playerBehaviour.movement.MaxSpeedState = MaxSpeedState.Cruising;
+            //playerBehaviour.movement.MaxSpeed = playerBehaviour.speedStats.TopSpeed;
         }
         // TODO Cleanup the MaxSpeed Reset
         // If the BoostTimer is greater 0 count down
@@ -75,9 +77,9 @@ public abstract class BoostPack : MonoBehaviour
             playerBehaviour.movement.BoostTimer--;
             if (playerBehaviour.movement.BoostTimer <= 0)
             {
-                // Enable Cruising flag and set MaxSpeed to TopSpeed
-                playerBehaviour.movement.Cruising = false;
-                playerBehaviour.movement.MaxSpeed = playerBehaviour.speedStats.TopSpeed;
+                // When the BoostTimer reaches 0 the Boost should end and the MaxSpeedState is set to cruising
+                playerBehaviour.movement.MaxSpeedState = MaxSpeedState.Cruising;
+                //playerBehaviour.movement.MaxSpeed = playerBehaviour.speedStats.TopSpeed;
             }
         }
     }

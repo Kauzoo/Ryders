@@ -352,8 +352,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             [Header("Gravity")] public float Gravity;
 
             [Header("MovementStates")] public bool Grounded;
-            public bool Cruising;
-            public  bool Boosting;
+            public MaxSpeedState MaxSpeedState = MaxSpeedState.Cruising;
             public TranslationStates TranslationState = TranslationStates.Stationary;
             public DriftStates DriftState = DriftStates.None;
             public JumpStates JumpState = JumpStates.None;
@@ -421,5 +420,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             None,
             Grounded
+        }
+
+        public enum MaxSpeedState
+        {
+            Cruising, Boosting
         }
     }

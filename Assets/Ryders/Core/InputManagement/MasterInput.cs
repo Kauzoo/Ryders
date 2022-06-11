@@ -12,7 +12,7 @@ namespace Ryders.Core.InputManagement
 {
     public class MasterInput : MonoBehaviour
     {
-        // TODO Rework the InputSysten to use the new InputSystem
+        // TODO Rework the InputSystem to use the new InputSystem
         [Header("Player")] 
         [SerializeField] private bool[] initialPlayers = new []{ true, false, false, false, false, false, false, false };
 

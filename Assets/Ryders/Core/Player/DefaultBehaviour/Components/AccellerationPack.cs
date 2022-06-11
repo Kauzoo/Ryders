@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Data;
 using System.IO;
 using System.Runtime.Serialization;
+using UnityEngine.InputSystem.Controls;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
@@ -23,6 +24,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     {
         private PlayerBehaviour _playerBehaviour;
         private const int JumpChargeTargetSpeed = 80;
+        private const int CorneringTargetSpeed = 130;
 
         private void Start()
         {
@@ -159,13 +161,56 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             return StandardDeceleration(_playerBehaviour.movement.Speed, _playerBehaviour.movement.MaxSpeed);
         }
 
-        protected virtual void JumpChargeDeceleration()
+        protected virtual void SetMaxSpeed()
+        {
+            // Differentiate between Type 0 and Type 1
+            if (_playerBehaviour.movement.MaxSpeedState == MaxSpeedState.Cruising)
+            {
+                _playerBehaviour.movement.MaxSpeed = _playerBehaviour.speedStats.TopSpeed;
+            }
+            if (_playerBehaviour.movement.MaxSpeedState == MaxSpeedState.Boosting)
+            {
+                _playerBehaviour.movement.MaxSpeed = _playerBehaviour.speedStats.BoostSpeed;
+            }
+            
+        }
+
+        protected virtual bool TryJumpCharge(out int newMaxSpeed)
         {
             if (_playerBehaviour.inputPlayer.GetInputContainer().Jump && _playerBehaviour.movement.Grounded)
             {
-                _playerBehaviour.movement.MaxSpeed = JumpChargeTargetSpeed;
-                _playerBehaviour.movement.Cruising = false;
+                newMaxSpeed = JumpChargeTargetSpeed;
+                return true;
             }
+            newMaxSpeed = -1;
+            return false;
+        }
+
+        protected virtual int Cornering()
+        {
+            if (_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis != 0)
+            {
+                return CorneringTargetSpeed;
+            }
+            return Int32.MaxValue;
+        }
+
+        protected virtual bool TryBreak(out int newMaxSpeed)
+        {
+            if (_playerBehaviour.movement.DriftState == DriftStates.Break)
+            {
+                newMaxSpeed = 0;
+                return true;
+            }
+            newMaxSpeed = -1;
+            return false;
+        }
+
+        protected virtual bool TryOffRoad(out int newMaxSpeed)
+        {
+            // TODO Implement OffRoad
+            newMaxSpeed = -1;
+            return false;
         }
     }
 }
