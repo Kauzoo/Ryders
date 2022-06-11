@@ -6,6 +6,13 @@ using Ryders.Core.Player.DefaultBehaviour;
 using Ryders.Core.Player.DefaultBehaviour.Components;
 using UnityEngine;
 
+/**
+ *  Notes for Boost:
+ *  -Sets MaxSpeed to BoostSpeed for the Duration of Boost (this is done at low priority)
+ *  -Speed is set to BoostSpeed on the frame of use
+ *  -
+ */
+
 /// <summary>
 /// Contains Method for entering a regular Boost, BoostChaining and CountingDown the BoostTimer
 /// "BoostState" is based of the BoostTimer. BoostState basically comes down to MaxSpeed.
@@ -58,6 +65,7 @@ public abstract class BoostPack : MonoBehaviour
         if (playerBehaviour.inputPlayer.GetInputContainer().Jump || !playerBehaviour.movement.Grounded)
         {
             playerBehaviour.movement.BoostTimer = 0;
+            // This would be the correct behaviour for becoming airborne but not for jump
             playerBehaviour.movement.MaxSpeed = playerBehaviour.speedStats.TopSpeed;
         }
         // TODO Cleanup the MaxSpeed Reset

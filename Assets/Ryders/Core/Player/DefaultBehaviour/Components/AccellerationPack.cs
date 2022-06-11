@@ -8,6 +8,11 @@ using System.Runtime.Serialization;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
+    /**
+     *  Notes for Accel/Decel:
+     *  -Drifting seems to completly disable all Accel (Decel still applys)
+     */
+    
     /// <summary>
     /// This Interface contains methods to calculate all kinds of Acceleration and Deceleration
     /// The static implementations act like pseudo functions and contain the actual default logic
