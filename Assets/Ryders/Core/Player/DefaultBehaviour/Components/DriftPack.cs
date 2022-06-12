@@ -212,12 +212,24 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         protected virtual void DriftTurnLeft()
         {
-            var oldDriftTurning = playerBehaviour.movement.DriftTurning;
+            var driftTurnOffset = playerBehaviour.turnStats.DriftTurnrate *
+                                  playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
+            playerBehaviour.movement.DriftTurning += driftTurnOffset;
+            playerBehaviour.movement.DriftTurning = Mathf.Min(playerBehaviour.movement.DriftTurning,
+                playerBehaviour.turnStats.DriftTurnrateMax) * (-1);
+            playerBehaviour.movement.DriftTurning = Mathf.Max(playerBehaviour.movement.DriftTurning,
+                playerBehaviour.turnStats.DriftTurnrateMin) * (-1);
         }
 
         protected virtual void DriftTurnRight()
         {
-            
+            var driftTurnOffset = playerBehaviour.turnStats.DriftTurnrate *
+                                  playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
+            playerBehaviour.movement.DriftTurning += driftTurnOffset;
+            playerBehaviour.movement.DriftTurning = Mathf.Min(playerBehaviour.movement.DriftTurning,
+                playerBehaviour.turnStats.DriftTurnrateMax) * (-1);
+            playerBehaviour.movement.DriftTurning = Mathf.Max(playerBehaviour.movement.DriftTurning,
+                playerBehaviour.turnStats.DriftTurnrateMin) * (-1);
         }
         #endregion
     }
