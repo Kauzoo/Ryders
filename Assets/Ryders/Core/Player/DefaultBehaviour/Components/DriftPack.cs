@@ -58,8 +58,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             {
                 // ENTER_DRIFT: If Axis is greater 0 Drift to the right 
                 // CONTINUE_DRIFT: If in DriftRight State and still holding Drift, continue DriftRight
-                if (playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis > DriftInputThreshold ||
-                    playerBehaviour.movement.DriftState == DriftStates.DriftingR)
+                if ((playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis > DriftInputThreshold ||
+                    playerBehaviour.movement.DriftState == DriftStates.DriftingR) &&
+                    playerBehaviour.movement.DriftState != DriftStates.Break)
                 {
                     DriftRight();
                     return;
@@ -67,8 +68,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
                 // ENTER_DRIFT: If Axis less than DriftInputThreshold Drift to the left
                 // CONTINUE_DRIFT: If in DriftLeft State and still holding Drift, continue DriftLeft
-                if (playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis < DriftInputThreshold * (-1) ||
-                    playerBehaviour.movement.DriftState == DriftStates.DriftingL)
+                if ((playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis < DriftInputThreshold * (-1) ||
+                    playerBehaviour.movement.DriftState == DriftStates.DriftingL) &&
+                    playerBehaviour.movement.DriftState != DriftStates.Break)
                 {
                     DriftLeft();
                     return;
@@ -185,6 +187,38 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             playerBehaviour.movement.DriftState = DriftStates.None;
         }
 
+        #endregion
+
+        #region DriftTurning
+        /// <summary>
+        /// 
+        /// </summary>
+        protected virtual void DriftTurn()
+        {
+            switch (playerBehaviour.movement.DriftState)
+            {
+                case DriftStates.DriftingL:
+                    DriftTurnLeft();
+                    break;
+                case DriftStates.DriftingR:
+                    DriftTurnRight();
+                    break;
+                case DriftStates.None:
+                case DriftStates.Break:
+                default:
+                    return;
+            }
+        }
+
+        protected virtual void DriftTurnLeft()
+        {
+            var oldDriftTurning = playerBehaviour.movement.DriftTurning;
+        }
+
+        protected virtual void DriftTurnRight()
+        {
+            
+        }
         #endregion
     }
 

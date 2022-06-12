@@ -81,6 +81,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
             // RIGIDBODY
             playerRigidbody = GetComponent<Rigidbody>();
             playerRigidbody.useGravity = false;
+            playerRigidbody.isKinematic = true;
             
             // TRANSFORM
             playerTransform = GetComponent<Transform>();
@@ -206,23 +207,19 @@ namespace Ryders.Core.Player.DefaultBehaviour
             TestCornering();
             TestBoost();
             TestAcceleration();
-            /*
-            if (movement.BoostTimer == 0)
-            {
-                movement.MaxSpeed = speedStats.TopSpeed;
-            }*/
         }
 
         public virtual void MasterTurnTest()
         {
             playerTransform.Rotate(0, movement.Turning, 0, Space.Self);
-            playerRigidbody.MoveRotation(playerTransform.rotation);
+            //playerRigidbody.MoveRotation(playerTransform.rotation);
         }
             
         public virtual void MasterMoveTest()
         {
-            var forwardVector = movement.Speed * Time.fixedDeltaTime * 3f * playerTransform.forward;
-            playerRigidbody.velocity = forwardVector;
+            playerTransform.position += Formula.SpeedToRidersSpeed(movement.Speed) * playerTransform.forward;
+            //var forwardVector = movement.Speed * Time.fixedDeltaTime * 3f * playerTransform.forward;
+            //playerRigidbody.velocity = forwardVector;
         }
 
         public virtual void FixedUpdateTest()
@@ -313,6 +310,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             public AnimationCurve TurnrateCurve;
             [Header("Drift")] public float DriftTurnratePassive;
             public float DriftTurnrateMin;
+            public float DriftTurnrateMax;
             public float DriftTurnrate;
         }
 

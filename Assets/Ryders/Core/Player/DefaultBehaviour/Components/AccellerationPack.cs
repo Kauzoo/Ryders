@@ -81,10 +81,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public static float StandardDeceleration(float speed, float maxSpeed)
         {
             // Calculate OvermaxSpeed
-            var overmaxSpeed = (float)(speed/216) - (float)(maxSpeed/216);
+            var overmaxSpeed = Formula.SpeedToRidersSpeed(speed) - Formula.SpeedToRidersSpeed(maxSpeed);
             float speedLossPerFrame = 0f;
             // Do not Decelerate when the player is not over MaxSpeed
-            if (overmaxSpeed < 0)
+            if (overmaxSpeed < 0f)
             {
                 return speedLossPerFrame;
             }
@@ -97,17 +97,17 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             }
             else
             {
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260.0f - (float)(maxSpeed/216f))), 2f) + 0.2f) / 100f; // modified
+                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260.0f - Formula.SpeedToRidersSpeed(maxSpeed))), 2f) + 0.2f) / 100f; // modified
                 // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f);
             }
 
             // SpeedLoss is capped at 10 units per frame
-            if (speedLossPerFrame > 0.04629f)
+            if (speedLossPerFrame > Formula.SpeedToRidersSpeed(10f))
             {
-                speedLossPerFrame = 10;
+                speedLossPerFrame = 10f;
             }
 
-            return speedLossPerFrame * 216 * (-1);
+            return Formula.RidersSpeedToSpeed(speedLossPerFrame) * (-1);
         }
 
         public static float CorneringDeceleration(float speed, CorneringStates corneringStates)
