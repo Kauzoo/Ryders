@@ -52,11 +52,11 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             LoadBreakeDecelleration();
             LoadDriftDashSpeed();
             LoadDriftCap();
-            LoadDrifDashFrames();
+            LoadDriftDashFrames();
             LoadTurnSpeedLoss();
             LoadJumpChargeMinSpeed();
             LoadJumpChargeDecelleration();
-            LoadTurnrate();
+            LoadTurnRate();
             LoadTurnSpeedLossCurve();
             LoadTurnrateCurve();
             LoadDriftTurnratePassive();
@@ -194,7 +194,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             return (defaultDriftCapLevelUp * (level - 1)) + characterDrift + gearDriftCap;
         }
 
-        public static float LoadDrifDashFrames(float gearDriftDashChargeDuration)
+        public static float LoadDriftDashFrames(float gearDriftDashChargeDuration)
         {
             return gearDriftDashChargeDuration;
         }
@@ -215,7 +215,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         }
 
         // TURNING
-        public static float LoadTurnrate(float defaultTurnrateDefault)
+        public static float LoadTurnRate(float defaultTurnrateDefault)
         {
             return defaultTurnrateDefault;
         }
@@ -414,10 +414,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 playerBehaviour.extremeGearData.movementVars.DriftCap);
         }
 
-        public virtual void LoadDrifDashFrames()
+        public virtual void LoadDriftDashFrames()
         {
             playerBehaviour.speedStats.DriftDashFrames =
-                LoadDrifDashFrames(playerBehaviour.extremeGearData.movementVars.DriftDashChargeDuration);
+                LoadDriftDashFrames(playerBehaviour.extremeGearData.movementVars.DriftDashChargeDuration);
         }
 
         public virtual void LoadTurnSpeedLoss()
@@ -439,9 +439,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         }
 
         // TURNING
-        public virtual void LoadTurnrate()
+        public virtual void LoadTurnRate()
         {
-            playerBehaviour.turnStats.Turnrate = LoadTurnrate(playerBehaviour.defaultPlayerStats.TurnrateDefault);
+            playerBehaviour.turnStats.Turnrate = LoadTurnRate(playerBehaviour.defaultPlayerStats.TurnrateDefault);
         }
 
         public virtual void LoadTurnSpeedLossCurve()

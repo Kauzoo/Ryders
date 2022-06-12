@@ -81,8 +81,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public static float StandardDeceleration(float speed, float maxSpeed)
         {
             // Calculate OvermaxSpeed
-            var overmaxSpeed = (float)(speed*216) - (float)(maxSpeed*216);
-            float speedLossPerFrame = 0;
+            var overmaxSpeed = (float)(speed/216) - (float)(maxSpeed/216);
+            float speedLossPerFrame = 0f;
             // Do not Decelerate when the player is not over MaxSpeed
             if (overmaxSpeed < 0)
             {
@@ -90,24 +90,24 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             }
 
             // Determine which formula to use based on MaxSpeed and apply
-            if (maxSpeed > 200)
+            if (maxSpeed > 200f)
             {
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f) / 1000;
+                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60f), 2f) + 0.2f) / 100f; // modified
                 // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f);
             }
             else
             {
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f) / 1000;
+                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260.0f - (float)(maxSpeed/216f))), 2f) + 0.2f) / 100f; // modified
                 // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f);
             }
 
             // SpeedLoss is capped at 10 units per frame
             if (speedLossPerFrame > 0.04629f)
             {
-                speedLossPerFrame = 0.04629f;
+                speedLossPerFrame = 10;
             }
 
-            return speedLossPerFrame * (-1);
+            return speedLossPerFrame * 216 * (-1);
         }
 
         public static float CorneringDeceleration(float speed, CorneringStates corneringStates)
@@ -144,7 +144,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             // TODO Add other Accelerations and Decelerations
             // TODO Make sure Standards only accelerate / decelerate to MaxSpeed
-            //();
+            SetMaxSpeed();
             _playerBehaviour.movement.Speed += StandardAcceleration() + StandardDeceleration();
         }
 
@@ -174,19 +174,19 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 _playerBehaviour.movement.MaxSpeed = _playerBehaviour.speedStats.BoostSpeed;
             }
             
-            // TODO this is ugly. I will think of better way
+            // TODO this is terrible. I will think of better way
             float JumpChargeMaxSpeed = JumpCharge();
             float BreakMaxSpeed = Break();
             float OffRoadMaxSpeed = OffRoad();
+            float CorneringMaxSpeed = Cornering();
             if (!float.IsPositiveInfinity(JumpChargeMaxSpeed) || !float.IsPositiveInfinity(BreakMaxSpeed) ||
-                !float.IsPositiveInfinity(OffRoadMaxSpeed))
+                !float.IsPositiveInfinity(OffRoadMaxSpeed) || !float.IsPositiveInfinity(CorneringMaxSpeed))
             {
                 float newMaxSpeed = Mathf.Min(JumpChargeMaxSpeed, BreakMaxSpeed);
                 newMaxSpeed = Mathf.Min(newMaxSpeed, OffRoadMaxSpeed);
+                newMaxSpeed = Mathf.Min(newMaxSpeed, CorneringMaxSpeed);
                 _playerBehaviour.movement.MaxSpeed = newMaxSpeed;
             }
-
-            //newMaxSpeed = Mathf.Min(newMaxSpeed, Cornering());
         }
         
         protected virtual float JumpCharge()
@@ -197,11 +197,11 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             }
             return float.PositiveInfinity;
         }
-
+        
         protected virtual float Cornering()
         {
             // TODO this conrering determination is flawed
-            if (_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis != 0)
+            if (_playerBehaviour.movement.CorneringState == CorneringStates.Cornering)
             {
                 return CorneringTargetSpeed;
             }

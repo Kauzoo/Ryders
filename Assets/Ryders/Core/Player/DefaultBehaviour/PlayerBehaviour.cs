@@ -68,6 +68,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         public FuelPack fuelPack;
         public DriftPack driftPack;
         public BoostPack boostPack;
+        public CorneringPack corneringPack;
         
         [Header("RuntimeVarContainers")] public Movement movement;
         [Tooltip("Contains info about fuel")] public Fuel fuel;
@@ -139,6 +140,10 @@ namespace Ryders.Core.Player.DefaultBehaviour
                 boostPack = boostPackOut;
             else
                 Debug.LogError($"@{this.ToString()}.Setup(): Failed to find BoostPack");
+            if (TryGetComponent<CorneringPack>(out var corneringPackOut))
+                corneringPack = corneringPackOut;
+            else
+                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find CorneringPack");
             
             // RUNTIME
             if(TryGetComponent<Movement>(out var movementOut))
@@ -190,9 +195,15 @@ namespace Ryders.Core.Player.DefaultBehaviour
             driftPack.MasterDrift();
         }
 
+        public virtual void TestCornering()
+        {
+            corneringPack.MasterCornering();
+        }
+
         public virtual void TestMove()
         {
             TestDrift();
+            TestCornering();
             TestBoost();
             TestAcceleration();
             /*
@@ -204,14 +215,13 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public virtual void MasterTurnTest()
         {
-            var yAngle = inputPlayer.GetInputContainer().HorizontalAxis;
-            playerTransform.Rotate(0, yAngle, 0, Space.Self);
+            playerTransform.Rotate(0, movement.Turning, 0, Space.Self);
             playerRigidbody.MoveRotation(playerTransform.rotation);
         }
             
         public virtual void MasterMoveTest()
         {
-            var forwardVector = movement.Speed * Time.fixedDeltaTime * playerTransform.forward;
+            var forwardVector = movement.Speed * Time.fixedDeltaTime * 3f * playerTransform.forward;
             playerRigidbody.velocity = forwardVector;
         }
 
@@ -337,7 +347,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             [Header("Boost")] public float BoostTimer;
             public float BoostLockTimer;
 
-            [Header("Turning")] public float Rotation;
+            [Header("Turning")]
             public float TurningRaw;
             public float Turning;
 
@@ -366,7 +376,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 var str = $"Speed: {Speed}" + $"{Environment.NewLine}MaxSpeed: {MaxSpeed}"
                                              + $"{Environment.NewLine}BoostTimer: {BoostTimer}"
                                              + $"{Environment.NewLine}DriftTimer: {DriftTimer}"
-                                             + $"{Environment.NewLine}DriftState: {DriftState}";
+                                             + $"{Environment.NewLine}DriftState: {DriftState}"
+                                             + $"{Environment.NewLine}CorneringState: {CorneringState}";
                 return str;
             }
         }
@@ -412,8 +423,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public enum CorneringStates
         {
             None,
-            TurningL,
-            TurningR
+            Cornering
         }
 
         public enum GroundedStates

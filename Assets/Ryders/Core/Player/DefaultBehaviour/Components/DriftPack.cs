@@ -170,7 +170,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO potential interactions with automatic accel
             // TODO special interaction for boost while breaking
             playerBehaviour.movement.DriftState = DriftStates.Break;
-            playerBehaviour.movement.Speed -= playerBehaviour.speedStats.BreakeDecelleration;
+            //playerBehaviour.movement.Speed -= playerBehaviour.speedStats.BreakeDecelleration;
             if (playerBehaviour.movement.Speed < 0)
             {
                 playerBehaviour.movement.Speed = 0;
