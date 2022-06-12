@@ -73,6 +73,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// <summary>
         /// Calcualte the current Decel using Formula from SRDX.
         /// StandardDeceleration is always applied when the player is above MaxSpeed
+        /// This formula uses InGame floats 
         /// </summary>
         /// <param name="speed"> Expects the Speed value from movement</param>
         /// <param name="maxSpeed"> Expects the MaxSpeed value from movement</param>
@@ -80,7 +81,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public static float StandardDeceleration(float speed, float maxSpeed)
         {
             // Calculate OvermaxSpeed
-            var overmaxSpeed = speed - maxSpeed;
+            var overmaxSpeed = (float)(speed*216) - (float)(maxSpeed*216);
             float speedLossPerFrame = 0;
             // Do not Decelerate when the player is not over MaxSpeed
             if (overmaxSpeed < 0)
@@ -91,19 +92,19 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // Determine which formula to use based on MaxSpeed and apply
             if (maxSpeed > 200)
             {
-                // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f) / 1000; OG SRDX
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f);
+                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f) / 1000;
+                // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f);
             }
             else
             {
-                //speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f) / 1000; OG SRDX
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f);
+                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f) / 1000;
+                // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f);
             }
 
             // SpeedLoss is capped at 10 units per frame
-            if (speedLossPerFrame > 10)
+            if (speedLossPerFrame > 0.04629f)
             {
-                speedLossPerFrame = 10;
+                speedLossPerFrame = 0.04629f;
             }
 
             return speedLossPerFrame * (-1);
@@ -143,7 +144,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             // TODO Add other Accelerations and Decelerations
             // TODO Make sure Standards only accelerate / decelerate to MaxSpeed
-            JumpChargeDeceleration();
+            //();
             _playerBehaviour.movement.Speed += StandardAcceleration() + StandardDeceleration();
         }
 
@@ -173,44 +174,53 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 _playerBehaviour.movement.MaxSpeed = _playerBehaviour.speedStats.BoostSpeed;
             }
             
-        }
+            // TODO this is ugly. I will think of better way
+            float JumpChargeMaxSpeed = JumpCharge();
+            float BreakMaxSpeed = Break();
+            float OffRoadMaxSpeed = OffRoad();
+            if (!float.IsPositiveInfinity(JumpChargeMaxSpeed) || !float.IsPositiveInfinity(BreakMaxSpeed) ||
+                !float.IsPositiveInfinity(OffRoadMaxSpeed))
+            {
+                float newMaxSpeed = Mathf.Min(JumpChargeMaxSpeed, BreakMaxSpeed);
+                newMaxSpeed = Mathf.Min(newMaxSpeed, OffRoadMaxSpeed);
+                _playerBehaviour.movement.MaxSpeed = newMaxSpeed;
+            }
 
-        protected virtual bool TryJumpCharge(out int newMaxSpeed)
+            //newMaxSpeed = Mathf.Min(newMaxSpeed, Cornering());
+        }
+        
+        protected virtual float JumpCharge()
         {
             if (_playerBehaviour.inputPlayer.GetInputContainer().Jump && _playerBehaviour.movement.Grounded)
             {
-                newMaxSpeed = JumpChargeTargetSpeed;
-                return true;
+                return JumpChargeTargetSpeed;
             }
-            newMaxSpeed = -1;
-            return false;
+            return float.PositiveInfinity;
         }
 
-        protected virtual int Cornering()
+        protected virtual float Cornering()
         {
+            // TODO this conrering determination is flawed
             if (_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis != 0)
             {
                 return CorneringTargetSpeed;
             }
-            return Int32.MaxValue;
+            return float.PositiveInfinity;
         }
 
-        protected virtual bool TryBreak(out int newMaxSpeed)
+        protected virtual float Break()
         {
             if (_playerBehaviour.movement.DriftState == DriftStates.Break)
             {
-                newMaxSpeed = 0;
-                return true;
+                return 0;
             }
-            newMaxSpeed = -1;
-            return false;
+            return float.PositiveInfinity;
         }
 
-        protected virtual bool TryOffRoad(out int newMaxSpeed)
+        protected virtual float OffRoad()
         {
             // TODO Implement OffRoad
-            newMaxSpeed = -1;
-            return false;
+            return float.PositiveInfinity;
         }
     }
 }
