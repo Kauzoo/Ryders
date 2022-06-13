@@ -12,9 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99935625ae081444282d88a355ab7f18, type: 3}
   m_Name: DefaultPlayerStats
   m_EditorClassIdentifier: 
-  MinSpeedDefault: 130
-  FastAccelerationDefault: 1
-  Deceleration: 5
+  AccelerationLowLvl1: 0.83
+  AccelerationLowLvl2: 0.83
+  AccelerationLowLvl3: 0.95
+  AccelerationMediumLvl1: 0.183
+  AccelerationMediumLvl2: 0.183
+  AccelerationMediumLvl3: 0.1217
+  AccelerationHighLvl1: 0.07
+  AccelerationHighLvl2: 0.07
+  AccelerationHighLvl3: 0.117
+  AccelerationLowThresholdLvl1: 100
+  AccelerationLowThresholdLvl2: 100
+  AccelerationLowThresholdLvl3: 115
+  AccelerationMediumThresholdLvl1: 155
+  AccelerationMediumThresholdLvl2: 155
+  AccelerationMediumThresholdLvl3: 159
+  AccelerationOffRoadThresholdLvl1: 50
+  AccelerationOffRoadThresholdLvl2: 50
+  AccelerationOffRoadThresholdLvl3: 70
   CorneringDeceleration: 1
   TurnrateDefault: 1
   TurnSpeedLossCurveDefault:
@@ -29,7 +44,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  DriftTurnratePassiveDefault: 1
   DriftTurnrateMinDefault: 1
   DriftTurnRateMaxDefault: 3
   DriftTurnrateDefault: 0.1

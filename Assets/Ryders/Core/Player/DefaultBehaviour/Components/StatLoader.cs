@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Ryders.Core.InputManagement;
 using Ryders.Core.Player.Character;
 using Ryders.Core.Player.DefaultBehaviour;
 using Ryders.Core.Player.ExtremeGear;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
@@ -32,25 +34,32 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         private const int PowerTypeSpeedLoss = -4;
         private const int GlobalBoostDuration = 120; // BaseBoostDuration if Frames
 
-        public PlayerBehaviour playerBehaviour;
+        [FormerlySerializedAs("playerBehaviour")] public PlayerBehaviour _playerBehaviour;
 
         // TODO Implement FastAccel for SpeedTypes and Off-Road resistance for PowerType
         // TODO CleanUp which stat is retrieved from where
 
         public virtual void Setup()
         {
-            playerBehaviour = GetComponent<PlayerBehaviour>();
+            _playerBehaviour = GetComponent<PlayerBehaviour>();
         }
 
         public virtual void LoadStatsMaster()
         {
             // SPEED STATS
             LoadTopSpeed();
-            LoadMinSpeed();
-            LoadFastAcceleration();
+            // ACCEL
+            LoadAccelerationLow();
+            LoadAccelerationMedium();
+            LoadAccelerationHigh();
+            LoadAccelerationLowThreshold();
+            LoadAccelerationMediumThreshold();
+            LoadAccelerationOffRoadThreshold();
+            // BOOST
             LoadBoostSpeed();
             LoadBoostChainModifier();
             LoadBoostDuration();
+            // DRIFT
             LoadBreakeDecelleration();
             LoadDriftDashSpeed();
             LoadDriftCap();
@@ -62,7 +71,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             LoadTurnRate();
             LoadTurnSpeedLossCurve();
             LoadTurnrateCurve();
-            LoadDriftTurnratePassive();
             LoadDriftTurnrateMin();
             LoadDriftTurnRateMax();
             LoadDriftTurnrate();
@@ -106,14 +114,76 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             };
         }
 
-        public static float LoadMinSpeed(int level, float defaultMinSpeedDefault)
+        public static float LoadAccelerationLow(int level, float defaultAccelerationLowLvl1,
+            float defaultAccelerationLowLvl2, float defaultAccelerationLowLvl3)
         {
-            return defaultMinSpeedDefault;
+            return level switch
+            {
+                1 => defaultAccelerationLowLvl1,
+                2 => defaultAccelerationLowLvl2,
+                3 => defaultAccelerationLowLvl3,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
+        }
+        
+        public static float LoadAccelerationMedium(int level, float defaultAccelerationMediumLvl1,
+            float defaultAccelerationMediumLvl2, float defaultAccelerationMediumLvl3)
+        {
+            return level switch
+            {
+                1 => defaultAccelerationMediumLvl1,
+                2 => defaultAccelerationMediumLvl2,
+                3 => defaultAccelerationMediumLvl3,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
+        }
+        
+        public static float LoadAccelerationHigh(int level, float defaultAccelerationHighLvl1,
+            float defaultAccelerationHighLvl2, float defaultAccelerationHighLvl3)
+        {
+            return level switch
+            {
+                1 => defaultAccelerationHighLvl1,
+                2 => defaultAccelerationHighLvl2,
+                3 => defaultAccelerationHighLvl3,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
         }
 
-        public static float LoadFastAcceleration(int level, float defaultFastAccelerationDefault)
+        public static float LoadAccelerationLowThreshold(int level, float defaultAccelerationLowThresholdLvl1,
+            float defaultAccelerationLowThresholdLvl2, float defaultAccelerationLowThresholdLvl3)
         {
-            return defaultFastAccelerationDefault;
+            return level switch
+            {
+                1 => defaultAccelerationLowThresholdLvl1,
+                2 => defaultAccelerationLowThresholdLvl2,
+                3 => defaultAccelerationLowThresholdLvl3,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
+        }
+        
+        public static float LoadAccelerationMediumThreshold(int level, float defaultAccelerationMediumThresholdLvl1,
+            float defaultAccelerationMediumThresholdLvl2, float defaultAccelerationMediumThresholdLvl3)
+        {
+            return level switch
+            {
+                1 => defaultAccelerationMediumThresholdLvl1,
+                2 => defaultAccelerationMediumThresholdLvl2,
+                3 => defaultAccelerationMediumThresholdLvl3,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
+        }
+        
+        public static float LoadAccelerationOffRoadThreshold(int level, float defaultAccelerationOffRoadThresholdLvl1,
+            float defaultAccelerationOffRoadThresholdLvl2, float defaultAccelerationOffRoadThresholdLvl3)
+        {
+            return level switch
+            {
+                1 => defaultAccelerationOffRoadThresholdLvl1,
+                2 => defaultAccelerationOffRoadThresholdLvl2,
+                3 => defaultAccelerationOffRoadThresholdLvl3,
+                _ => throw new System.NotImplementedException("Invalid Level")
+            };
         }
 
         /// <summary>
@@ -268,7 +338,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         }
 
         // FUEL
-        // TODO Implement Loader for Fuel
         public static FuelType LoadFuelType(FuelType gearFuelType)
         {
             return gearFuelType;
@@ -360,31 +429,73 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         public virtual void LoadTopSpeed()
         {
-            playerBehaviour.speedStats.TopSpeed = LoadTopSpeed(playerBehaviour.fuel.Level,
-                playerBehaviour.defaultPlayerStats.TopSpeedLevelUp, playerBehaviour.characterData.TopSpeed,
-                playerBehaviour.extremeGearData.movementVars.TopSpeed, playerBehaviour.characterData.StatsType);
+            _playerBehaviour.speedStats.TopSpeed = LoadTopSpeed(_playerBehaviour.fuel.Level,
+                _playerBehaviour.defaultPlayerStats.TopSpeedLevelUp, _playerBehaviour.characterData.TopSpeed,
+                _playerBehaviour.extremeGearData.movementVars.TopSpeed, _playerBehaviour.characterData.StatsType);
         }
-
-        public virtual void LoadMinSpeed()
+        
+        public virtual void LoadAccelerationLow()
         {
-            playerBehaviour.speedStats.MinSpeed = LoadMinSpeed(playerBehaviour.fuel.Level,
-                playerBehaviour.defaultPlayerStats.MinSpeedDefault);
+            _playerBehaviour.speedStats.AccelerationLow =
+                LoadAccelerationLow(_playerBehaviour.fuel.Level,
+                    _playerBehaviour.defaultPlayerStats.AccelerationLowLvl1,
+                    _playerBehaviour.defaultPlayerStats.AccelerationLowLvl2,
+                    _playerBehaviour.defaultPlayerStats.AccelerationLowLvl3);
         }
-
-        public virtual void LoadFastAcceleration()
+        
+        public virtual void LoadAccelerationMedium()
         {
-            playerBehaviour.speedStats.FastAccelleration = LoadFastAcceleration(playerBehaviour.fuel.Level,
-                playerBehaviour.defaultPlayerStats.FastAccelerationDefault);
+            _playerBehaviour.speedStats.AccelerationMedium =
+                LoadAccelerationMedium(_playerBehaviour.fuel.Level,
+                    _playerBehaviour.defaultPlayerStats.AccelerationMediumLvl1,
+                    _playerBehaviour.defaultPlayerStats.AccelerationMediumLvl2,
+                    _playerBehaviour.defaultPlayerStats.AccelerationMediumLvl3);
+        }
+        
+        public virtual void LoadAccelerationHigh()
+        {
+            _playerBehaviour.speedStats.AccelerationHigh =
+                LoadAccelerationHigh(_playerBehaviour.fuel.Level,
+                    _playerBehaviour.defaultPlayerStats.AccelerationHighLvl1,
+                    _playerBehaviour.defaultPlayerStats.AccelerationHighLvl2,
+                    _playerBehaviour.defaultPlayerStats.AccelerationHighLvl3);
         }
 
+        public virtual void LoadAccelerationLowThreshold()
+        {
+            _playerBehaviour.speedStats.AccelerationLowThreshold =
+                LoadAccelerationLowThreshold(_playerBehaviour.fuel.Level,
+                    _playerBehaviour.defaultPlayerStats.AccelerationLowThresholdLvl1,
+                    _playerBehaviour.defaultPlayerStats.AccelerationLowThresholdLvl2,
+                    _playerBehaviour.defaultPlayerStats.AccelerationLowThresholdLvl3);
+        }
+        
+        public virtual void LoadAccelerationMediumThreshold()
+        {
+            _playerBehaviour.speedStats.AccelerationMediumThreshold =
+                LoadAccelerationMediumThreshold(_playerBehaviour.fuel.Level,
+                    _playerBehaviour.defaultPlayerStats.AccelerationMediumThresholdLvl1,
+                    _playerBehaviour.defaultPlayerStats.AccelerationMediumThresholdLvl2,
+                    _playerBehaviour.defaultPlayerStats.AccelerationMediumThresholdLvl3);
+        }
+        
+        public virtual void LoadAccelerationOffRoadThreshold()
+        {
+            _playerBehaviour.speedStats.AccelerationOffRoadThreshold =
+                LoadAccelerationOffRoadThreshold(_playerBehaviour.fuel.Level,
+                    _playerBehaviour.defaultPlayerStats.AccelerationOffRoadThresholdLvl1,
+                    _playerBehaviour.defaultPlayerStats.AccelerationOffRoadThresholdLvl2,
+                    _playerBehaviour.defaultPlayerStats.AccelerationOffRoadThresholdLvl3);
+        }
+        
         public virtual void LoadBoostSpeed()
         {
-            playerBehaviour.speedStats.BoostSpeed = playerBehaviour.speedStats.BoostSpeed = LoadBoostSpeed(
-                playerBehaviour.fuel.Level,
-                playerBehaviour.characterData.BoostSpeed,
-                playerBehaviour.extremeGearData.movementVars.BoostSpeedLvl1,
-                playerBehaviour.extremeGearData.movementVars.BoostSpeedLvl2,
-                playerBehaviour.extremeGearData.movementVars.BoostSpeedLvl3);
+            _playerBehaviour.speedStats.BoostSpeed = _playerBehaviour.speedStats.BoostSpeed = LoadBoostSpeed(
+                _playerBehaviour.fuel.Level,
+                _playerBehaviour.characterData.BoostSpeed,
+                _playerBehaviour.extremeGearData.movementVars.BoostSpeedLvl1,
+                _playerBehaviour.extremeGearData.movementVars.BoostSpeedLvl2,
+                _playerBehaviour.extremeGearData.movementVars.BoostSpeedLvl3);
         }
 
         /// <summary>
@@ -392,186 +503,180 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// </summary>
         public virtual void LoadBoostChainModifier()
         {
-            playerBehaviour.speedStats.BoostChainModifier = LoadBoostChainModifier(
-                playerBehaviour.characterData.BoostChainModifier,
-                playerBehaviour.extremeGearData.movementVars.BoostChainModifier);
+            _playerBehaviour.speedStats.BoostChainModifier = LoadBoostChainModifier(
+                _playerBehaviour.characterData.BoostChainModifier,
+                _playerBehaviour.extremeGearData.movementVars.BoostChainModifier);
         }
 
         public virtual void LoadBoostDuration()
         {
-            playerBehaviour.speedStats.BoostDuration = LoadBoostDuration(playerBehaviour.fuel.Level,
-                playerBehaviour.defaultPlayerStats.BoostDuration, playerBehaviour.characterData.BoostDurationLvl1,
-                playerBehaviour.characterData.BoostDurationLvl2, playerBehaviour.characterData.BoostDurationLvl3);
+            _playerBehaviour.speedStats.BoostDuration = LoadBoostDuration(_playerBehaviour.fuel.Level,
+                _playerBehaviour.defaultPlayerStats.BoostDuration, _playerBehaviour.characterData.BoostDurationLvl1,
+                _playerBehaviour.characterData.BoostDurationLvl2, _playerBehaviour.characterData.BoostDurationLvl3);
         }
 
         public virtual void LoadBreakeDecelleration()
         {
-            playerBehaviour.speedStats.BreakeDecelleration =
-                LoadBreakeDecelleration(playerBehaviour.defaultPlayerStats.BreakeDecelerationDefault);
+            _playerBehaviour.speedStats.BreakeDecelleration =
+                LoadBreakeDecelleration(_playerBehaviour.defaultPlayerStats.BreakeDecelerationDefault);
         }
 
         public virtual void LoadDriftDashSpeed()
         {
-            playerBehaviour.speedStats.DriftDashSpeed = LoadDriftDashSpeed(playerBehaviour.fuel.Level,
-                playerBehaviour.characterData.Drift, playerBehaviour.extremeGearData.movementVars.DriftDashSpeedLvl1,
-                playerBehaviour.extremeGearData.movementVars.DriftDashSpeedLvl2,
-                playerBehaviour.extremeGearData.movementVars.DriftDashSpeedLvl3);
+            _playerBehaviour.speedStats.DriftDashSpeed = LoadDriftDashSpeed(_playerBehaviour.fuel.Level,
+                _playerBehaviour.characterData.Drift, _playerBehaviour.extremeGearData.movementVars.DriftDashSpeedLvl1,
+                _playerBehaviour.extremeGearData.movementVars.DriftDashSpeedLvl2,
+                _playerBehaviour.extremeGearData.movementVars.DriftDashSpeedLvl3);
         }
 
         public virtual void LoadDriftCap()
         {
-            playerBehaviour.speedStats.DriftCap = LoadDriftCap(playerBehaviour.fuel.Level,
-                playerBehaviour.defaultPlayerStats.DriftCapLevelUp, playerBehaviour.characterData.Drift,
-                playerBehaviour.extremeGearData.movementVars.DriftCap);
+            _playerBehaviour.speedStats.DriftCap = LoadDriftCap(_playerBehaviour.fuel.Level,
+                _playerBehaviour.defaultPlayerStats.DriftCapLevelUp, _playerBehaviour.characterData.Drift,
+                _playerBehaviour.extremeGearData.movementVars.DriftCap);
         }
 
         public virtual void LoadDriftDashFrames()
         {
-            playerBehaviour.speedStats.DriftDashFrames =
-                LoadDriftDashFrames(playerBehaviour.extremeGearData.movementVars.DriftDashChargeDuration);
+            _playerBehaviour.speedStats.DriftDashFrames =
+                LoadDriftDashFrames(_playerBehaviour.extremeGearData.movementVars.DriftDashChargeDuration);
         }
 
         public virtual void LoadTurnSpeedLoss()
         {
-            playerBehaviour.speedStats.TurnSpeedLoss =
-                LoadTurnSpeedLoss(playerBehaviour.defaultPlayerStats.TurnSpeedLossCurveDefault);
+            _playerBehaviour.speedStats.TurnSpeedLoss =
+                LoadTurnSpeedLoss(_playerBehaviour.defaultPlayerStats.TurnSpeedLossCurveDefault);
         }
 
         public virtual void LoadJumpChargeMinSpeed()
         {
-            playerBehaviour.speedStats.JumpChargeMinSpeed =
-                LoadJumpChargeMinSpeed(playerBehaviour.defaultPlayerStats.JumpChargeMinSpeedDefault);
+            _playerBehaviour.speedStats.JumpChargeMinSpeed =
+                LoadJumpChargeMinSpeed(_playerBehaviour.defaultPlayerStats.JumpChargeMinSpeedDefault);
         }
 
         public virtual void LoadJumpChargeDecelleration()
         {
-            playerBehaviour.speedStats.JumpChargeDecelleration =
-                LoadJumpChargeDecelleration(playerBehaviour.defaultPlayerStats.JumpChargeDecelerationDefault);
+            _playerBehaviour.speedStats.JumpChargeDecelleration =
+                LoadJumpChargeDecelleration(_playerBehaviour.defaultPlayerStats.JumpChargeDecelerationDefault);
         }
 
         // TURNING
         public virtual void LoadTurnRate()
         {
-            playerBehaviour.turnStats.Turnrate = LoadTurnRate(playerBehaviour.defaultPlayerStats.TurnrateDefault);
+            _playerBehaviour.turnStats.Turnrate = LoadTurnRate(_playerBehaviour.defaultPlayerStats.TurnrateDefault);
         }
 
         public virtual void LoadTurnSpeedLossCurve()
         {
-            playerBehaviour.turnStats.TurnSpeedLossCurve =
-                LoadTurnSpeedLossCurve(playerBehaviour.defaultPlayerStats.TurnSpeedLossCurveDefault);
+            _playerBehaviour.turnStats.TurnSpeedLossCurve =
+                LoadTurnSpeedLossCurve(_playerBehaviour.defaultPlayerStats.TurnSpeedLossCurveDefault);
         }
 
         public virtual void LoadTurnrateCurve()
         {
-            playerBehaviour.turnStats.TurnrateCurve =
-                LoadTurnrateCurve(playerBehaviour.defaultPlayerStats.TurnrateCurveDefault);
+            _playerBehaviour.turnStats.TurnrateCurve =
+                LoadTurnrateCurve(_playerBehaviour.defaultPlayerStats.TurnrateCurveDefault);
         }
-
-        public virtual void LoadDriftTurnratePassive()
-        {
-            playerBehaviour.turnStats.DriftTurnratePassive =
-                LoadDriftTurnratePassive(playerBehaviour.defaultPlayerStats.DriftTurnratePassiveDefault);
-        }
-
+        
         public virtual void LoadDriftTurnrateMin()
         {
-            playerBehaviour.turnStats.DriftTurnrateMin =
-                LoadDriftTurnrateMin(playerBehaviour.defaultPlayerStats.DriftTurnrateMinDefault);
+            _playerBehaviour.turnStats.DriftTurnrateMin =
+                LoadDriftTurnrateMin(_playerBehaviour.defaultPlayerStats.DriftTurnrateMinDefault);
         }
 
         public virtual void LoadDriftTurnRateMax()
         {
-            playerBehaviour.turnStats.DriftTurnrateMax =
-                LoadDriftTurnRateMax(playerBehaviour.defaultPlayerStats.DriftTurnRateMaxDefault);
+            _playerBehaviour.turnStats.DriftTurnrateMax =
+                LoadDriftTurnRateMax(_playerBehaviour.defaultPlayerStats.DriftTurnRateMaxDefault);
         }
 
         public virtual void LoadDriftTurnrate()
         {
-            playerBehaviour.turnStats.DriftTurnrate =
-                LoadDriftTurnrate(playerBehaviour.defaultPlayerStats.DriftTurnrateDefault);
+            _playerBehaviour.turnStats.DriftTurnrate =
+                LoadDriftTurnrate(_playerBehaviour.defaultPlayerStats.DriftTurnrateDefault);
         }
 
         //Jump
         public virtual void LoadJumpSpeedMax()
         {
-            playerBehaviour.jumpStats.JumpSpeedMax =
-                LoadJumpSpeedMax(playerBehaviour.defaultPlayerStats.JumpSpeedMaxDefault);
+            _playerBehaviour.jumpStats.JumpSpeedMax =
+                LoadJumpSpeedMax(_playerBehaviour.defaultPlayerStats.JumpSpeedMaxDefault);
         }
 
         public virtual void LoadJumpAccelleration()
         {
-            playerBehaviour.jumpStats.JumpAccelleration =
-                LoadJumpAccelleration(playerBehaviour.defaultPlayerStats.JumpAccelDefault);
+            _playerBehaviour.jumpStats.JumpAccelleration =
+                LoadJumpAccelleration(_playerBehaviour.defaultPlayerStats.JumpAccelDefault);
         }
 
         // FUEL
         public virtual void LoadFuelType()
         {
-            playerBehaviour.fuelStats.FuelType = LoadFuelType(playerBehaviour.extremeGearData.fuelVars.Fuel);
+            _playerBehaviour.fuelStats.FuelType = LoadFuelType(_playerBehaviour.extremeGearData.fuelVars.Fuel);
         }
 
         public virtual void LoadJumpChargeMultiplier()
         {
-            playerBehaviour.fuelStats.JumpChargeMultiplier =
-                LoadJumpChargeMultiplier(playerBehaviour.extremeGearData.fuelVars.JumpChargeMultiplier);
+            _playerBehaviour.fuelStats.JumpChargeMultiplier =
+                LoadJumpChargeMultiplier(_playerBehaviour.extremeGearData.fuelVars.JumpChargeMultiplier);
         }
 
         public virtual void LoadTrickFuelGain()
         {
-            playerBehaviour.fuelStats.TrickFuelGain =
-                LoadTrickFuelGain(playerBehaviour.extremeGearData.fuelVars.TrickFuelGain);
+            _playerBehaviour.fuelStats.TrickFuelGain =
+                LoadTrickFuelGain(_playerBehaviour.extremeGearData.fuelVars.TrickFuelGain);
         }
 
         public virtual void LoadTypeFuelGain()
         {
-            playerBehaviour.fuelStats.TypeFuelGain =
-                LoadTypeFuelGain(playerBehaviour.extremeGearData.fuelVars.TypeFuelGain);
+            _playerBehaviour.fuelStats.TypeFuelGain =
+                LoadTypeFuelGain(_playerBehaviour.extremeGearData.fuelVars.TypeFuelGain);
         }
 
         public virtual void LoadQTEFuelGain()
         {
-            playerBehaviour.fuelStats.QTEFuelGain =
-                LoadTypeFuelGain(playerBehaviour.extremeGearData.fuelVars.QTEFuelGain);
+            _playerBehaviour.fuelStats.QTEFuelGain =
+                LoadTypeFuelGain(_playerBehaviour.extremeGearData.fuelVars.QTEFuelGain);
         }
 
         public virtual void LoadPassiveDrain()
         {
-            playerBehaviour.fuelStats.PassiveDrain = LoadPassiveDrain(playerBehaviour.fuel.Level,
-                playerBehaviour.extremeGearData.fuelVars.PassiveDrainLvl1,
-                playerBehaviour.extremeGearData.fuelVars.PassiveDrainLvl2,
-                playerBehaviour.extremeGearData.fuelVars.PassiveDrainLvl3);
+            _playerBehaviour.fuelStats.PassiveDrain = LoadPassiveDrain(_playerBehaviour.fuel.Level,
+                _playerBehaviour.extremeGearData.fuelVars.PassiveDrainLvl1,
+                _playerBehaviour.extremeGearData.fuelVars.PassiveDrainLvl2,
+                _playerBehaviour.extremeGearData.fuelVars.PassiveDrainLvl3);
         }
 
         public virtual void LoadTankSize()
         {
-            playerBehaviour.fuelStats.TankSize = LoadTankSize(playerBehaviour.fuel.Level,
-                playerBehaviour.extremeGearData.fuelVars.FuelTankSizeLevel1,
-                playerBehaviour.extremeGearData.fuelVars.FuelTankSizeLevel2,
-                playerBehaviour.extremeGearData.fuelVars.FuelTankSizeLevel3);
+            _playerBehaviour.fuelStats.TankSize = LoadTankSize(_playerBehaviour.fuel.Level,
+                _playerBehaviour.extremeGearData.fuelVars.FuelTankSizeLevel1,
+                _playerBehaviour.extremeGearData.fuelVars.FuelTankSizeLevel2,
+                _playerBehaviour.extremeGearData.fuelVars.FuelTankSizeLevel3);
         }
 
         public virtual void LoadBoostCost()
         {
-            playerBehaviour.fuelStats.BoostCost = LoadBoostCost(playerBehaviour.fuel.Level,
-                playerBehaviour.extremeGearData.fuelVars.BoostCostLvl1,
-                playerBehaviour.extremeGearData.fuelVars.BoostCostLvl2,
-                playerBehaviour.extremeGearData.fuelVars.BoostCostLvl3);
+            _playerBehaviour.fuelStats.BoostCost = LoadBoostCost(_playerBehaviour.fuel.Level,
+                _playerBehaviour.extremeGearData.fuelVars.BoostCostLvl1,
+                _playerBehaviour.extremeGearData.fuelVars.BoostCostLvl2,
+                _playerBehaviour.extremeGearData.fuelVars.BoostCostLvl3);
         }
 
         public virtual void LoadDriftCost()
         {
-            playerBehaviour.fuelStats.DriftCost = LoadDriftCost(playerBehaviour.fuel.Level,
-                playerBehaviour.extremeGearData.fuelVars.DriftCostLvl1,
-                playerBehaviour.extremeGearData.fuelVars.DriftCostLvl2,
-                playerBehaviour.extremeGearData.fuelVars.DriftCostLvl3);
+            _playerBehaviour.fuelStats.DriftCost = LoadDriftCost(_playerBehaviour.fuel.Level,
+                _playerBehaviour.extremeGearData.fuelVars.DriftCostLvl1,
+                _playerBehaviour.extremeGearData.fuelVars.DriftCostLvl2,
+                _playerBehaviour.extremeGearData.fuelVars.DriftCostLvl3);
         }
 
         public virtual void LoadTornadoCost()
         {
-            playerBehaviour.fuelStats.TorandoCost = LoadTornadoCost(playerBehaviour.fuel.Level,
-                playerBehaviour.extremeGearData.fuelVars.TornadoCostLvl1,
-                playerBehaviour.extremeGearData.fuelVars.TornadoCostLvl2,
-                playerBehaviour.extremeGearData.fuelVars.TornadoCostLvl3);
+            _playerBehaviour.fuelStats.TorandoCost = LoadTornadoCost(_playerBehaviour.fuel.Level,
+                _playerBehaviour.extremeGearData.fuelVars.TornadoCostLvl1,
+                _playerBehaviour.extremeGearData.fuelVars.TornadoCostLvl2,
+                _playerBehaviour.extremeGearData.fuelVars.TornadoCostLvl3);
         }
 
         #endregion

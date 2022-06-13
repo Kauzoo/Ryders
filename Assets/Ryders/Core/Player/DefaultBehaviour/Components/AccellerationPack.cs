@@ -6,6 +6,7 @@ using System.Data;
 using System.IO;
 using System.Runtime.Serialization;
 using UnityEngine.InputSystem.Controls;
+using UnityEngine.PlayerLoop;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
@@ -24,21 +25,22 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     {
         private PlayerBehaviour _playerBehaviour;
         private const int JumpChargeTargetSpeed = 80;
-        private const int CorneringTargetSpeed = 130;
+        private const int CorneringTargetSpeed = 180;
 
+        // TODO Look into SpeedHandlingMultiplier and TurnLowSpeedMultiplier
         private void Start()
         {
             _playerBehaviour = GetComponent<PlayerBehaviour>();
         }
-
-        // TODO Add in MediumAccel
+        
         /// <summary>
         /// This includes both Regular as well as FastAccel
         /// </summary>
         /// <param name="speed"></param>
         /// <param name="maxSpeed"></param>
         /// <returns></returns>
-        public static float StandardAcceleration(float speed, float maxSpeed, float fastAccel, float regAccel,
+        public static float StandardAcceleration(float speed, float maxSpeed, float lowAccel, float mediumAccel,
+            float highAccel, float lowThreshold, float mediumThreshold, float offRoadThreshold,
             CorneringStates corneringStates, DriftStates driftStates, GroundedStates groundedStates)
         {
             // Calculate BelowMaxSpeed
@@ -52,15 +54,20 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             }
 
             // If speed is below 130, do fast accel, else use regular accel
-            if (speed < 130)
+            if (speed < lowThreshold)
             {
-                speedGainPerFrame += fastAccel;
+                speedGainPerFrame += lowAccel;
+            }
+            if (speed < mediumThreshold)
+            {
+                speedGainPerFrame += mediumAccel;
             }
             else
             {
-                speedGainPerFrame += regAccel;
+                speedGainPerFrame += highAccel;
             }
-
+            // TODO Add OffRoad
+            
             return speedGainPerFrame;
         }
 
@@ -107,12 +114,19 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 speedLossPerFrame = 10f;
             }
 
+            Debug.Log("SpeedLossPerSecond: " + Formula.RidersSpeedToSpeed(speedLossPerFrame) * 60);
             return Formula.RidersSpeedToSpeed(speedLossPerFrame) * (-1);
         }
 
         public static float CorneringDeceleration(float speed, CorneringStates corneringStates)
         {
             // TODO: Implement CorneringDeceleration
+            // TODO: TurnSpeedLoss is apparently a property in the OG game, so look into this
+            throw new NotImplementedException();
+        }
+
+        public static float DriftDeceleration()
+        {
             throw new NotImplementedException();
         }
 
@@ -150,11 +164,12 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         protected virtual float StandardAcceleration()
         {
-            return StandardAcceleration(_playerBehaviour.movement.Speed,
-                _playerBehaviour.movement.MaxSpeed, _playerBehaviour.speedStats.FastAccelleration,
-                _playerBehaviour.speedStats.Acceleration, _playerBehaviour.movement.CorneringState,
-                _playerBehaviour.movement.DriftState,
-                _playerBehaviour.movement.GroundedState);
+            return StandardAcceleration(_playerBehaviour.movement.Speed, _playerBehaviour.movement.MaxSpeed,
+                _playerBehaviour.speedStats.AccelerationLow, _playerBehaviour.speedStats.AccelerationMedium,
+                _playerBehaviour.speedStats.AccelerationHigh, _playerBehaviour.speedStats.AccelerationLowThreshold,
+                _playerBehaviour.speedStats.AccelerationMediumThreshold,
+                _playerBehaviour.speedStats.AccelerationOffRoadThreshold, _playerBehaviour.movement.CorneringState,
+                _playerBehaviour.movement.DriftState, _playerBehaviour.movement.GroundedState);
         }
 
         protected virtual float StandardDeceleration()

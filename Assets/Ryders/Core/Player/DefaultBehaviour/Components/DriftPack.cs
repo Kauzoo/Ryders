@@ -24,6 +24,12 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             Only a) will cause a DriftDash
          */
         // TODO Bonking should knock the player from DriftState into Breaking without releasing charge
+        
+        // TODO Implement DriftMomentum
+        // How much your momentum follows you during a drift.
+        // (Basically how much your current angle and velocity affects the drift by decreasing
+        // how much you can turn. Higher = turn less).
+        
         private const float DriftInputThreshold = 0;
         public PlayerBehaviour playerBehaviour;
 

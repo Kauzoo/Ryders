@@ -279,9 +279,12 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public abstract class SpeedStats : MonoBehaviour
         {
             [Header("Speed")] public float TopSpeed;
-            [Header("Accelleration")] public float MinSpeed;
-            public float Acceleration;
-            public float FastAccelleration;
+            [Header("Acceleration")] public float AccelerationLow;
+            public float AccelerationMedium;
+            public float AccelerationHigh;
+            public float AccelerationLowThreshold;
+            public float AccelerationMediumThreshold;
+            public float AccelerationOffRoadThreshold;
 
             /// <summary>
             /// Affected by Level (<see cref="ExtremeGear.ExtremeGearData"/>).
@@ -297,7 +300,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             public float BoostChainModifier;
             public float BoostDuration;
 
-            [Header("Breake")] public float BreakeDecelleration;
+            [Header("Break")] public float BreakeDecelleration;
             [Header("Drift")] public float DriftDashSpeed;
             public float DriftCap;
             public float DriftDashFrames;
@@ -346,12 +349,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             [Header("Speed")] public float Speed;
             public float MaxSpeed;
-
-            [Header("Acceleration")] public float Acceleration; // The sum of all acceleration effects
-            public float Deceleration; // The sum of all decelerations
-
+            
             [Header("Boost")] public float BoostTimer;
-            public float BoostLockTimer;
 
             [Header("Turning")]
             public float TurningRaw;

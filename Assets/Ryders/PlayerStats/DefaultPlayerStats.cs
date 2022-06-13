@@ -13,52 +13,89 @@ namespace Ryders.Core.Player
     {
 
         /// <summary>
-        /// Speed Threshold below which FastAcceleration is triggered. This is a total value.
+        /// Acceleration at low speeds. This is a total value.
         /// </summary>
         [Header("Acceleration")]
-        public int MinSpeedDefault;
+        public float AccelerationLowLvl1;
         /// <summary>
-        /// Acceleration value while the player is in FastAcceleration state. This is a total value.
+        /// Acceleration at low speeds. This is a total value.
         /// </summary>
-        public int FastAccelerationDefault;
+        public float AccelerationLowLvl2;
         /// <summary>
-        /// Will probably be handled as a Function.
-        /// The rate at which the player decelerates back to his current MaxSpeed (when above that value). This value scales with CurrentSpeed as well as current MaxSpeed.
-        /// For more see the SRDX Datasheet. 
+        /// Acceleration at low speeds. This is a total value.
         /// </summary>
-        public float Deceleration;
+        public float AccelerationLowLvl3;
+        /// <summary>
+        /// Acceleration at medium speeds. This is a total value.
+        /// </summary>
+        public float AccelerationMediumLvl1;
+        /// <summary>
+        /// Acceleration at medium speeds. This is a total value.
+        /// </summary>
+        public float AccelerationMediumLvl2;
+        /// <summary>
+        /// Acceleration at medium speeds. This is a total value.
+        /// </summary>
+        public float AccelerationMediumLvl3;
+        /// <summary>
+        /// Acceleration at high speeds. This is a total value.
+        /// </summary>
+        public float AccelerationHighLvl1;
+        /// <summary>
+        /// Acceleration at high speeds. This is a total value.
+        /// </summary>
+        public float AccelerationHighLvl2;
+        /// <summary>
+        /// Acceleration at high speeds. This is a total value.
+        /// </summary>
+        public float AccelerationHighLvl3;
+        /// <summary>
+        /// Threshold below which AccelerationLow is used
+        /// </summary>
+        public float AccelerationLowThresholdLvl1;
+        /// <summary>
+        /// Threshold below which AccelerationLow is used
+        /// </summary>
+        public float AccelerationLowThresholdLvl2;
+        /// <summary>
+        /// Threshold below which AccelerationLow is used
+        /// </summary>
+        public float AccelerationLowThresholdLvl3;
+        /// <summary>
+        /// Threshold below which AccelerationMedium is used
+        /// </summary>
+        public float AccelerationMediumThresholdLvl1;
+        /// <summary>
+        /// Threshold below which AccelerationMedium is used
+        /// </summary>
+        public float AccelerationMediumThresholdLvl2;
+        /// <summary>
+        /// Threshold below which AccelerationMedium is used
+        /// </summary>
+        public float AccelerationMediumThresholdLvl3;
+        /// <summary>
+        /// Threshold for OffRoad
+        /// </summary>
+        public float AccelerationOffRoadThresholdLvl1;
+        /// <summary>
+        /// Threshold for OffRoad
+        /// </summary>
+        public float AccelerationOffRoadThresholdLvl2;
+        /// <summary>
+        /// Threshold for OffRoad
+        /// </summary>
+        public float AccelerationOffRoadThresholdLvl3;
         /// <summary>
         /// Base Value for speed loss while cornering.
         /// </summary>
         public float CorneringDeceleration;
-        /// <summary>
-        /// Default formula to calculate Deceleration.
-        /// First value is current Speed, second value is current MaxSpeed. Returns a value for Deceleration >= 0.
-        /// For more info on the formula see SRDX Datasheets.
-        /// </summary>
-        public Func<float, float, float> DecelerationFormula = (Speed, MaxSpeed) => {
-            float OvermaxSpeed = Speed - MaxSpeed;
-            float Deceleration = 0;
-            if(OvermaxSpeed > 0)
-            {
-                if(MaxSpeed > 200)
-                {
-                    Deceleration = (Mathf.Pow((OvermaxSpeed / 60), 2.0f) + 0.2f) / 1000;
-                }
-                if(MaxSpeed < 200)
-                {
-                    Deceleration = (Mathf.Pow((OvermaxSpeed / (260 - MaxSpeed)), 2.0f) + 0.2f) / 1000;
-                }
-            }
-            return Deceleration;
-    };
 
-        [Header("Turning")]
         /// <summary>
         /// HiddenStat
         /// This is proabaly in the og game but kinda cryptic.
         /// Base Number affecting how fast the Board turns.
         /// </summary>
+        [Header("Turning")]
         public float TurnrateDefault;
         /// <summary>
         /// HiddenStat
@@ -71,17 +108,12 @@ namespace Ryders.Core.Player
         /// This stat is not based of the og game afaik
         /// </summary>
         public AnimationCurve TurnrateCurveDefault;
-
-        /// <summary>
-        /// HiddenStat
-        /// Rate at which the player passively turns towards a direction while drifting
-        /// </summary>
-        [Header("Drift")]
-        public float DriftTurnratePassiveDefault;
+        
         /// <summary>
         /// HiddenStat
         /// Minimum amount the player is able to turn while drifting
         /// </summary>
+        [Header("Drift")]
         public float DriftTurnrateMinDefault;
         /// <summary>
         /// Maximum amount the player is able to turn while drifting
