@@ -88,11 +88,17 @@ namespace Ryders.Core.Player
         /// <summary>
         /// Base Value for speed loss while cornering.
         /// </summary>
-        public float CorneringDeceleration;
+        public float TurnSpeedLoss;
+        /// <summary>
+        /// This is an offset
+        /// Negative values = slower max speed but better turning
+        /// Positive values = higher max speed but worse turning
+        /// </summary>
+        public float SpeedHandlingMultiplier;
 
         /// <summary>
         /// HiddenStat
-        /// This is proabaly in the og game but kinda cryptic.
+        /// This is probably in the og game but kinda cryptic.
         /// Base Number affecting how fast the Board turns.
         /// </summary>
         [Header("Turning")]
@@ -104,7 +110,7 @@ namespace Ryders.Core.Player
         public float TurnRateMax;
         /// <summary>
         /// HiddenStat
-        /// Curve determening the speed lost while turning, based of the current speed
+        /// Curve determining the speed lost while turning, based of the current speed
         /// </summary>
         public AnimationCurve TurnSpeedLossCurveDefault;
         /// <summary>
@@ -113,6 +119,11 @@ namespace Ryders.Core.Player
         /// This stat is not based of the og game afaik
         /// </summary>
         public AnimationCurve TurnrateCurveDefault;
+        /// <summary>
+        /// Not sure how it works
+        /// supposedly lets you turn better a low speeds
+        /// </summary>
+        public float TurnLowSpeedMultiplierDefault;
         
         /// <summary>
         /// HiddenStat
@@ -129,10 +140,17 @@ namespace Ryders.Core.Player
         /// The turnrate used while drifting (if the player inputs a direction)
         /// </summary>
         public float DriftTurnrateDefault;
+        /// <summary>
+        /// How much your momentum follows you during a drift.
+        /// (Basically how much your current angle and velocity affects the drift by decreasing
+        /// how much you can turn. Higher = turn less).
+        /// This is an offset
+        /// </summary>
+        public float DriftMomentumDefault;
 
         /// <summary>
         /// HiddenStat
-        /// Rate of deceleration while breakeing
+        /// Rate of deceleration while breaking
         /// </summary>
         [Header("Breake")]
         public float BreakeDecelerationDefault;

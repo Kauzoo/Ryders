@@ -175,7 +175,7 @@ MonoBehaviour:
   playerSignifier: 0
   masterInput: {fileID: 0}
   inputPlayer: {fileID: 0}
-  characterData: {fileID: 11400000, guid: a09c7817e4d5c664195e65f3249d406e, type: 2}
+  characterData: {fileID: 11400000, guid: 4e385a1055e3ad94aa8485b23e6d8f76, type: 2}
   defaultPlayerStats: {fileID: 11400000, guid: 691ccab9c0c54a941afcb502a198639a, type: 2}
   extremeGearData: {fileID: 11400000, guid: 7a52960fbfdffa94d983196b8e4761d2, type: 2}
   speedStats: {fileID: 0}
@@ -317,9 +317,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TopSpeed: 0
-  MinSpeed: 0
-  Acceleration: 1
-  FastAccelleration: 1
+  AccelerationLow: 0
+  AccelerationMedium: 0
+  AccelerationHigh: 0
+  AccelerationLowThreshold: 0
+  AccelerationMediumThreshold: 0
+  AccelerationOffRoadThreshold: 0
   BoostSpeed: 0
   BoostChainModifier: 0
   BoostDuration: 0
@@ -351,11 +354,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 0
   MaxSpeed: 0
-  Acceleration: 0
-  Deceleration: 0
   BoostTimer: 0
-  BoostLockTimer: 0
-  TurningRaw: 0
   Turning: 0
   DriftTurning: 0
   DriftTimer: 0
@@ -384,7 +383,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1d424a5a71c88640be7a910b5fbf699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerBehaviour: {fileID: 0}
+  _playerBehaviour: {fileID: 0}
 --- !u!114 &60184866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -454,6 +453,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Turnrate: 0
+  TurnRateMax: 0
   TurnSpeedLossCurve:
     serializedVersion: 2
     m_Curve: []
@@ -466,8 +466,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  DriftTurnratePassive: 0
   DriftTurnrateMin: 0
+  DriftTurnrateMax: 0
   DriftTurnrate: 0
 --- !u!114 &60184870
 MonoBehaviour:
@@ -774,9 +774,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TopSpeed: 0
-  MinSpeed: 0
-  Acceleration: 0
-  FastAccelleration: 0
+  AccelerationLow: 0
+  AccelerationMedium: 0
+  AccelerationHigh: 0
+  AccelerationLowThreshold: 0
+  AccelerationMediumThreshold: 0
+  AccelerationOffRoadThreshold: 0
   BoostSpeed: 0
   BoostChainModifier: 0
   BoostDuration: 0

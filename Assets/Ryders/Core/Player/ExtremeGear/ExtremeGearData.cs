@@ -63,9 +63,9 @@ namespace Ryders.Core.Player.ExtremeGear
             /// The Speed to which the player boosts. MaxSpeed is set to boost speed while boosting.
             /// Stat changes with Level. Stacks additively with <see cref="CharacterBase.CharacterStatsMovement.BoostSpeed"/> from <see cref="CharacterBase"/>
             /// </summary>
-            public int BoostSpeedLvl1;
-            public int BoostSpeedLvl2;
-            public int BoostSpeedLvl3;
+            public float BoostSpeedLvl1;
+            public float BoostSpeedLvl2;
+            public float BoostSpeedLvl3;
             /// <summary>
             /// SRDX
             /// The percentage Modifier used when performing a BoostChain.
@@ -77,9 +77,9 @@ namespace Ryders.Core.Player.ExtremeGear
             /// Speed player gains from a DriftDash. This amount stacks ontop of the current speed (as long as it's below the DriftCap).
             /// Stat is affected by Level and additively stacks with the Drift stat from character.
             /// </summary>
-            public int DriftDashSpeedLvl1;
-            public int DriftDashSpeedLvl2;
-            public int DriftDashSpeedLvl3;
+            public float DriftDashSpeedLvl1;
+            public float DriftDashSpeedLvl2;
+            public float DriftDashSpeedLvl3;
             /// <summary>
             /// SRDX
             /// Player can not you DriftDash to Boost past this speed, but also can not lose Speed by boosting while above cap.
@@ -92,41 +92,36 @@ namespace Ryders.Core.Player.ExtremeGear
             /// Stat is originally called DriftDashFrames and is orginally measured in Frames.
             /// </summary>
             public int DriftDashChargeDuration;
+            /// <summary>
+            /// This is an offset
+            /// Negative values = slower max speed but better turning
+            /// Positive values = higher max speed but worse turning
+            /// </summary>
+            public float SpeedHandlingMultiplier;
 
-            /**
-             * Other necesary stats that are board based, but not listed in the SRDX Datasheets
-             */
-            
+            /// <summary>
+            /// How fast the gear Turns towards TurnRateMax
+            /// Sewer56.SonicRiders TurnAcceleration
+            /// </summary>
             [Header("Turning")]
+            public float TurnRate;
             /// <summary>
-            /// HiddenStat
-            /// This is proabaly in the og game but kinda cryptic.
-            /// Base Number affecting how fast the Board turns.
+            /// The maximum TurnRate that can be achieved
+            /// Sewer56.SonicRiders TurnMaxRadius
             /// </summary>
-            public float Turnrate;
+            public float TurnRateMax;
             /// <summary>
-            /// HiddenStat
-            /// Curve determening the speed lost while turning, based of the current speed
+            /// Not sure how it works
+            /// supposedly lets you turn better a low speeds
             /// </summary>
-            public AnimationCurve TurnSpeedLossCurve;
-            /// <summary>
-            /// HiddenStat
-            /// Determines the ratio of Turning relative to current speed.
-            /// This stat is not based of the og game afaik
-            /// </summary>
-            public AnimationCurve TurnrateCurve;
-
-            /// <summary>
-            /// HiddenStat
-            /// Rate at which the player passively turns towards a direction while drifting
-            /// </summary>
-            [Header("Drift")]
-            public float DriftTurnratePassive;
+            public float TurnLowSpeedMultiplier;
+            
             /// <summary>
             /// HiddenStat
             /// Minimum amount the player is able to turn while drifting
             /// </summary>
-            public float DriftTurnrateMin;
+            [Header("Drift")]
+            public float DriftTurnRateMin;
             /// <summary>
             /// HiddenStat
             /// Maximum amount the player is able to turn while drifting
@@ -134,18 +129,23 @@ namespace Ryders.Core.Player.ExtremeGear
             public float DriftTurnRateMax;
             /// <summary>
             /// HiddenStat
-            /// The turnrate used while drifting (if the player inputs a direction)
+            /// The TurnRate used while drifting (if the player inputs a direction)
             /// </summary>
-            public float DriftTurnrate;
+            public float DriftTurnRate;
+            /// <summary>
+            /// How much your momentum follows you during a drift.
+            /// (Basically how much your current angle and velocity affects the drift by decreasing
+            /// how much you can turn. Higher = turn less).
+            /// </summary>
+            public float DriftMomentum;
 
             /// <summary>
             /// HiddenStat
-            /// Rate of deceleration while breakeing
+            /// Rate of deceleration while breaking
             /// </summary>
-            [Header("Breake")]
-            public float BreakeDeceleration;
-
-
+            [Header("Break")]
+            public float BreakDecelerationMultiplier;
+            
             /// <summary>
             /// HiddenStat
             /// The maximum amount of speed the player hits while jumping

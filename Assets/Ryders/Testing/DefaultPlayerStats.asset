@@ -30,9 +30,10 @@ MonoBehaviour:
   AccelerationOffRoadThresholdLvl1: 50
   AccelerationOffRoadThresholdLvl2: 50
   AccelerationOffRoadThresholdLvl3: 70
-  CorneringDeceleration: 1
+  TurnSpeedLoss: 0
+  SpeedHandlingMultiplier: 0
   TurnrateDefault: 0.01
-  TurnRateMax: 0.9
+  TurnRateMax: 0.7
   TurnSpeedLossCurveDefault:
     serializedVersion: 2
     m_Curve: []
@@ -45,9 +46,11 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  DriftTurnrateMinDefault: 1
-  DriftTurnRateMaxDefault: 3
-  DriftTurnrateDefault: 0.1
+  TurnLowSpeedMultiplierDefault: 0
+  DriftTurnrateMinDefault: 0.5
+  DriftTurnRateMaxDefault: 1.5
+  DriftTurnrateDefault: 0.08
+  DriftMomentumDefault: 0
   BreakeDecelerationDefault: 1
   JumpSpeedMaxDefault: 1
   JumpAccelDefault:
