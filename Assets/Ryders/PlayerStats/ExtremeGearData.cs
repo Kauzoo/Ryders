@@ -96,19 +96,7 @@ namespace Ryders.Core.Player.ExtremeGear
             /**
              * Other necesary stats that are board based, but not listed in the SRDX Datasheets
              */
-
-            [Header("Acceleration")]
-            /// <summary>
-            /// HiddenStat
-            /// Threshold for FastAccel
-            /// </summary>
-            public int MinSpeed;
-            /// <summary>
-            /// HiddenStat
-            /// The rate at which the player accelerates while below their MinSpeed value
-            /// </summary>
-            public int FastAcceleration;
-
+            
             [Header("Turning")]
             /// <summary>
             /// HiddenStat

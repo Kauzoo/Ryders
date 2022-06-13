@@ -212,13 +212,16 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public virtual void MasterTurnTest()
         {
-            if (movement.CorneringState == CorneringStates.Cornering)
+            if (movement.CorneringState is (CorneringStates.CorneringL or CorneringStates.CorneringR))
             {
+                Debug.Log("Entered method");
                 playerTransform.Rotate(0, movement.Turning, 0, Space.Self);
+                return;
             }
             if (movement.DriftState is DriftStates.DriftingL or DriftStates.DriftingR)
             {
                 playerTransform.Rotate(0, movement.DriftTurning, 0, Space.Self);
+                return;
             }
             //playerRigidbody.MoveRotation(playerTransform.rotation);
         }
@@ -317,9 +320,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public abstract class TurnStats : MonoBehaviour
         {
             [Header("Turning")] public float Turnrate;
+            public float TurnRateMax;
             public AnimationCurve TurnSpeedLossCurve;
             public AnimationCurve TurnrateCurve;
-            [Header("Drift")] public float DriftTurnratePassive;
+            [Header("Drift")]
             public float DriftTurnrateMin;
             public float DriftTurnrateMax;
             public float DriftTurnrate;
@@ -353,7 +357,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             [Header("Boost")] public float BoostTimer;
 
             [Header("Turning")]
-            public float TurningRaw;
             public float Turning;
 
             [Header("Drift")] public float DriftTurning;
@@ -379,10 +382,11 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             public virtual string GetTelemetry()
             {
                 var str = $"Speed: {Speed}" + $"{Environment.NewLine}MaxSpeed: {MaxSpeed}"
-                                             + $"{Environment.NewLine}BoostTimer: {BoostTimer}"
-                                             + $"{Environment.NewLine}DriftTimer: {DriftTimer}"
-                                             + $"{Environment.NewLine}DriftState: {DriftState}"
-                                             + $"{Environment.NewLine}CorneringState: {CorneringState}";
+                                            + $"{Environment.NewLine}BoostTimer: {BoostTimer}"
+                                            + $"{Environment.NewLine}DriftTimer: {DriftTimer}"
+                                            + $"{Environment.NewLine}DriftState: {DriftState}"
+                                            + $"{Environment.NewLine}CorneringState: {CorneringState}"
+                                            + $"{Environment.NewLine}TurnRate: {Turning}";
                 return str;
             }
         }
@@ -428,7 +432,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public enum CorneringStates
         {
             None,
-            Cornering
+            CorneringL,
+            CorneringR
         }
 
         public enum GroundedStates

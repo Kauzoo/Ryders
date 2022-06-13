@@ -4,11 +4,11 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
     /**
      *  Notes for Cornering:
-     *  -How do I determine if I am Cornering?
+     *  
      */
     public abstract class CorneringPack : MonoBehaviour
     {
-        // TODO Implement CorneringPack
+        // TODO Look into SpeedHandlingMultiplier and TurnLowSpeedMultiplier
         private PlayerBehaviour _playerBehaviour;
 
         private void Start()
@@ -23,26 +23,46 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         }
 
         /// <summary>
-        /// Determines CorneringState for the purposes of Decel
+        /// Determines CorneringState
+        /// Also resets TurnRate if needed
         /// </summary>
         protected virtual void DetermineCorneringState()
         {
-            if ((_playerBehaviour.movement.DriftState == DriftStates.None) &&
+            if ((_playerBehaviour.movement.DriftState == DriftStates.None) && 
                 _playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis != 0)
             {
-                _playerBehaviour.movement.CorneringState = CorneringStates.Cornering;
+                var tempCorneringState =
+                    _playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis < 0
+                        ? CorneringStates.CorneringL
+                        : CorneringStates.CorneringR;
+                // Reset TurnRate to 0 if the player changes Direction while turning
+                if (tempCorneringState != _playerBehaviour.movement.CorneringState)
+                {
+                    _playerBehaviour.movement.Turning = 0;
+                }
+                _playerBehaviour.movement.CorneringState = tempCorneringState;
             }
             else
             {
+                _playerBehaviour.movement.Turning = 0;
                 _playerBehaviour.movement.CorneringState = CorneringStates.None;
             }
         }
 
         protected virtual void CalculateTurning()
         {
-            _playerBehaviour.movement.TurningRaw = _playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
-            _playerBehaviour.movement.Turning =
-                _playerBehaviour.movement.TurningRaw * _playerBehaviour.turnStats.Turnrate;
+            var turnRateIntermediate = _playerBehaviour.movement.Turning + _playerBehaviour.turnStats.Turnrate *
+                                 _playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
+            if (turnRateIntermediate < 0)
+            {
+                _playerBehaviour.movement.Turning = Mathf.Min(Mathf.Abs(turnRateIntermediate),
+                    _playerBehaviour.turnStats.TurnRateMax) * (-1);
+            }
+            else
+            {
+                _playerBehaviour.movement.Turning = Mathf.Min(turnRateIntermediate,
+                    _playerBehaviour.turnStats.TurnRateMax);
+            }
         }
     }
 }

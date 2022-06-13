@@ -69,14 +69,15 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             LoadJumpChargeDecelleration();
             // TURNING
             LoadTurnRate();
+            LoadTurnRateMax();
             LoadTurnSpeedLossCurve();
-            LoadTurnrateCurve();
-            LoadDriftTurnrateMin();
+            LoadTurnRateCurve();
+            LoadDriftTurnRateMin();
             LoadDriftTurnRateMax();
-            LoadDriftTurnrate();
+            LoadDriftTurnRate();
             // JUMP
             LoadJumpSpeedMax();
-            LoadJumpAccelleration();
+            LoadJumpAcceleration();
             // FUEL
             LoadFuelType();
             LoadJumpChargeMultiplier();
@@ -291,9 +292,14 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         }
 
         // TURNING
-        public static float LoadTurnRate(float defaultTurnrateDefault)
+        public static float LoadTurnRate(float defaultTurnRateDefault)
         {
-            return defaultTurnrateDefault;
+            return defaultTurnRateDefault;
+        }
+
+        public static float LoadTurnRateMax(float defaultTurnRateMax)
+        {
+            return defaultTurnRateMax;
         }
 
         public static AnimationCurve LoadTurnSpeedLossCurve(AnimationCurve defaultTurnSpeedLossCurveDefault)
@@ -301,7 +307,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             return defaultTurnSpeedLossCurveDefault;
         }
 
-        public static AnimationCurve LoadTurnrateCurve(AnimationCurve defaultTurnrateCurveDefault)
+        public static AnimationCurve LoadTurnRateCurve(AnimationCurve defaultTurnrateCurveDefault)
         {
             return defaultTurnrateCurveDefault;
         }
@@ -311,7 +317,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             return defaultDriftTurnrateDefault;
         }
 
-        public static float LoadDriftTurnrateMin(float defaultDriftTurnrateMinDefault)
+        public static float LoadDriftTurnRateMin(float defaultDriftTurnrateMinDefault)
         {
             return defaultDriftTurnrateMinDefault;
         }
@@ -321,7 +327,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             return defaultDriftTurnRateMaxDefault;
         }
 
-        public static float LoadDriftTurnrate(float defaultDriftTurnrateDefault)
+        public static float LoadDriftTurnRate(float defaultDriftTurnrateDefault)
         {
             return defaultDriftTurnrateDefault;
         }
@@ -332,7 +338,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             return defaultJumpSpeedMaxDefault;
         }
 
-        public static AnimationCurve LoadJumpAccelleration(AnimationCurve defaultJumpAccelDefault)
+        public static AnimationCurve LoadJumpAcceleration(AnimationCurve defaultJumpAccelDefault)
         {
             return defaultJumpAccelDefault;
         }
@@ -566,22 +572,27 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             _playerBehaviour.turnStats.Turnrate = LoadTurnRate(_playerBehaviour.defaultPlayerStats.TurnrateDefault);
         }
 
+        public virtual void LoadTurnRateMax()
+        {
+            _playerBehaviour.turnStats.TurnRateMax = LoadTurnRateMax(_playerBehaviour.defaultPlayerStats.TurnRateMax);
+        }
+
         public virtual void LoadTurnSpeedLossCurve()
         {
             _playerBehaviour.turnStats.TurnSpeedLossCurve =
                 LoadTurnSpeedLossCurve(_playerBehaviour.defaultPlayerStats.TurnSpeedLossCurveDefault);
         }
 
-        public virtual void LoadTurnrateCurve()
+        public virtual void LoadTurnRateCurve()
         {
             _playerBehaviour.turnStats.TurnrateCurve =
-                LoadTurnrateCurve(_playerBehaviour.defaultPlayerStats.TurnrateCurveDefault);
+                LoadTurnRateCurve(_playerBehaviour.defaultPlayerStats.TurnrateCurveDefault);
         }
         
-        public virtual void LoadDriftTurnrateMin()
+        public virtual void LoadDriftTurnRateMin()
         {
             _playerBehaviour.turnStats.DriftTurnrateMin =
-                LoadDriftTurnrateMin(_playerBehaviour.defaultPlayerStats.DriftTurnrateMinDefault);
+                LoadDriftTurnRateMin(_playerBehaviour.defaultPlayerStats.DriftTurnrateMinDefault);
         }
 
         public virtual void LoadDriftTurnRateMax()
@@ -590,10 +601,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 LoadDriftTurnRateMax(_playerBehaviour.defaultPlayerStats.DriftTurnRateMaxDefault);
         }
 
-        public virtual void LoadDriftTurnrate()
+        public virtual void LoadDriftTurnRate()
         {
             _playerBehaviour.turnStats.DriftTurnrate =
-                LoadDriftTurnrate(_playerBehaviour.defaultPlayerStats.DriftTurnrateDefault);
+                LoadDriftTurnRate(_playerBehaviour.defaultPlayerStats.DriftTurnrateDefault);
         }
 
         //Jump
@@ -603,10 +614,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 LoadJumpSpeedMax(_playerBehaviour.defaultPlayerStats.JumpSpeedMaxDefault);
         }
 
-        public virtual void LoadJumpAccelleration()
+        public virtual void LoadJumpAcceleration()
         {
             _playerBehaviour.jumpStats.JumpAccelleration =
-                LoadJumpAccelleration(_playerBehaviour.defaultPlayerStats.JumpAccelDefault);
+                LoadJumpAcceleration(_playerBehaviour.defaultPlayerStats.JumpAccelDefault);
         }
 
         // FUEL

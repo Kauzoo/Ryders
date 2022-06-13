@@ -98,6 +98,11 @@ namespace Ryders.Core.Player
         [Header("Turning")]
         public float TurnrateDefault;
         /// <summary>
+        /// Maximum TurnRate that can be reached
+        /// Based of TurnMaxRadius in Sewer56.SonicRiders
+        /// </summary>
+        public float TurnRateMax;
+        /// <summary>
         /// HiddenStat
         /// Curve determening the speed lost while turning, based of the current speed
         /// </summary>

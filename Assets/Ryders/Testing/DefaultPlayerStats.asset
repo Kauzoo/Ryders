@@ -31,7 +31,8 @@ MonoBehaviour:
   AccelerationOffRoadThresholdLvl2: 50
   AccelerationOffRoadThresholdLvl3: 70
   CorneringDeceleration: 1
-  TurnrateDefault: 1
+  TurnrateDefault: 0.01
+  TurnRateMax: 0.9
   TurnSpeedLossCurveDefault:
     serializedVersion: 2
     m_Curve: []

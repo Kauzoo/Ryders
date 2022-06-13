@@ -216,7 +216,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         protected virtual float Cornering()
         {
             // TODO this conrering determination is flawed
-            if (_playerBehaviour.movement.CorneringState == CorneringStates.Cornering)
+            if (_playerBehaviour.movement.CorneringState is (CorneringStates.CorneringL or CorneringStates.CorneringR))
             {
                 return CorneringTargetSpeed;
             }
