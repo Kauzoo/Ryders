@@ -84,6 +84,10 @@ namespace Ryders.Core.Player
         /// </summary>
         public float DriftTurnrateMinDefault;
         /// <summary>
+        /// Maximum amount the player is able to turn while drifting
+        /// </summary>
+        public float DriftTurnRateMaxDefault;
+        /// <summary>
         /// HiddenStat
         /// The turnrate used while drifting (if the player inputs a direction)
         /// </summary>

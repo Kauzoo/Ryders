@@ -51,7 +51,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO Getting Attacked
             // TODO Attacking
             // TODO QTE / ControlLock
-
+            
+            // TODO CleanUp Logic
             // Behaviour primarily depends on if Drift is held or not
             // Entering / Staying in Drift or Break (if DriftInput is held)
             if (playerBehaviour.inputPlayer.GetInputContainer().Drift)
@@ -60,7 +61,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 // CONTINUE_DRIFT: If in DriftRight State and still holding Drift, continue DriftRight
                 if ((playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis > DriftInputThreshold ||
                     playerBehaviour.movement.DriftState == DriftStates.DriftingR) &&
-                    playerBehaviour.movement.DriftState != DriftStates.Break)
+                    playerBehaviour.movement.DriftState is not (DriftStates.Break or DriftStates.DriftingL))
                 {
                     DriftRight();
                     return;
@@ -70,7 +71,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 // CONTINUE_DRIFT: If in DriftLeft State and still holding Drift, continue DriftLeft
                 if ((playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis < DriftInputThreshold * (-1) ||
                     playerBehaviour.movement.DriftState == DriftStates.DriftingL) &&
-                    playerBehaviour.movement.DriftState != DriftStates.Break)
+                    playerBehaviour.movement.DriftState is not (DriftStates.Break or DriftStates.DriftingR))
                 {
                     DriftLeft();
                     return;
@@ -193,7 +194,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// <summary>
         /// 
         /// </summary>
-        protected virtual void DriftTurn()
+        public virtual void MasterDriftTurn()
         {
             switch (playerBehaviour.movement.DriftState)
             {
@@ -212,24 +213,35 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         protected virtual void DriftTurnLeft()
         {
+            // STEP 0: Calculate new additive offset
             var driftTurnOffset = playerBehaviour.turnStats.DriftTurnrate *
                                   playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
+            // STEP 1: Add offset
             playerBehaviour.movement.DriftTurning += driftTurnOffset;
-            playerBehaviour.movement.DriftTurning = Mathf.Min(playerBehaviour.movement.DriftTurning,
-                playerBehaviour.turnStats.DriftTurnrateMax) * (-1);
-            playerBehaviour.movement.DriftTurning = Mathf.Max(playerBehaviour.movement.DriftTurning,
+            // STEP 2: Makes abs for Min / Max evaluations
+            var driftTurningAbs = Mathf.Abs(playerBehaviour.movement.DriftTurning);
+            // STEP 3: Make sure the absolute value of the DriftTurning doesn't exceed the DriftTurnRateMax
+            driftTurningAbs = Mathf.Min(driftTurningAbs,
+                playerBehaviour.turnStats.DriftTurnrateMax);
+            // STEP 4: Make sure the absolute value of the DriftTurning doesn't underflow the DriftTurnRateMin
+            // STEP 5: Multiply with (-1) again because TurningLeft
+            playerBehaviour.movement.DriftTurning = Mathf.Max(driftTurningAbs,
                 playerBehaviour.turnStats.DriftTurnrateMin) * (-1);
         }
 
         protected virtual void DriftTurnRight()
         {
+            // STEP 0: Calculate new additive offset
             var driftTurnOffset = playerBehaviour.turnStats.DriftTurnrate *
                                   playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
+            // STEP 1: Add offset
             playerBehaviour.movement.DriftTurning += driftTurnOffset;
+            // STEP 2: Make sure the absolute value of the DriftTurning doesn't exceed the DriftTurnRateMax
             playerBehaviour.movement.DriftTurning = Mathf.Min(playerBehaviour.movement.DriftTurning,
-                playerBehaviour.turnStats.DriftTurnrateMax) * (-1);
+                playerBehaviour.turnStats.DriftTurnrateMax);
+            // STEP 3: Make sure the absolute value of the DriftTurning doesn't underflow the DriftTurnRateMin
             playerBehaviour.movement.DriftTurning = Mathf.Max(playerBehaviour.movement.DriftTurning,
-                playerBehaviour.turnStats.DriftTurnrateMin) * (-1);
+                playerBehaviour.turnStats.DriftTurnrateMin);
         }
         #endregion
     }

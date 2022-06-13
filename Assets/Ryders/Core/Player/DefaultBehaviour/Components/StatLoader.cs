@@ -23,7 +23,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             TypeTopSpeedAtLevel is apparently 216 (Source: AirKingNeo)
          */
 
-        // TODO Implement this in a mors sensible way
+        // TODO Implement this in a more sensible way
         /**
          *  HIDDEN GLOBAL STATS
          */
@@ -34,7 +34,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         public PlayerBehaviour playerBehaviour;
 
-        // TODO Implement FastAccel for SpeedTypes and Off-Road resistance for PowerType 
+        // TODO Implement FastAccel for SpeedTypes and Off-Road resistance for PowerType
+        // TODO CleanUp which stat is retrieved from where
 
         public virtual void Setup()
         {
@@ -43,6 +44,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         public virtual void LoadStatsMaster()
         {
+            // SPEED STATS
             LoadTopSpeed();
             LoadMinSpeed();
             LoadFastAcceleration();
@@ -56,14 +58,18 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             LoadTurnSpeedLoss();
             LoadJumpChargeMinSpeed();
             LoadJumpChargeDecelleration();
+            // TURNING
             LoadTurnRate();
             LoadTurnSpeedLossCurve();
             LoadTurnrateCurve();
             LoadDriftTurnratePassive();
             LoadDriftTurnrateMin();
+            LoadDriftTurnRateMax();
             LoadDriftTurnrate();
+            // JUMP
             LoadJumpSpeedMax();
             LoadJumpAccelleration();
+            // FUEL
             LoadFuelType();
             LoadJumpChargeMultiplier();
             LoadTrickFuelGain();
@@ -238,6 +244,11 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public static float LoadDriftTurnrateMin(float defaultDriftTurnrateMinDefault)
         {
             return defaultDriftTurnrateMinDefault;
+        }
+
+        public static float LoadDriftTurnRateMax(float defaultDriftTurnRateMaxDefault)
+        {
+            return defaultDriftTurnRateMaxDefault;
         }
 
         public static float LoadDriftTurnrate(float defaultDriftTurnrateDefault)
@@ -466,6 +477,12 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             playerBehaviour.turnStats.DriftTurnrateMin =
                 LoadDriftTurnrateMin(playerBehaviour.defaultPlayerStats.DriftTurnrateMinDefault);
+        }
+
+        public virtual void LoadDriftTurnRateMax()
+        {
+            playerBehaviour.turnStats.DriftTurnrateMax =
+                LoadDriftTurnRateMax(playerBehaviour.defaultPlayerStats.DriftTurnRateMaxDefault);
         }
 
         public virtual void LoadDriftTurnrate()

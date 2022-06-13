@@ -31,7 +31,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   DriftTurnratePassiveDefault: 1
   DriftTurnrateMinDefault: 1
-  DriftTurnrateDefault: 1
+  DriftTurnRateMaxDefault: 3
+  DriftTurnrateDefault: 0.1
   BreakeDecelerationDefault: 1
   JumpSpeedMaxDefault: 1
   JumpAccelDefault:

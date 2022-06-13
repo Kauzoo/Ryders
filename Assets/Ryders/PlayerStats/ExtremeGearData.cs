@@ -141,6 +141,11 @@ namespace Ryders.Core.Player.ExtremeGear
             public float DriftTurnrateMin;
             /// <summary>
             /// HiddenStat
+            /// Maximum amount the player is able to turn while drifting
+            /// </summary>
+            public float DriftTurnRateMax;
+            /// <summary>
+            /// HiddenStat
             /// The turnrate used while drifting (if the player inputs a direction)
             /// </summary>
             public float DriftTurnrate;

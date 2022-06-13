@@ -194,6 +194,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         public virtual void TestDrift()
         {
             driftPack.MasterDrift();
+            driftPack.MasterDriftTurn();
         }
 
         public virtual void TestCornering()
@@ -211,7 +212,14 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public virtual void MasterTurnTest()
         {
-            playerTransform.Rotate(0, movement.Turning, 0, Space.Self);
+            if (movement.CorneringState == CorneringStates.Cornering)
+            {
+                playerTransform.Rotate(0, movement.Turning, 0, Space.Self);
+            }
+            if (movement.DriftState is DriftStates.DriftingL or DriftStates.DriftingR)
+            {
+                playerTransform.Rotate(0, movement.DriftTurning, 0, Space.Self);
+            }
             //playerRigidbody.MoveRotation(playerTransform.rotation);
         }
             
