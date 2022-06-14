@@ -1,3 +1,5 @@
+
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,8 +16,10 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 
+
 namespace Ryders.Core.Player.DefaultBehaviour
 {
+
     /// <summary>
     /// This class represents the default case for an ExtremeGear.
     /// All movement is calculated here. The character only contributes stats, not custom code.
@@ -48,7 +52,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
             [System.NonSerialized] public Canvas debugCanvas;
         }
         public PBDebug pbDebug = new();
-        
+
         public Transform playerTransform;
         public Rigidbody playerRigidbody;
 
@@ -258,7 +262,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public virtual void UpdateTest()
         {
-            PrintTelemetry();
+            UpdateDebug();
         }
 
         #region Utility
@@ -281,19 +285,25 @@ namespace Ryders.Core.Player.DefaultBehaviour
         #region Debug
         public virtual void UpdateDebug()
         {
-            throw new NotImplementedException();
+            PrintTelemetry();
         }
         private void SetupDebug()
         {
-            var textArr = GetComponentsInChildren<TextMeshProUGUI>();
-            var textList = textArr.Where(textMesh => textMesh.gameObject.CompareTag("Debug")).ToList();
+            if (pbDebug.printMovementTelemetry && pbDebug.playerMovementTelemetry is null)
+                Debug.LogWarning("@SetupDebug: Missing playerMovementTelemetry Object.");
+            if (pbDebug.printRigidbodyTelemetry && pbDebug.playerRigidbodyTelemetry is null)
+                Debug.LogWarning("@SetupDebug: Missing playerRigidbodyTelemetry Object.");
+            if (pbDebug.printTransformTelemetry && pbDebug.playerTransformTelemetry is null)
+                Debug.LogWarning("@SetupDebug: Missing playerMovementTelemetry Object.");
         }
         private void PrintTelemetry()
         {
-            // TODO Improve this
-            pbDebug.playerMovementTelemetry.text = "Movement" + Environment.NewLine + movement.GetTelemetry();
-            pbDebug.playerRigidbodyTelemetry.text = "Rigidbody" + Environment.NewLine + GetRigidbodyTelemetry();
-            pbDebug.playerTransformTelemetry.text = "Transform" + Environment.NewLine + GetTransformTelemetry();
+            if (pbDebug.printMovementTelemetry)
+                pbDebug.playerMovementTelemetry.text = "Movement" + Environment.NewLine + movement.GetTelemetry();
+            if(pbDebug.printRigidbodyTelemetry)
+                pbDebug.playerRigidbodyTelemetry.text = "Rigidbody" + Environment.NewLine + GetRigidbodyTelemetry();
+            if(pbDebug.printTransformTelemetry)
+                pbDebug.playerTransformTelemetry.text = "Transform" + Environment.NewLine + GetTransformTelemetry();
         }
             
         

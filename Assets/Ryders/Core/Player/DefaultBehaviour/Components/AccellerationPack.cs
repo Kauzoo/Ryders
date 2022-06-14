@@ -113,8 +113,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             {
                 speedLossPerFrame = 10f;
             }
-
-            Debug.Log("SpeedLossPerSecond: " + Formula.RidersSpeedToSpeed(speedLossPerFrame) * 60);
+            
             return Formula.RidersSpeedToSpeed(speedLossPerFrame) * (-1);
         }
 
