@@ -1,0 +1,23 @@
+f1: 1 (somwhow precomputed)
+f0: TurningSpeedLossMultiplier thing
+f2: percentage of maxSpeed rounded to singe percision float, than squared and than multiplied by absolute stick input
+f3: -0.000462963 (fiexed)
+f4: pulled from player struct (seems to be 0 regardless | undocumented)
+f5: 1
+f6: normalisedStickInput (absolute value)
+
+
+Generating f0:
+-There is a static value loaded
+-Load base turning Speed loss (0.8)
+-SpeedLoss gear based is loaded
+-0.0253073 is loaded
+
+PRE-STEPS:
+-This will be f0 for the above calcs (Add 0.8 to the gear struct thingy and use it for further calcs (in theory also multiply by f1 but f1 seems to be 1))
+
+Screenshot:
+-Calcs speedLossPerFrame
+
+
+0.0253073

@@ -706,6 +706,10 @@ PrefabInstance:
       value: Cube
       objectReference: {fileID: 0}
     - target: {fileID: 5951800586870077050, guid: 7ea7e9432623ba8419c5703ebf4e954f, type: 3}
+      propertyPath: characterData
+      value: 
+      objectReference: {fileID: 11400000, guid: a09c7817e4d5c664195e65f3249d406e, type: 2}
+    - target: {fileID: 5951800586870077050, guid: 7ea7e9432623ba8419c5703ebf4e954f, type: 3}
       propertyPath: pbDebug.printMovementTelemetry
       value: 1
       objectReference: {fileID: 0}

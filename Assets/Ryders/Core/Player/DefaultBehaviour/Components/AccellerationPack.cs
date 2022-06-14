@@ -25,7 +25,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     {
         private PlayerBehaviour _playerBehaviour;
         private const int JumpChargeTargetSpeed = 80;
-        private const int CorneringTargetSpeed = 180;
+        private const int CorneringTargetSpeed = 130;
+        private const int TempDecelerationFix = 4;
 
         // TODO Look into SpeedHandlingMultiplier and TurnLowSpeedMultiplier
         private void Start()
@@ -99,12 +100,12 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // Determine which formula to use based on MaxSpeed and apply
             if (maxSpeed > 200f)
             {
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60f), 2f) + 0.2f) / 100f; // modified
+                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60f), 2f) + 0.2f) / 1000f; // modified
                 // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f);
             }
             else
             {
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260.0f - Formula.SpeedToRidersSpeed(maxSpeed))), 2f) + 0.2f) / 100f; // modified
+                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260.0f - Formula.SpeedToRidersSpeed(maxSpeed))), 2f) + 0.2f) / 1000f; // modified
                 // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f);
             }
 
@@ -113,7 +114,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             {
                 speedLossPerFrame = 10f;
             }
-            
+
+            speedLossPerFrame = (0.00462963f * speedLossPerFrame) + 0.000925926f;
             return Formula.RidersSpeedToSpeed(speedLossPerFrame) * (-1);
         }
 
