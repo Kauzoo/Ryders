@@ -1,6 +1,6 @@
 f1: 1 (somwhow precomputed)
 f0: TurningSpeedLossMultiplier thing
-f2: percentage of maxSpeed rounded to singe percision float, than squared and than multiplied by absolute stick input
+f2: percentage of maxSpeed rounded to singe percision float, than squared and than multiplied by absolute stick input [now called MagicStickValue]
 f3: -0.000462963 (fiexed)
 f4: pulled from player struct (seems to be 0 regardless | undocumented)
 f5: 1
@@ -21,3 +21,37 @@ Screenshot:
 
 
 0.0253073
+
+
+
+FORMULA (guess)
+
+STEP 0 (Calculate TurningSpeedLossMultiplier)
+
+KNOWN_INPUTS:
+([float] GearTurningSpeedLossMultiplier)
+
+UNKOWN_INPUTS:
+([float?] unknownPrecompute[fixed? = 1?])	[unkownPrecompute is from register f1]
+
+[float] TurningSpeedLossMultiplier = (GearTurningSpeedLossMultiplier + 0.8f) * unkownPrecompute	
+
+
+
+STEP 1 (Calculate MagicStickValue)
+
+KNOWN_INPUTS:
+([double] MaxSpeed, [float] StickInput)
+
+UNKNOWN_INPUTS:
+([const?] [float?] percentageModifier)
+
+[float] MagicStickValue = ((([float](MaxSpeed * PercentageModifier))^2) * abs(StickInput)
+
+
+PERSONAL THEORY:
+
+1: Cube absolute StickInput
+
+
+
