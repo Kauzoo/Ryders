@@ -171,6 +171,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed8ff9d5b888ce54e981a2e3605bbab9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TurningSpeedLossMultiplierMul: 0
+  MagicStickPercentageModifier: 0
 --- !u!114 &5951800586870077053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,12 +199,7 @@ MonoBehaviour:
   DriftDashSpeed: 0
   DriftCap: 0
   DriftDashFrames: 0
-  TurnSpeedLoss:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  TurnSpeedLoss: 0
   JumpChargeMinSpeed: 0
   JumpChargeDecelleration: 0
   CoolNewStat: 0

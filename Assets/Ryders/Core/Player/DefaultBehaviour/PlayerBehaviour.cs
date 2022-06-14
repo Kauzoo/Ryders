@@ -343,7 +343,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             [Header("Drift")] public float DriftDashSpeed;
             public float DriftCap;
             public float DriftDashFrames;
-            [Header("Turning")] public AnimationCurve TurnSpeedLoss;
+            [Header("Turning")] public float TurnSpeedLoss;
             [Header("Jump")] public float JumpChargeMinSpeed;
             public float JumpChargeDecelleration;
         }

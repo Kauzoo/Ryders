@@ -26,7 +26,11 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         private PlayerBehaviour _playerBehaviour;
         private const int JumpChargeTargetSpeed = 80;
         private const int CorneringTargetSpeed = 130;
-        private const int TempDecelerationFix = 4;
+
+        // Unknown precomputed value. Probably 1 [f1]
+        public float TurningSpeedLossMultiplierMul; 
+        public float MagicStickPercentageModifier;
+        
 
         // TODO Look into SpeedHandlingMultiplier and TurnLowSpeedMultiplier
         private void Start()
@@ -160,7 +164,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO Add other Accelerations and Decelerations
             // TODO Make sure Standards only accelerate / decelerate to MaxSpeed
             SetMaxSpeed();
-            _playerBehaviour.movement.Speed += StandardAcceleration() + StandardDeceleration();
+            _playerBehaviour.movement.Speed += StandardAcceleration() + StandardDeceleration() + TurnSpeedLoss();
         }
 
         protected virtual float StandardAcceleration()
@@ -176,6 +180,28 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         protected virtual float StandardDeceleration()
         {
             return StandardDeceleration(_playerBehaviour.movement.Speed, _playerBehaviour.movement.MaxSpeed);
+        }
+
+        protected virtual float TurnSpeedLoss()
+        {
+            float speedLossPerFrame = 0;
+            if (IsCornering())
+            {
+                var TurningSpeedLossMultiplier =
+                    (_playerBehaviour.speedStats.TurnSpeedLoss + 0.8f) * TurningSpeedLossMultiplierMul;
+                var MagicStickValue =
+                    Mathf.Pow(
+                        (Formula.SpeedToRidersSpeed(_playerBehaviour.movement.MaxSpeed * MagicStickPercentageModifier)),
+                        2.0f) *
+                    Mathf.Abs(_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis);
+                var LinearMultiplier = (MagicStickValue / TurningSpeedLossMultiplier) * (-0.000462963f);
+                var CubedMultiplier =
+                    Mathf.Pow(Mathf.Abs(_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis), 3);
+                speedLossPerFrame = CubedMultiplier * LinearMultiplier;
+                Debug.Log("TurnSpeedLoss (inGame): " + speedLossPerFrame);
+                Debug.Log("TurnSpeedLoss (Speedo): " + Formula.RidersSpeedToSpeed(speedLossPerFrame));
+            }
+            return Formula.RidersSpeedToSpeed(speedLossPerFrame);
         }
 
         protected virtual void SetMaxSpeed()
@@ -194,13 +220,11 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             float JumpChargeMaxSpeed = JumpCharge();
             float BreakMaxSpeed = Break();
             float OffRoadMaxSpeed = OffRoad();
-            float CorneringMaxSpeed = Cornering();
             if (!float.IsPositiveInfinity(JumpChargeMaxSpeed) || !float.IsPositiveInfinity(BreakMaxSpeed) ||
-                !float.IsPositiveInfinity(OffRoadMaxSpeed) || !float.IsPositiveInfinity(CorneringMaxSpeed))
+                !float.IsPositiveInfinity(OffRoadMaxSpeed))
             {
                 float newMaxSpeed = Mathf.Min(JumpChargeMaxSpeed, BreakMaxSpeed);
                 newMaxSpeed = Mathf.Min(newMaxSpeed, OffRoadMaxSpeed);
-                newMaxSpeed = Mathf.Min(newMaxSpeed, CorneringMaxSpeed);
                 _playerBehaviour.movement.MaxSpeed = newMaxSpeed;
             }
         }
@@ -214,14 +238,14 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             return float.PositiveInfinity;
         }
         
-        protected virtual float Cornering()
+        protected virtual bool IsCornering()
         {
             // TODO this conrering determination is flawed
             if (_playerBehaviour.movement.CorneringState is (CorneringStates.CorneringL or CorneringStates.CorneringR))
             {
-                return CorneringTargetSpeed;
+                return true;
             }
-            return float.PositiveInfinity;
+            return false;
         }
 
         protected virtual float Break()

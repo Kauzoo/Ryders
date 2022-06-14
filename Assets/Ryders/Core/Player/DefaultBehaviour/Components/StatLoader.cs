@@ -276,9 +276,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             return gearDriftDashChargeDuration;
         }
 
-        public static AnimationCurve LoadTurnSpeedLoss(AnimationCurve defaultTurnSpeedLossCurveDefault)
+        public static float LoadTurnSpeedLoss(float defaultTurnSpeedLossDefault)
         {
-            return defaultTurnSpeedLossCurveDefault;
+            return defaultTurnSpeedLossDefault;
         }
 
         public static float LoadJumpChargeMinSpeed(float defaultJumpChargeMinSpeedDefault)
@@ -551,7 +551,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public virtual void LoadTurnSpeedLoss()
         {
             _playerBehaviour.speedStats.TurnSpeedLoss =
-                LoadTurnSpeedLoss(_playerBehaviour.defaultPlayerStats.TurnSpeedLossCurveDefault);
+                LoadTurnSpeedLoss(_playerBehaviour.defaultPlayerStats.TurnSpeedLoss);
         }
 
         public virtual void LoadJumpChargeMinSpeed()
