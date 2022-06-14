@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Ryders.Core.InputManagement;
 using UnityEngine;
 using Ryders.Core.Player.Character;
@@ -9,6 +10,9 @@ using Ryders.Core.Player.ExtremeGear;
 using Ryders.Core.Player.DefaultBehaviour.Components;
 using Ryders.Core.Player.DefaultBehaviour;
 using Ryders.Core.Player.DefaultBehaviour.Telemetry;
+using TMPro;
+using Unity.VisualScripting;
+using UnityEditor;
 
 namespace Ryders.Core.Player.DefaultBehaviour
 {
@@ -30,10 +34,20 @@ namespace Ryders.Core.Player.DefaultBehaviour
         /**
          * DEBUG 
          */
-        [Header("Debug")]
-        public TMPro.TextMeshProUGUI playerTransformTelemetry;
-        public TMPro.TextMeshProUGUI playerRigidbodyTelemetry;
-        public TMPro.TextMeshProUGUI playerMovementTelemetry; 
+        [System.Serializable]
+        public class PBDebug
+        {
+            [Header("Toggles")]
+            public bool printTransformTelemetry;
+            public bool printRigidbodyTelemetry;
+            public bool printMovementTelemetry;
+            [Header("TelemetryText")]
+            public TMPro.TextMeshProUGUI playerTransformTelemetry;
+            public TMPro.TextMeshProUGUI playerRigidbodyTelemetry;
+            public TMPro.TextMeshProUGUI playerMovementTelemetry;
+            [System.NonSerialized] public Canvas debugCanvas;
+        }
+        public PBDebug pbDebug = new();
         
         public Transform playerTransform;
         public Rigidbody playerRigidbody;
@@ -179,7 +193,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
                 Debug.LogError($"@{this.ToString()}.Setup(): Failed to find MastInput Object in Scene");
             }
         }
-        
+
         public virtual void TestAcceleration()
         {
             accelerationPack.MasterAcceleration();
@@ -247,30 +261,42 @@ namespace Ryders.Core.Player.DefaultBehaviour
             PrintTelemetry();
         }
 
-        #region Debug
-
-        public virtual void PrintTelemetry()
-        {
-            // TODO Improve this
-            playerMovementTelemetry.text = "Movement" + Environment.NewLine + movement.GetTelemetry();
-            playerRigidbodyTelemetry.text = "Rigidbody" + Environment.NewLine + GetRigidbodyTelemetry();
-            playerTransformTelemetry.text = "Transform" + Environment.NewLine + GetTransformTelemetry();
-        }
-            
+        #region Utility
         public virtual string GetTransformTelemetry()
         {
             // TODO Expand this
-            string str = $"Position: {TelemetryHelper.GetVector3Formated(playerTransform.position)}"
-                         + $"{Environment.NewLine}Rotation: {TelemetryHelper.GetVector3Formated(playerTransform.rotation.eulerAngles)}";
+            var str = $"Position: {TelemetryHelper.GetVector3Formated(playerTransform.position)}"
+                      + $"{Environment.NewLine}Rotation: {TelemetryHelper.GetVector3Formated(playerTransform.rotation.eulerAngles)}";
             return str;
         }
 
         public virtual string GetRigidbodyTelemetry()
         {
             // TODO Expand this
-            string str = $"Velocity: {TelemetryHelper.GetVector3Formated(playerRigidbody.velocity)}";
+            var str = $"Velocity: {TelemetryHelper.GetVector3Formated(playerRigidbody.velocity)}";
             return str;
         }
+        #endregion
+
+        #region Debug
+        public virtual void UpdateDebug()
+        {
+            throw new NotImplementedException();
+        }
+        private void SetupDebug()
+        {
+            var textArr = GetComponentsInChildren<TextMeshProUGUI>();
+            var textList = textArr.Where(textMesh => textMesh.gameObject.CompareTag("Debug")).ToList();
+        }
+        private void PrintTelemetry()
+        {
+            // TODO Improve this
+            pbDebug.playerMovementTelemetry.text = "Movement" + Environment.NewLine + movement.GetTelemetry();
+            pbDebug.playerRigidbodyTelemetry.text = "Rigidbody" + Environment.NewLine + GetRigidbodyTelemetry();
+            pbDebug.playerTransformTelemetry.text = "Transform" + Environment.NewLine + GetTransformTelemetry();
+        }
+            
+        
         
 
         #endregion
