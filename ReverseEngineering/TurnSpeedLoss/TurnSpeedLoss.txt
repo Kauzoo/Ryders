@@ -1,10 +1,28 @@
-f1: 1 (somwhow precomputed)
 f0: TurningSpeedLossMultiplier thing
+f1: 1 (somwhow precomputed)
 f2: percentage of maxSpeed rounded to singe percision float, than squared and than multiplied by absolute stick input [now called MagicStickValue]
 f3: -0.000462963 (fiexed)
 f4: pulled from player struct (seems to be 0 regardless | undocumented)
 f5: 1
 f6: normalisedStickInput (absolute value)
+
+// CALC in asm
+f2 = f2 / f0 or f0 / f2
+f0 = f6 * f6
+f2 = f3 * f2
+f3 = f5 * f4
+f0 = f6 * f0
+f0 = f2 * f0
+f0 = f3 * f0
+
+var1 = MagicStickValue / TurningSpeedLossMultiplier or MagicStickValue / TurningSpeedLossMultiplier
+StickCubed = normalisedStickInput * normalisedStickInput * normalisedStickInput
+var2 = var1 * (-0.000462963)
+var3 = 1(probably) - 0 or 0 - 1 (maybe | from playerStruct) [this might be the LinearMultiplier form Sewer56.SonicRiders]
+result = StickCubed * var2 * var3 	[this end result seems realistic based of Sewer56.SonicRiders ]
+
+This lines up pretty well wtih the values in Sewer56.SonicRiders but I am not 100% sure.
+ 
 
 
 Generating f0:
@@ -26,7 +44,7 @@ Screenshot:
 
 FORMULA (guess)
 
-STEP 0 (Calculate TurningSpeedLossMultiplier)
+STEP 0 (Calculate TurningSpeedLossMultiplier) [f0]
 
 KNOWN_INPUTS:
 ([float] GearTurningSpeedLossMultiplier)
@@ -38,7 +56,7 @@ UNKOWN_INPUTS:
 
 
 
-STEP 1 (Calculate MagicStickValue)
+STEP 1 (Calculate MagicStickValue) [f2]
 
 KNOWN_INPUTS:
 ([double] MaxSpeed, [float] StickInput)
@@ -49,9 +67,17 @@ UNKNOWN_INPUTS:
 [float] MagicStickValue = ((([float](MaxSpeed * PercentageModifier))^2) * abs(StickInput)
 
 
-PERSONAL THEORY:
+f2 = f2 / f0 or f0 / f2
+f0 = f6 * f6
+f2 = f3 * f2
+f3 = f5 * f4
+f0 = f6 * f0
+f0 = f2 * f0
+f0 = f3 * f0
 
-1: Cube absolute StickInput
+
+
+
 
 
 
