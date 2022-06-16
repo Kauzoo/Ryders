@@ -14,7 +14,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
      *  Notes for Accel/Decel:
      *  -Drifting seems to completly disable all Accel (Decel still applys)
      */
-    
     /// <summary>
     /// This Interface contains methods to calculate all kinds of Acceleration and Deceleration
     /// The static implementations act like pseudo functions and contain the actual default logic
@@ -28,16 +27,16 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         private const int CorneringTargetSpeed = 130;
 
         // Unknown precomputed value. Probably 1 [f1]
-        public float TurningSpeedLossMultiplierMul; 
-        public float MagicStickPercentageModifier;
-        
+        public float TurningSpeedLossMultiplierMul = 1f;
+        public float MagicStickPercentageModifier = 0.98f;
+
 
         // TODO Look into SpeedHandlingMultiplier and TurnLowSpeedMultiplier
         private void Start()
         {
             _playerBehaviour = GetComponent<PlayerBehaviour>();
         }
-        
+
         /// <summary>
         /// This includes both Regular as well as FastAccel
         /// </summary>
@@ -63,6 +62,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             {
                 speedGainPerFrame += lowAccel;
             }
+
             if (speed < mediumThreshold)
             {
                 speedGainPerFrame += mediumAccel;
@@ -72,7 +72,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 speedGainPerFrame += highAccel;
             }
             // TODO Add OffRoad
-            
+
             return speedGainPerFrame;
         }
 
@@ -109,7 +109,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             }
             else
             {
-                speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260.0f - Formula.SpeedToRidersSpeed(maxSpeed))), 2f) + 0.2f) / 1000f; // modified
+                speedLossPerFrame =
+                    (Mathf.Pow((overmaxSpeed / (260.0f - Formula.SpeedToRidersSpeed(maxSpeed))), 2f) + 0.2f) /
+                    1000f; // modified
                 // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f);
             }
 
@@ -211,11 +213,12 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             {
                 _playerBehaviour.movement.MaxSpeed = _playerBehaviour.speedStats.TopSpeed;
             }
+
             if (_playerBehaviour.movement.MaxSpeedState == MaxSpeedState.Boosting)
             {
                 _playerBehaviour.movement.MaxSpeed = _playerBehaviour.speedStats.BoostSpeed;
             }
-            
+
             // TODO this is terrible. I will think of better way
             float JumpChargeMaxSpeed = JumpCharge();
             float BreakMaxSpeed = Break();
@@ -228,16 +231,17 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 _playerBehaviour.movement.MaxSpeed = newMaxSpeed;
             }
         }
-        
+
         protected virtual float JumpCharge()
         {
             if (_playerBehaviour.inputPlayer.GetInputContainer().Jump && _playerBehaviour.movement.Grounded)
             {
                 return JumpChargeTargetSpeed;
             }
+
             return float.PositiveInfinity;
         }
-        
+
         protected virtual bool IsCornering()
         {
             // TODO this conrering determination is flawed
@@ -245,6 +249,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             {
                 return true;
             }
+
             return false;
         }
 
@@ -254,6 +259,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             {
                 return 0;
             }
+
             return float.PositiveInfinity;
         }
 

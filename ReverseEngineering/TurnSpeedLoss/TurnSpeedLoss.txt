@@ -15,10 +15,10 @@ f0 = f6 * f0
 f0 = f2 * f0
 f0 = f3 * f0
 
-var1 = MagicStickValue / TurningSpeedLossMultiplier or MagicStickValue / TurningSpeedLossMultiplier
+var1 = MagicStickValue / TurningSpeedLossMultiplier
 StickCubed = normalisedStickInput * normalisedStickInput * normalisedStickInput
 var2 = var1 * (-0.000462963)
-var3 = 1(probably) - 0 or 0 - 1 (maybe | from playerStruct) [this might be the LinearMultiplier form Sewer56.SonicRiders]
+var3 = 1(probably) - 0(maybe | from playerStruct) [this might be the LinearMultiplier form Sewer56.SonicRiders]
 result = StickCubed * var2 * var3 	[this end result seems realistic based of Sewer56.SonicRiders ]
 
 This lines up pretty well wtih the values in Sewer56.SonicRiders but I am not 100% sure.

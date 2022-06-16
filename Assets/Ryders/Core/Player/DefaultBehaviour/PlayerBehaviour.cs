@@ -350,7 +350,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         // TURN STATS
         /// <summary>
-        /// All the stats that affect the calculations for rotation (arround local y-axis)
+        /// All the stats that affect the calculations for rotation (around local y-axis)
         /// Contains stats for regular Turning as well as Drifting
         /// </summary>
         public abstract class TurnStats : MonoBehaviour
