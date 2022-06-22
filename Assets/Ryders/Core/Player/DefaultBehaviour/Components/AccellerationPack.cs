@@ -53,24 +53,16 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // Do not accelerate if above maxSpeed or not grounded or drifting or cornering
             if (belowMaxSpeed < 0 || groundedStates != GroundedStates.Grounded || driftStates != DriftStates.None ||
                 corneringStates != CorneringStates.None)
-            {
                 return speedGainPerFrame;
-            }
 
             // If speed is below 130, do fast accel, else use regular accel
             if (speed < lowThreshold)
-            {
                 speedGainPerFrame += lowAccel;
-            }
 
             if (speed < mediumThreshold)
-            {
                 speedGainPerFrame += mediumAccel;
-            }
             else
-            {
                 speedGainPerFrame += highAccel;
-            }
             // TODO Add OffRoad
 
             return speedGainPerFrame;
@@ -155,9 +147,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             throw new NotImplementedException();
         }
 
-        public static float OffroadDeceleration(float speed)
+        public static float OffRoadDeceleration(float speed)
         {
-            // TODO: Implement OffroadDeceleration
+            // TODO: Implement OffRoadDeceleration
             throw new NotImplementedException();
         }
 
@@ -203,6 +195,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 Debug.Log("TurnSpeedLoss (inGame): " + speedLossPerFrame);
                 Debug.Log("TurnSpeedLoss (Speedo): " + Formula.RidersSpeedToSpeed(speedLossPerFrame));
             }
+
             return Formula.RidersSpeedToSpeed(speedLossPerFrame);
         }
 
@@ -226,42 +219,25 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             if (!float.IsPositiveInfinity(JumpChargeMaxSpeed) || !float.IsPositiveInfinity(BreakMaxSpeed) ||
                 !float.IsPositiveInfinity(OffRoadMaxSpeed))
             {
-                float newMaxSpeed = Mathf.Min(JumpChargeMaxSpeed, BreakMaxSpeed);
-                newMaxSpeed = Mathf.Min(newMaxSpeed, OffRoadMaxSpeed);
-                _playerBehaviour.movement.MaxSpeed = newMaxSpeed;
+                _playerBehaviour.movement.MaxSpeed = Mathf.Min(JumpChargeMaxSpeed, BreakMaxSpeed, OffRoadMaxSpeed);
             }
         }
 
-        protected virtual float JumpCharge()
-        {
-            if (_playerBehaviour.inputPlayer.GetInputContainer().Jump && _playerBehaviour.movement.Grounded)
-            {
-                return JumpChargeTargetSpeed;
-            }
+        protected virtual float JumpCharge() =>
+            (_playerBehaviour.inputPlayer.GetInputContainer().Jump && _playerBehaviour.movement.Grounded)
+                ? JumpChargeTargetSpeed
+                : float.PositiveInfinity;
 
-            return float.PositiveInfinity;
-        }
+        /// <summary>
+        /// Determines if the player is Cornering based of the CorneringState. The actual CorneringState determincation
+        /// is not done here.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual bool IsCornering() => (_playerBehaviour.movement.CorneringState is (CorneringStates.CorneringL
+            or CorneringStates.CorneringR));
 
-        protected virtual bool IsCornering()
-        {
-            // TODO this conrering determination is flawed
-            if (_playerBehaviour.movement.CorneringState is (CorneringStates.CorneringL or CorneringStates.CorneringR))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        protected virtual float Break()
-        {
-            if (_playerBehaviour.movement.DriftState == DriftStates.Break)
-            {
-                return 0;
-            }
-
-            return float.PositiveInfinity;
-        }
+        protected virtual float Break() =>
+            (_playerBehaviour.movement.DriftState is DriftStates.Break) ? 0f : float.PositiveInfinity;
 
         protected virtual float OffRoad()
         {
