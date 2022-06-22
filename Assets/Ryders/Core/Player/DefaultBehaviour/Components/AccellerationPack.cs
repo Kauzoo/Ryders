@@ -27,7 +27,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         private const int CorneringTargetSpeed = 130;
 
         // Unknown precomputed value. Probably 1 [f1]
-        public float TurningSpeedLossMultiplierMul = 1f;
+        public float TurningSpeedLossMultiplierMul = 2f;
         public float MagicStickPercentageModifier = 0.98f;
 
 
@@ -89,30 +89,22 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             float speedLossPerFrame = 0f;
             // Do not Decelerate when the player is not over MaxSpeed
             if (overmaxSpeed < 0f)
-            {
                 return speedLossPerFrame;
-            }
 
             // Determine which formula to use based on MaxSpeed and apply
             if (maxSpeed > 200f)
-            {
                 speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60f), 2f) + 0.2f) / 1000f; // modified
                 // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f);
-            }
             else
-            {
                 speedLossPerFrame =
                     (Mathf.Pow((overmaxSpeed / (260.0f - Formula.SpeedToRidersSpeed(maxSpeed))), 2f) + 0.2f) /
                     1000f; // modified
                 // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f);
-            }
-
-            // SpeedLoss is capped at 10 units per frame
+                // SpeedLoss is capped at 10 units per frame
             if (speedLossPerFrame > Formula.SpeedToRidersSpeed(10f))
-            {
                 speedLossPerFrame = 10f;
-            }
 
+            // This line is based of digging done by moester
             speedLossPerFrame = (0.00462963f * speedLossPerFrame) + 0.000925926f;
             return Formula.RidersSpeedToSpeed(speedLossPerFrame) * (-1);
         }
@@ -192,8 +184,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 var CubedMultiplier =
                     Mathf.Pow(Mathf.Abs(_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis), 3);
                 speedLossPerFrame = CubedMultiplier * LinearMultiplier;
-                Debug.Log("TurnSpeedLoss (inGame): " + speedLossPerFrame);
-                Debug.Log("TurnSpeedLoss (Speedo): " + Formula.RidersSpeedToSpeed(speedLossPerFrame));
+                Debug.Log("TurnSpeedLoss (InGame): " + speedLossPerFrame);
+                Debug.Log("TurnSpeedLoss (Speedometer): " + Formula.RidersSpeedToSpeed(speedLossPerFrame));
             }
 
             return Formula.RidersSpeedToSpeed(speedLossPerFrame);
@@ -201,21 +193,18 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         protected virtual void SetMaxSpeed()
         {
-            // Differentiate between Type 0 and Type 1
-            if (_playerBehaviour.movement.MaxSpeedState == MaxSpeedState.Cruising)
+            _playerBehaviour.movement.MaxSpeed = _playerBehaviour.movement.MaxSpeedState switch
             {
-                _playerBehaviour.movement.MaxSpeed = _playerBehaviour.speedStats.TopSpeed;
-            }
-
-            if (_playerBehaviour.movement.MaxSpeedState == MaxSpeedState.Boosting)
-            {
-                _playerBehaviour.movement.MaxSpeed = _playerBehaviour.speedStats.BoostSpeed;
-            }
+                // Differentiate between Type 0 and Type 1
+                MaxSpeedState.Cruising => _playerBehaviour.speedStats.TopSpeed,
+                MaxSpeedState.Boosting => _playerBehaviour.speedStats.BoostSpeed,
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
             // TODO this is terrible. I will think of better way
-            float JumpChargeMaxSpeed = JumpCharge();
-            float BreakMaxSpeed = Break();
-            float OffRoadMaxSpeed = OffRoad();
+            var JumpChargeMaxSpeed = JumpCharge();
+            var BreakMaxSpeed = Break();
+            var OffRoadMaxSpeed = OffRoad();
             if (!float.IsPositiveInfinity(JumpChargeMaxSpeed) || !float.IsPositiveInfinity(BreakMaxSpeed) ||
                 !float.IsPositiveInfinity(OffRoadMaxSpeed))
             {

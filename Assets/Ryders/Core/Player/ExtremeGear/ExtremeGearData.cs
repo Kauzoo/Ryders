@@ -115,6 +115,10 @@ namespace Ryders.Core.Player.ExtremeGear
             /// supposedly lets you turn better a low speeds
             /// </summary>
             public float TurnLowSpeedMultiplier;
+            /// <summary>
+            /// Influences the amount of speed lost while turning
+            /// </summary>
+            public float TurnSpeedLoss;
             
             /// <summary>
             /// HiddenStat
