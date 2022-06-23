@@ -34,7 +34,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         private const int PowerTypeSpeedLoss = -4;
         private const int GlobalBoostDuration = 120; // BaseBoostDuration if Frames
 
-        [FormerlySerializedAs("playerBehaviour")] public PlayerBehaviour _playerBehaviour;
+        [FormerlySerializedAs("playerBehaviour")]
+        public PlayerBehaviour _playerBehaviour;
 
         // TODO Implement FastAccel for SpeedTypes and Off-Road resistance for PowerType
         // TODO CleanUp which stat is retrieved from where
@@ -66,7 +67,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             LoadDriftDashFrames();
             LoadTurnSpeedLoss();
             LoadJumpChargeMinSpeed();
-            LoadJumpChargeDecelleration();
+            LoadJumpChargeDeceleration();
             // TURNING
             LoadTurnRate();
             LoadTurnRateMax();
@@ -126,7 +127,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 _ => throw new System.NotImplementedException("Invalid Level")
             };
         }
-        
+
         public static float LoadAccelerationMedium(int level, float defaultAccelerationMediumLvl1,
             float defaultAccelerationMediumLvl2, float defaultAccelerationMediumLvl3)
         {
@@ -138,7 +139,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 _ => throw new System.NotImplementedException("Invalid Level")
             };
         }
-        
+
         public static float LoadAccelerationHigh(int level, float defaultAccelerationHighLvl1,
             float defaultAccelerationHighLvl2, float defaultAccelerationHighLvl3)
         {
@@ -162,7 +163,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 _ => throw new System.NotImplementedException("Invalid Level")
             };
         }
-        
+
         public static float LoadAccelerationMediumThreshold(int level, float defaultAccelerationMediumThresholdLvl1,
             float defaultAccelerationMediumThresholdLvl2, float defaultAccelerationMediumThresholdLvl3)
         {
@@ -174,7 +175,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 _ => throw new System.NotImplementedException("Invalid Level")
             };
         }
-        
+
         public static float LoadAccelerationOffRoadThreshold(int level, float defaultAccelerationOffRoadThresholdLvl1,
             float defaultAccelerationOffRoadThresholdLvl2, float defaultAccelerationOffRoadThresholdLvl3)
         {
@@ -271,103 +272,56 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             return (defaultDriftCapLevelUp * (level - 1)) + characterDrift + gearDriftCap;
         }
 
-        public static float LoadDriftDashFrames(float gearDriftDashChargeDuration)
-        {
-            return gearDriftDashChargeDuration;
-        }
+        public static float LoadDriftDashFrames(float gearDriftDashChargeDuration) => gearDriftDashChargeDuration;
 
-        public static float LoadTurnSpeedLoss(float defaultTurnSpeedLossDefault)
-        {
-            return defaultTurnSpeedLossDefault;
-        }
+        public static float LoadTurnSpeedLoss(float defaultTurnSpeedLossDefault) => defaultTurnSpeedLossDefault;
 
-        public static float LoadJumpChargeMinSpeed(float defaultJumpChargeMinSpeedDefault)
-        {
-            return defaultJumpChargeMinSpeedDefault;
-        }
+        public static float LoadJumpChargeMinSpeed(float defaultJumpChargeMinSpeedDefault) =>
+            defaultJumpChargeMinSpeedDefault;
 
-        public static float LoadJumpChargeDecelleration(float defaultJumpChargeDecelerationDefault)
-        {
-            return defaultJumpChargeDecelerationDefault;
-        }
+        public static float LoadJumpChargeDecelleration(float defaultJumpChargeDecelerationDefault) =>
+            defaultJumpChargeDecelerationDefault;
 
         // TURNING
-        public static float LoadTurnRate(float defaultTurnRateDefault)
-        {
-            return defaultTurnRateDefault;
-        }
+        public static float LoadTurnRate(float defaultTurnRateDefault) => defaultTurnRateDefault;
 
-        public static float LoadTurnRateMax(float defaultTurnRateMax)
-        {
-            return defaultTurnRateMax;
-        }
+        public static float LoadTurnRateMax(float defaultTurnRateMax) => defaultTurnRateMax;
 
-        public static AnimationCurve LoadTurnSpeedLossCurve(AnimationCurve defaultTurnSpeedLossCurveDefault)
-        {
-            return defaultTurnSpeedLossCurveDefault;
-        }
+        public static float LoadTurnLowSpeedMultiplier(float defaultTurnLowSpeedMultiplier) =>
+            defaultTurnLowSpeedMultiplier;
 
-        public static AnimationCurve LoadTurnRateCurve(AnimationCurve defaultTurnrateCurveDefault)
-        {
-            return defaultTurnrateCurveDefault;
-        }
+        public static AnimationCurve LoadTurnSpeedLossCurve(AnimationCurve defaultTurnSpeedLossCurveDefault) =>
+            defaultTurnSpeedLossCurveDefault;
 
-        public static float LoadDriftTurnratePassive(float defaultDriftTurnrateDefault)
-        {
-            return defaultDriftTurnrateDefault;
-        }
+        public static AnimationCurve LoadTurnRateCurve(AnimationCurve defaultTurnrateCurveDefault) =>
+            defaultTurnrateCurveDefault;
 
-        public static float LoadDriftTurnRateMin(float defaultDriftTurnrateMinDefault)
-        {
-            return defaultDriftTurnrateMinDefault;
-        }
+        public static float LoadDriftTurnratePassive(float defaultDriftTurnrateDefault) => defaultDriftTurnrateDefault;
 
-        public static float LoadDriftTurnRateMax(float defaultDriftTurnRateMaxDefault)
-        {
-            return defaultDriftTurnRateMaxDefault;
-        }
+        public static float LoadDriftTurnRateMin(float defaultDriftTurnrateMinDefault) =>
+            defaultDriftTurnrateMinDefault;
 
-        public static float LoadDriftTurnRate(float defaultDriftTurnrateDefault)
-        {
-            return defaultDriftTurnrateDefault;
-        }
+        public static float LoadDriftTurnRateMax(float defaultDriftTurnRateMaxDefault) =>
+            defaultDriftTurnRateMaxDefault;
+
+        public static float LoadDriftTurnRate(float defaultDriftTurnrateDefault) => defaultDriftTurnrateDefault;
 
         //Jump
-        public static float LoadJumpSpeedMax(float defaultJumpSpeedMaxDefault)
-        {
-            return defaultJumpSpeedMaxDefault;
-        }
+        public static float LoadJumpSpeedMax(float defaultJumpSpeedMaxDefault) => defaultJumpSpeedMaxDefault;
 
-        public static AnimationCurve LoadJumpAcceleration(AnimationCurve defaultJumpAccelDefault)
-        {
-            return defaultJumpAccelDefault;
-        }
+        public static AnimationCurve LoadJumpAcceleration(AnimationCurve defaultJumpAccelDefault) =>
+            defaultJumpAccelDefault;
 
         // FUEL
-        public static FuelType LoadFuelType(FuelType gearFuelType)
-        {
-            return gearFuelType;
-        }
+        public static FuelType LoadFuelType(FuelType gearFuelType) => gearFuelType;
 
-        public static float LoadJumpChargeMultiplier(float gearJumpChargeMultiplier)
-        {
-            return gearJumpChargeMultiplier;
-        }
+        public static float LoadJumpChargeMultiplier(float gearJumpChargeMultiplier) => gearJumpChargeMultiplier;
 
-        public static float LoadTrickFuelGain(float gearTrickFuelGain)
-        {
-            return gearTrickFuelGain;
-        }
+        public static float LoadTrickFuelGain(float gearTrickFuelGain) => gearTrickFuelGain;
 
-        public static float LoadTypeFuelGain(float gearTypeFuelGain)
-        {
-            return gearTypeFuelGain;
-        }
+        public static float LoadTypeFuelGain(float gearTypeFuelGain) => gearTypeFuelGain;
 
-        public static float LoadQTEFuelGain(float gearQTEFuelGain)
-        {
-            return gearQTEFuelGain;
-        }
+        public static float LoadQTEFuelGain(float gearQTEFuelGain) => gearQTEFuelGain;
 
         public static float LoadPassiveDrain(int level, float gearPassiveDrainLvl1, float gearPassiveDrainLvl2,
             float gearPassiveDrainLvl3)
@@ -439,7 +393,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 _playerBehaviour.defaultPlayerStats.TopSpeedLevelUp, _playerBehaviour.characterData.TopSpeed,
                 _playerBehaviour.extremeGearData.movementVars.TopSpeed, _playerBehaviour.characterData.StatsType);
         }
-        
+
         public virtual void LoadAccelerationLow()
         {
             _playerBehaviour.speedStats.AccelerationLow =
@@ -448,7 +402,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                     _playerBehaviour.defaultPlayerStats.AccelerationLowLvl2,
                     _playerBehaviour.defaultPlayerStats.AccelerationLowLvl3);
         }
-        
+
         public virtual void LoadAccelerationMedium()
         {
             _playerBehaviour.speedStats.AccelerationMedium =
@@ -457,7 +411,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                     _playerBehaviour.defaultPlayerStats.AccelerationMediumLvl2,
                     _playerBehaviour.defaultPlayerStats.AccelerationMediumLvl3);
         }
-        
+
         public virtual void LoadAccelerationHigh()
         {
             _playerBehaviour.speedStats.AccelerationHigh =
@@ -475,7 +429,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                     _playerBehaviour.defaultPlayerStats.AccelerationLowThresholdLvl2,
                     _playerBehaviour.defaultPlayerStats.AccelerationLowThresholdLvl3);
         }
-        
+
         public virtual void LoadAccelerationMediumThreshold()
         {
             _playerBehaviour.speedStats.AccelerationMediumThreshold =
@@ -484,7 +438,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                     _playerBehaviour.defaultPlayerStats.AccelerationMediumThresholdLvl2,
                     _playerBehaviour.defaultPlayerStats.AccelerationMediumThresholdLvl3);
         }
-        
+
         public virtual void LoadAccelerationOffRoadThreshold()
         {
             _playerBehaviour.speedStats.AccelerationOffRoadThreshold =
@@ -493,7 +447,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                     _playerBehaviour.defaultPlayerStats.AccelerationOffRoadThresholdLvl2,
                     _playerBehaviour.defaultPlayerStats.AccelerationOffRoadThresholdLvl3);
         }
-        
+
         public virtual void LoadBoostSpeed()
         {
             _playerBehaviour.speedStats.BoostSpeed = _playerBehaviour.speedStats.BoostSpeed = LoadBoostSpeed(
@@ -560,7 +514,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 LoadJumpChargeMinSpeed(_playerBehaviour.defaultPlayerStats.JumpChargeMinSpeedDefault);
         }
 
-        public virtual void LoadJumpChargeDecelleration()
+        public virtual void LoadJumpChargeDeceleration()
         {
             _playerBehaviour.speedStats.JumpChargeDecelleration =
                 LoadJumpChargeDecelleration(_playerBehaviour.defaultPlayerStats.JumpChargeDecelerationDefault);
@@ -577,6 +531,12 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             _playerBehaviour.turnStats.TurnRateMax = LoadTurnRateMax(_playerBehaviour.defaultPlayerStats.TurnRateMax);
         }
 
+        public virtual void LoadTurnLowSpeedMultiplier()
+        {
+            _playerBehaviour.turnStats.TurnLowSpeedMultiplier =
+                LoadTurnLowSpeedMultiplier(_playerBehaviour.defaultPlayerStats.TurnLowSpeedMultiplierDefault);
+        }
+
         public virtual void LoadTurnSpeedLossCurve()
         {
             _playerBehaviour.turnStats.TurnSpeedLossCurve =
@@ -588,7 +548,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             _playerBehaviour.turnStats.TurnrateCurve =
                 LoadTurnRateCurve(_playerBehaviour.defaultPlayerStats.TurnrateCurveDefault);
         }
-        
+
         public virtual void LoadDriftTurnRateMin()
         {
             _playerBehaviour.turnStats.DriftTurnrateMin =

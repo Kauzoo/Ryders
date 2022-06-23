@@ -28,7 +28,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// </summary>
         protected virtual void DetermineCorneringState()
         {
-            if ((_playerBehaviour.movement.DriftState == DriftStates.None) && 
+            if ((_playerBehaviour.movement.DriftState == DriftStates.None) &&
                 _playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis != 0)
             {
                 var tempCorneringState =
@@ -40,6 +40,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 {
                     _playerBehaviour.movement.Turning = 0;
                 }
+
                 _playerBehaviour.movement.CorneringState = tempCorneringState;
             }
             else
@@ -51,8 +52,14 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         protected virtual void CalculateTurning()
         {
-            var turnRateIntermediate = _playerBehaviour.movement.Turning + _playerBehaviour.turnStats.Turnrate *
-                                 _playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
+            // TODO Factor in SpeedHandlingMultiplier and TurnLowSpeedMultiplier
+            var turnAccelerationRaw = _playerBehaviour.turnStats.Turnrate *
+                                      _playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
+            var turnAccelerationHandling =
+                turnAccelerationRaw * (1 - _playerBehaviour.speedStats.SpeedHandlingMultiplier);
+            var turnLowSpeed = _playerBehaviour.turnStats.TurnLowSpeedMultiplier /
+                               Formula.SpeedToRidersSpeed(_playerBehaviour.movement.Speed);
+            var turnRateIntermediate = turnAccelerationHandling + turnLowSpeed;
             if (turnRateIntermediate < 0)
             {
                 _playerBehaviour.movement.Turning = Mathf.Min(Mathf.Abs(turnRateIntermediate),

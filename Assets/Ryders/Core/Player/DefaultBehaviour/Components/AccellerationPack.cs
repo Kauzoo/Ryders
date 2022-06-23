@@ -52,7 +52,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             float speedGainPerFrame = 0;
             // Do not accelerate if above maxSpeed or not grounded or drifting or cornering
             if (belowMaxSpeed < 0 || groundedStates != GroundedStates.Grounded || driftStates != DriftStates.None ||
-                corneringStates != CorneringStates.None)
+                (corneringStates != CorneringStates.None && speed > CorneringTargetSpeed))
                 return speedGainPerFrame;
 
             // If speed is below 130, do fast accel, else use regular accel
@@ -94,13 +94,13 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // Determine which formula to use based on MaxSpeed and apply
             if (maxSpeed > 200f)
                 speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60f), 2f) + 0.2f) / 1000f; // modified
-                // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f);
+            // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / 60), 2) + 0.2f);
             else
                 speedLossPerFrame =
                     (Mathf.Pow((overmaxSpeed / (260.0f - Formula.SpeedToRidersSpeed(maxSpeed))), 2f) + 0.2f) /
                     1000f; // modified
-                // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f);
-                // SpeedLoss is capped at 10 units per frame
+            // speedLossPerFrame = (Mathf.Pow((overmaxSpeed / (260 - maxSpeed)), 2) + 0.2f);
+            // SpeedLoss is capped at 10 units per frame
             if (speedLossPerFrame > Formula.SpeedToRidersSpeed(10f))
                 speedLossPerFrame = 10f;
 
@@ -171,7 +171,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         protected virtual float TurnSpeedLoss()
         {
             float speedLossPerFrame = 0;
-            if (IsCornering())
+            if (IsCornering() && _playerBehaviour.movement.Speed > CorneringTargetSpeed)
             {
                 var TurningSpeedLossMultiplier =
                     (_playerBehaviour.speedStats.TurnSpeedLoss + 0.8f) * TurningSpeedLossMultiplierMul;
@@ -189,6 +189,11 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             }
 
             return Formula.RidersSpeedToSpeed(speedLossPerFrame);
+        }
+
+        protected virtual float JumpChargeDeceleration()
+        {
+            return 0f;
         }
 
         protected virtual void SetMaxSpeed()

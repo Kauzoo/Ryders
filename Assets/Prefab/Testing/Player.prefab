@@ -186,6 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TopSpeed: 0
+  SpeedHandlingMultiplier: 0
   AccelerationLow: 0
   AccelerationMedium: 0
   AccelerationHigh: 0
@@ -318,6 +319,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Turnrate: 0
   TurnRateMax: 0
+  TurnLowSpeedMultiplier: 0
   TurnSpeedLossCurve:
     serializedVersion: 2
     m_Curve: []

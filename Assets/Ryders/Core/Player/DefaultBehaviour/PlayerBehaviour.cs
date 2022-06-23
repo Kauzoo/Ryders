@@ -305,10 +305,6 @@ namespace Ryders.Core.Player.DefaultBehaviour
             if(pbDebug.printTransformTelemetry)
                 pbDebug.playerTransformTelemetry.text = "Transform" + Environment.NewLine + GetTransformTelemetry();
         }
-            
-        
-        
-
         #endregion
     }
 }
@@ -318,6 +314,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public abstract class SpeedStats : MonoBehaviour
         {
             [Header("Speed")] public float TopSpeed;
+            public float SpeedHandlingMultiplier;
             [Header("Acceleration")] public float AccelerationLow;
             public float AccelerationMedium;
             public float AccelerationHigh;
@@ -357,6 +354,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             [Header("Turning")] public float Turnrate;
             public float TurnRateMax;
+            public float TurnLowSpeedMultiplier;
             public AnimationCurve TurnSpeedLossCurve;
             public AnimationCurve TurnrateCurve;
             [Header("Drift")]

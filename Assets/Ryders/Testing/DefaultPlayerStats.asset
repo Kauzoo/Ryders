@@ -30,7 +30,7 @@ MonoBehaviour:
   AccelerationOffRoadThresholdLvl1: 50
   AccelerationOffRoadThresholdLvl2: 50
   AccelerationOffRoadThresholdLvl3: 70
-  TurnSpeedLoss: 0
+  TurnSpeedLoss: 1
   SpeedHandlingMultiplier: 0
   TurnrateDefault: 0.01
   TurnRateMax: 0.7
