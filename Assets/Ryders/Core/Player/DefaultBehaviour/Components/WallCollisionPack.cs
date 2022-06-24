@@ -14,7 +14,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             _playerBehaviour = GetComponent<PlayerBehaviour>();
         }
 
-        public virtual void OnCollision(Collision collision)
+        public virtual void OnCollision(UnityEngine.Collision collision)
         {
             
         }
