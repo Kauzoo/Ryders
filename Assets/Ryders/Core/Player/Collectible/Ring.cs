@@ -9,6 +9,7 @@ namespace Ryders.Core.Player.Collectible
     /// Behaviour for Ring collectibles
     /// </summary>
     [RequireComponent(typeof(Collider))]
+    [RequireComponent(typeof(MeshRenderer))]
     public class Ring : MonoBehaviour
     {
         [Header("Settings"), Tooltip("Toggle Ring as respawning")]
@@ -17,25 +18,35 @@ namespace Ryders.Core.Player.Collectible
         public float respawnTimer;
 
         private float _respawnTimer;
-
         private Collider _collider;
+        private MeshRenderer _meshRenderer;
 
         private void Start()
         {
             _collider = GetComponent<Collider>();
+            _meshRenderer = GetComponent<MeshRenderer>();
+
+            _collider.isTrigger = true;
+            Debug.LogWarning("Test");
         }
 
-        private void OnCollisionEnter(UnityEngine.Collision collision)
+        private void OnTriggerEnter(UnityEngine.Collider other)
         {
-            Debug.Log("Was geht?");
-            gameObject.SetActive(false);
+            Debug.LogError("Was geht?");
             StartCoroutine(Respawn());
         }
-        
+
         private IEnumerator Respawn()
         {
-            yield return new WaitForSecondsRealtime(respawnTimer);
-            gameObject.SetActive(true);
+            Debug.LogWarning("wtf");
+            _meshRenderer.enabled = false;
+            _collider.enabled = false;
+            Debug.LogWarning("pls start");
+            yield return new WaitForSeconds(3.0f);
+            _meshRenderer.enabled = true;
+            _collider.enabled = true;
+            Debug.LogWarning("Do i go here?");
+            //gameObject.SetActive(true);
         }
     }
 }
