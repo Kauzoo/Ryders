@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Ryders.Core.Player.Collectible
 {
+    /// <summary>
+    /// Behaviour for Ring collectibles
+    /// </summary>
     [RequireComponent(typeof(Collider))]
     public class Ring : MonoBehaviour
     {
@@ -17,8 +20,14 @@ namespace Ryders.Core.Player.Collectible
 
         private Collider _collider;
 
+        private void Start()
+        {
+            _collider = GetComponent<Collider>();
+        }
+
         private void OnCollisionEnter(UnityEngine.Collision collision)
         {
+            Debug.Log("Was geht?");
             gameObject.SetActive(false);
             StartCoroutine(Respawn());
         }
