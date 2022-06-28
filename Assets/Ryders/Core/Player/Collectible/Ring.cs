@@ -27,26 +27,20 @@ namespace Ryders.Core.Player.Collectible
             _meshRenderer = GetComponent<MeshRenderer>();
 
             _collider.isTrigger = true;
-            Debug.LogWarning("Test");
         }
 
         private void OnTriggerEnter(UnityEngine.Collider other)
         {
-            Debug.LogError("Was geht?");
             StartCoroutine(Respawn());
         }
 
         private IEnumerator Respawn()
         {
-            Debug.LogWarning("wtf");
             _meshRenderer.enabled = false;
             _collider.enabled = false;
-            Debug.LogWarning("pls start");
-            yield return new WaitForSeconds(3.0f);
+            yield return new WaitForSeconds(respawnTimer);
             _meshRenderer.enabled = true;
             _collider.enabled = true;
-            Debug.LogWarning("Do i go here?");
-            //gameObject.SetActive(true);
         }
     }
 }
