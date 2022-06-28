@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Ryders.Core.Player.Collectible.Item;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,37 +10,38 @@ namespace Ryders.Core.Player.Collectible
     /// Behaviour for Ring collectibles
     /// </summary>
     [RequireComponent(typeof(Collider))]
-    [RequireComponent(typeof(MeshRenderer))]
     public class Ring : MonoBehaviour
     {
-        [Header("Settings"), Tooltip("Toggle Ring as respawning")]
+        [Header("Settings")]
+        [Tooltip("Toggle Ring as respawning")]
         public bool respawn;
         [Tooltip("Respawn Timer in Seconds")]
         public float respawnTimer;
 
         private float _respawnTimer;
         private Collider _collider;
-        private MeshRenderer _meshRenderer;
+        private MeshRenderer _meshRendererTorus;
 
         private void Start()
         {
             _collider = GetComponent<Collider>();
-            _meshRenderer = GetComponent<MeshRenderer>();
+            _meshRendererTorus = GetComponentInChildren<MeshRenderer>();
 
             _collider.isTrigger = true;
         }
 
         private void OnTriggerEnter(UnityEngine.Collider other)
         {
-            StartCoroutine(Respawn());
+            if(respawn)
+                StartCoroutine(Respawn());
         }
 
         private IEnumerator Respawn()
         {
-            _meshRenderer.enabled = false;
+            _meshRendererTorus.enabled = false;
             _collider.enabled = false;
             yield return new WaitForSeconds(respawnTimer);
-            _meshRenderer.enabled = true;
+            _meshRendererTorus.enabled = true;
             _collider.enabled = true;
         }
     }
