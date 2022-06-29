@@ -171,6 +171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed8ff9d5b888ce54e981a2e3605bbab9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  additiveSpeedSingleExternal: 0
   TurningSpeedLossMultiplierMul: 0
   MagicStickPercentageModifier: 0
 --- !u!114 &5951800586870077053

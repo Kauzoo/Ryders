@@ -26,6 +26,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         private const int JumpChargeTargetSpeed = 80;
         private const int CorneringTargetSpeed = 130;
 
+        // Use this to add 1 Frame SpeedBoost from external sources (i.e. DashPanels, SpeedShoes, ...) 
+        public float additiveSpeedSingleExternal;
+
         // Unknown precomputed value. Probably 1 [f1]
         public float TurningSpeedLossMultiplierMul = 2f;
         public float MagicStickPercentageModifier = 0.98f;
@@ -35,6 +38,15 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         private void Start()
         {
             _playerBehaviour = GetComponent<PlayerBehaviour>();
+        }
+
+        protected virtual void OnEnterPack()
+        {
+        }
+
+        protected virtual void OnExitPack()
+        {
+            ResetAdditiveSpeedSingleExternal();
         }
 
         /// <summary>
@@ -150,7 +162,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO Add other Accelerations and Decelerations
             // TODO Make sure Standards only accelerate / decelerate to MaxSpeed
             SetMaxSpeed();
-            _playerBehaviour.movement.Speed += StandardAcceleration() + StandardDeceleration() + TurnSpeedLoss();
+            _playerBehaviour.movement.Speed += StandardAcceleration() + StandardDeceleration() +
+                                               TurnSpeedLoss() * additiveSpeedSingleExternal;
         }
 
         protected virtual float StandardAcceleration()
@@ -189,6 +202,16 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             }
 
             return Formula.RidersSpeedToSpeed(speedLossPerFrame);
+        }
+
+        public virtual void AddAdditiveSpeedSingleExternal(float additiveSpeed)
+        {
+            additiveSpeedSingleExternal += additiveSpeed;
+        }
+
+        protected virtual void ResetAdditiveSpeedSingleExternal()
+        {
+            additiveSpeedSingleExternal = 0f;
         }
 
         protected virtual float JumpChargeDeceleration()

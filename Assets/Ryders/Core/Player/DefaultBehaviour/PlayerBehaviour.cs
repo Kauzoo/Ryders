@@ -33,7 +33,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
     [RequireComponent(typeof(Movement))]
     [RequireComponent(typeof(Fuel))]
     // TODO Update RequireComponents
-    public abstract class PlayerBehaviour : MonoBehaviour
+    public abstract partial class PlayerBehaviour : MonoBehaviour
     {
         /**
          * DEBUG 
