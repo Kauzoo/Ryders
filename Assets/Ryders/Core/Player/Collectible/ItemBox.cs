@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Linq;
+using Ryders.Core.Player.Collectible.Item;
 using Random = UnityEngine.Random;
 
 namespace Ryders.Core.Player.Collectible
@@ -12,16 +13,17 @@ namespace Ryders.Core.Player.Collectible
     public class ItemBox : MonoBehaviour
     {
         // TODO Loot tables should be based of place and distance to opponent
-        [Header("SpawnSettings"), Tooltip("Toggle ItemBox as Respawning")]
+        public ItemBoxSettings ItemBoxSettings;
+        [Header("SpawnSettings")]
+        [Tooltip("Toggle ItemBox as Respawning")]
         public bool respawn;
-
         [Tooltip("Respawn Timer in Seconds")] public float respawnTimer;
 
         [Tooltip("All meshes that should stop being rendered when the Item Box is collected")]
         public MeshRenderer[] meshes;
 
-        [Header("ItemSettings")] [Serialize] private Item.Item[] itemsDefault;
-        [Serialize] private float[] oddsDefault;
+        [Header("ItemSettings")] [Serialize] public Item.Item[] itemsDefault;
+        [Serialize] public float[] oddsDefault;
 
         private Item.Item _currentItem;
         private readonly Dictionary<Item.Item, Vector2> itemDictionary = new();
@@ -44,6 +46,14 @@ namespace Ryders.Core.Player.Collectible
         /// </summary>
         private void Setup()
         {
+            if (ItemBoxSettings != null)
+            {
+                respawn = ItemBoxSettings.respawn;
+                respawnTimer = ItemBoxSettings.respawnTimer;
+                itemsDefault = ItemBoxSettings.itemsDefault;
+                oddsDefault = ItemBoxSettings.oddsDefault;
+                Debug.Log("Using ItemBoxSettings overwrite.", this);
+            }
             if (itemsDefault.Length != oddsDefault.Length)
             {
                 Debug.LogWarning($"Amount of Items and Odds should match", this);

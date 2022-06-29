@@ -10,6 +10,7 @@ namespace Ryders.Core.Player.Collectible.Item
         [Tooltip("Respawn Timer in Seconds")]
         public float respawnTimer;
         
-        
+        [Header("ItemSettings")] public Item[] itemsDefault;
+        public float[] oddsDefault;
     }
 }

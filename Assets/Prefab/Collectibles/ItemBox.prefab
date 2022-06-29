@@ -3419,6 +3419,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b691796051748b6b43ca81102bc22c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ItemBoxSettings: {fileID: 0}
   respawn: 1
   respawnTimer: 5
   meshes:
@@ -3427,6 +3428,14 @@ MonoBehaviour:
   - {fileID: 4130839808569219787}
   - {fileID: 1800611060295124969}
   - {fileID: 848439881111831663}
+  itemsDefault:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  oddsDefault:
+  - 0.6
+  - 0.25
+  - 0.15
 --- !u!1 &7944429919528803151
 GameObject:
   m_ObjectHideFlags: 0
