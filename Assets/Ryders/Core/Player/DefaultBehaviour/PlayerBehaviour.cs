@@ -27,6 +27,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
     /// </summary>
     [RequireComponent(typeof(SpeedStats))]
     [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(Collider))]
     [RequireComponent(typeof(TurnStats))]
     [RequireComponent(typeof(JumpStats))]
     [RequireComponent(typeof(FuelStats))]

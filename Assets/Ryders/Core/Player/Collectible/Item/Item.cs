@@ -5,8 +5,6 @@ namespace Ryders.Core.Player.Collectible.Item
 {
     public abstract class Item : MonoBehaviour
     {
-        public abstract void ApplyItemEffect(dynamic target);
-
-        
+        public abstract void ApplyItemEffect(PlayerBehaviour target);
     }
 }

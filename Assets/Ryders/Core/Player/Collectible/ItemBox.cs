@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using System.Linq;
 using Ryders.Core.Player.Collectible.Item;
+using Ryders.Core.Player.DefaultBehaviour;
 using Random = UnityEngine.Random;
 
 namespace Ryders.Core.Player.Collectible
@@ -113,9 +114,24 @@ namespace Ryders.Core.Player.Collectible
 
         private void OnTriggerEnter(Collider other)
         {
-            // TODO Filter for Player only
-            if (respawn)
-                StartCoroutine(Respawn());
+            if (other.gameObject.TryGetComponent<PlayerBehaviour>(out var playerBehaviour))
+            {
+                DeSpawn();
+                _currentItem.ApplyItemEffect(playerBehaviour);
+                if (respawn)
+                {
+                    StartCoroutine(Respawn());  
+                }
+            }
+        }
+
+        private void DeSpawn()
+        {
+            _collider.enabled = false;
+            foreach (var meshRenderer in meshes)
+            {
+                meshRenderer.enabled = false;
+            }
         }
 
         /// <summary>
@@ -123,12 +139,6 @@ namespace Ryders.Core.Player.Collectible
         /// </summary>
         private IEnumerator Respawn()
         {
-            _collider.enabled = false;
-            foreach (var meshRenderer in meshes)
-            {
-                meshRenderer.enabled = false;
-            }
-
             yield return new WaitForSeconds(respawnTimer);
             DetermineItem();
             _collider.enabled = true;
