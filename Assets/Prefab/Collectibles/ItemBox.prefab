@@ -3428,6 +3428,8 @@ MonoBehaviour:
   - {fileID: 4130839808569219787}
   - {fileID: 1800611060295124969}
   - {fileID: 848439881111831663}
+  IsMysteryBox: 1
+  defaultItemMaterial: {fileID: 2100000, guid: 18cd900be6bf5ba4ba279f5b1257e1f1, type: 2}
   itemsDefault:
   - {fileID: 0}
   - {fileID: 0}
@@ -3436,6 +3438,8 @@ MonoBehaviour:
   - 0.6
   - 0.25
   - 0.15
+  ItemQuadFront: {fileID: 1800611060295124969}
+  ItemQuadBack: {fileID: 848439881111831663}
 --- !u!1 &7944429919528803151
 GameObject:
   m_ObjectHideFlags: 0

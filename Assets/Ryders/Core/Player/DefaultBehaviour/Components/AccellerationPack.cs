@@ -38,13 +38,14 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         private void Start()
         {
             _playerBehaviour = GetComponent<PlayerBehaviour>();
+            additiveSpeedSingleExternal = 0f;
         }
 
-        protected virtual void OnEnterPack()
+        public virtual void OnEnterPack()
         {
         }
 
-        protected virtual void OnExitPack()
+        public virtual void OnExitPack()
         {
             ResetAdditiveSpeedSingleExternal();
         }
@@ -163,7 +164,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO Make sure Standards only accelerate / decelerate to MaxSpeed
             SetMaxSpeed();
             _playerBehaviour.movement.Speed += StandardAcceleration() + StandardDeceleration() +
-                                               TurnSpeedLoss() * additiveSpeedSingleExternal;
+                                               TurnSpeedLoss() + additiveSpeedSingleExternal;
         }
 
         protected virtual float StandardAcceleration()
@@ -206,6 +207,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         public virtual void AddAdditiveSpeedSingleExternal(float additiveSpeed)
         {
+            Debug.Log("Is this being exectuted? " + additiveSpeed);
             additiveSpeedSingleExternal += additiveSpeed;
         }
 

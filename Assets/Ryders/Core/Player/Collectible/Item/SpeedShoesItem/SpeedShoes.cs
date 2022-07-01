@@ -1,4 +1,5 @@
 ﻿using System;
+using Ryders.Core.Player.Collectible.Item.SpeedShoesItem;
 using Ryders.Core.Player.DefaultBehaviour;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace Ryders.Core.Player.Collectible.Item
 {
     public class SpeedShoes : Item
     {
-        [SerializeField, Tooltip("The amount of additive Speed applied to the player") ] protected float SpeedBoost;
+        public SpeedShoesSettings settings;
 
         private PlayerBehaviour _playerBehaviour;
 
@@ -19,7 +20,8 @@ namespace Ryders.Core.Player.Collectible.Item
 
         protected virtual void ApplySpeedBoost()
         {
-            _playerBehaviour.accelerationPack.AddAdditiveSpeedSingleExternal(SpeedBoost);
+            Debug.Log("SpeedBoostAmount: " + settings.SpeedBoost);
+            _playerBehaviour.accelerationPack.AddAdditiveSpeedSingleExternal(settings.SpeedBoost);
         }
     }
 }

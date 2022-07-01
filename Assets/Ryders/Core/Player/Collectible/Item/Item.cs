@@ -5,6 +5,7 @@ namespace Ryders.Core.Player.Collectible.Item
 {
     public abstract class Item : MonoBehaviour
     {
+        public Material ItemMaterial;
         public abstract void ApplyItemEffect(PlayerBehaviour target);
     }
 }

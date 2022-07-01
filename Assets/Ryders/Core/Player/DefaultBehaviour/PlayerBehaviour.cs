@@ -202,6 +202,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         public virtual void TestAcceleration()
         {
             accelerationPack.MasterAcceleration();
+            accelerationPack.OnExitPack();
         }
 
         public virtual void TestBoost()
@@ -247,7 +248,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
             
         public virtual void MasterMoveTest()
         {
-            //playerTransform.position += Formula.SpeedToRidersSpeed(movement.Speed) * playerTransform.forward;
+            playerTransform.position += Formula.SpeedToRidersSpeed(movement.Speed) * playerTransform.forward;
             
             //var forwardVector = movement.Speed * Time.fixedDeltaTime * 3f * playerTransform.forward;
             //playerRigidbody.velocity = forwardVector;

@@ -5,10 +5,20 @@ using UnityEngine;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
+    /// <summary>
+    /// Handles all things level, rings and fuel
+    /// </summary>
     public abstract class FuelPack : MonoBehaviour
     {
         // TODO Implement FuelPack
         protected PlayerBehaviour _playerBehaviour;
+
+        [Header("RingsSettings")]
+        public int MaxRings;
+
+        public int Levels;
+        public int[] LevelCaps;
+
 
         private void Start()
         {
@@ -17,7 +27,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         public virtual void AddRing()
         {
-            
+            _playerBehaviour.fuel.Rings++;
         }
 
         public virtual void RemoveRing()

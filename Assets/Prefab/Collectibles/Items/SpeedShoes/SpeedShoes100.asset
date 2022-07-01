@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcd89fb0218e4d8aaf26967c1944db15, type: 3}
+  m_Name: SpeedShoes100
+  m_EditorClassIdentifier: 
+  SpeedBoost: 100
+  SpeedShoesMaterial: {fileID: 2100000, guid: dede4ef39c1741d4ba91938a86cd14c8, type: 2}

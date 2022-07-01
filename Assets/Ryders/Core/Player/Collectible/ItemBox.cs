@@ -23,8 +23,14 @@ namespace Ryders.Core.Player.Collectible
         [Tooltip("All meshes that should stop being rendered when the Item Box is collected")]
         public MeshRenderer[] meshes;
 
-        [Header("ItemSettings")] [Serialize] public Item.Item[] itemsDefault;
+        [Header("ItemSettings")] public bool IsMysteryBox;
+        public Material defaultItemMaterial;
+        [Serialize] public Item.Item[] itemsDefault;
         [Serialize] public float[] oddsDefault;
+        [Tooltip("Front of the Quad displaying the item")]
+        public MeshRenderer ItemQuadFront;
+        [Tooltip("Back of the Quad displaying the item")]
+        public MeshRenderer ItemQuadBack;
 
         private Item.Item _currentItem;
         private readonly Dictionary<Item.Item, Vector2> itemDictionary = new();
@@ -107,6 +113,16 @@ namespace Ryders.Core.Player.Collectible
                 if (value >= entry.Value.x && value <= entry.Value.y)
                 {
                     _currentItem = entry.Key;
+                    if (IsMysteryBox)
+                    {
+                        ItemQuadFront.material = defaultItemMaterial;
+                        ItemQuadBack.material = defaultItemMaterial;
+                    }
+                    else
+                    {
+                        ItemQuadFront.material = _currentItem.ItemMaterial;
+                        ItemQuadBack.material = _currentItem.ItemMaterial;
+                    }
                     break;
                 }
             }
