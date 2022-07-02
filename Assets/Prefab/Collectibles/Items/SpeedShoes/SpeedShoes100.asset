@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: SpeedShoes100
   m_EditorClassIdentifier: 
   SpeedBoost: 100
-  SpeedShoesMaterial: {fileID: 2100000, guid: dede4ef39c1741d4ba91938a86cd14c8, type: 2}
+  SpeedShoesMaterial: {fileID: 2100000, guid: f252639222f57a044889e2c520cc59f1, type: 2}

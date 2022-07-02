@@ -795,7 +795,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 60a0e9a822d5d8b43afef73d8ff05024, type: 2}
+  - {fileID: 2100000, guid: 1b7e0e3df5617414c913b394b47bf8df, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1566,7 +1566,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 60a0e9a822d5d8b43afef73d8ff05024, type: 2}
+  - {fileID: 2100000, guid: 1b7e0e3df5617414c913b394b47bf8df, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3429,7 +3429,7 @@ MonoBehaviour:
   - {fileID: 1800611060295124969}
   - {fileID: 848439881111831663}
   IsMysteryBox: 1
-  defaultItemMaterial: {fileID: 2100000, guid: 18cd900be6bf5ba4ba279f5b1257e1f1, type: 2}
+  defaultItemMaterial: {fileID: 2100000, guid: 1b7e0e3df5617414c913b394b47bf8df, type: 2}
   itemsDefault:
   - {fileID: 0}
   - {fileID: 0}

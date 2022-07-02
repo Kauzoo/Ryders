@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Ryders.Core.Player.Collectible.Item;
+using Ryders.Core.Player.DefaultBehaviour;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,8 +33,13 @@ namespace Ryders.Core.Player.Collectible
 
         private void OnTriggerEnter(UnityEngine.Collider other)
         {
-            if(respawn)
-                StartCoroutine(Respawn());
+            if (other.gameObject.TryGetComponent<PlayerBehaviour>(out var playerBehaviour))
+            {
+                playerBehaviour.fuelPack.AddRing();
+                if(respawn)
+                    StartCoroutine(Respawn());
+            }
+            
         }
 
         private IEnumerator Respawn()

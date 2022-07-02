@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 5951800586870076997}
   - component: {fileID: 5951800586870077002}
   - component: {fileID: 969534238710381586}
+  - component: {fileID: 3528305456211521214}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -291,6 +292,9 @@ MonoBehaviour:
   BoostCost: 0
   DriftCost: 0
   TorandoCost: 0
+  MinRings: 0
+  MaxRings: 0
+  LevelCaps: 
 --- !u!114 &5951800586870076992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -304,7 +308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentFuel: 0
-  Level: 3
+  Level: 1
   Rings: 0
 --- !u!114 &5951800586870076999
 MonoBehaviour:
@@ -388,6 +392,18 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3528305456211521214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5951800586870077045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e32efaa381f8ea6418aa5ccc5672fc14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5951800587405041786
 GameObject:
   m_ObjectHideFlags: 0

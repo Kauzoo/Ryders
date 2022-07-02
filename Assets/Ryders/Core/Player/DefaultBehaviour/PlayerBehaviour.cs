@@ -258,6 +258,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         {
             inputPlayer.GetInput();
             statLoaderPack.LoadStatsMaster();
+            fuelPack.MasterFuelPack();
             TestMove();
             MasterTurnTest();
             MasterMoveTest();
@@ -384,6 +385,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             public float BoostCost;
             public float DriftCost;
             public float TorandoCost;
+            public int MinRings;
+            public int MaxRings;
+            public int[] LevelCaps;
         }
 
         public abstract class Movement : MonoBehaviour

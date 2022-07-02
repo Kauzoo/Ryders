@@ -272,10 +272,19 @@ namespace Ryders.Core.Player.ExtremeGear
             public float TornadoCostLvl2;
             public float TornadoCostLvl3;
 
+            [Header("Rings")]
+            public int MinRings;
+            public int MaxRings;
+            
+            [Header("Level")]
+            public int Level1Cap;
+            public int Level2Cap;
+            public int Level3Cap;
+
         }
 
-        public BasicInfo basicInfo = new BasicInfo();
-        public MovementVars movementVars = new MovementVars();
-        public FuelVars fuelVars = new FuelVars();
+        public BasicInfo basicInfo = new();
+        public MovementVars movementVars = new();
+        public FuelVars fuelVars = new();
     }
 }

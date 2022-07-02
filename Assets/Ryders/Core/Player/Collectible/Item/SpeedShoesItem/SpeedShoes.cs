@@ -12,6 +12,11 @@ namespace Ryders.Core.Player.Collectible.Item
 
         private PlayerBehaviour _playerBehaviour;
 
+        private void Awake()
+        {
+            ItemMaterial = settings.SpeedShoesMaterial;
+        }
+        
         public override void ApplyItemEffect(PlayerBehaviour target)
         {
             _playerBehaviour = target;

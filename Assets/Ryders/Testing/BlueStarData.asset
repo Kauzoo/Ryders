@@ -29,25 +29,16 @@ MonoBehaviour:
     DriftDashSpeedLvl3: 100
     DriftCap: 250
     DriftDashChargeDuration: 60
-    MinSpeed: 130
-    FastAcceleration: 0
-    Turnrate: 1
-    TurnSpeedLossCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    TurnrateCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    DriftTurnratePassive: 1
-    DriftTurnrateMin: 1
-    DriftTurnrate: 1
-    BreakeDeceleration: 1
+    SpeedHandlingMultiplier: 0
+    TurnRate: 0
+    TurnRateMax: 0
+    TurnLowSpeedMultiplier: 0
+    TurnSpeedLoss: 0
+    DriftTurnRateMin: 0
+    DriftTurnRateMax: 0
+    DriftTurnRate: 0
+    DriftMomentum: 0
+    BreakDecelerationMultiplier: 0
     JumpSpeedMax: 1
     JumpAccel:
       serializedVersion: 2
@@ -81,3 +72,8 @@ MonoBehaviour:
     TornadoCostLvl1: 25
     TornadoCostLvl2: 30
     TornadoCostLvl3: 30
+    MinRings: 0
+    MaxRings: 100
+    Level1Cap: 0
+    Level2Cap: 30
+    Level3Cap: 60

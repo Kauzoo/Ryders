@@ -90,6 +90,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             LoadBoostCost();
             LoadDriftCost();
             LoadTornadoCost();
+            LoadMinRings();
+            LoadMaxRings();
+            LoadLevelCap();
         }
 
         #region StaticMethods
@@ -383,6 +386,13 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             };
         }
 
+        public static int LoadMinRings(int MinRings) => MinRings;
+
+        public static int LoadMaxRings(int MaxRings) => MaxRings;
+
+        public static int[] LoadLevelCaps(int Level1Cap, int Level2Cap, int Level3Cap) =>
+            new[] { Level1Cap, Level2Cap, Level3Cap };
+
         #endregion
 
         #region VirtualMemebers
@@ -649,6 +659,17 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 _playerBehaviour.extremeGearData.fuelVars.TornadoCostLvl2,
                 _playerBehaviour.extremeGearData.fuelVars.TornadoCostLvl3);
         }
+
+        public virtual void LoadMinRings() => _playerBehaviour.fuelStats.MinRings =
+            LoadMinRings(_playerBehaviour.extremeGearData.fuelVars.MinRings);
+
+        public virtual void LoadMaxRings() => _playerBehaviour.fuelStats.MaxRings =
+            LoadMaxRings(_playerBehaviour.extremeGearData.fuelVars.MaxRings);
+
+        public virtual void LoadLevelCap() => _playerBehaviour.fuelStats.LevelCaps =
+            LoadLevelCaps(_playerBehaviour.extremeGearData.fuelVars.Level1Cap,
+                _playerBehaviour.extremeGearData.fuelVars.Level2Cap,
+                _playerBehaviour.extremeGearData.fuelVars.Level3Cap);
 
         #endregion
     }
