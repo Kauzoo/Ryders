@@ -116,13 +116,13 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             previousGround = currentGround;
             currentGround = newGround;
 
-            Vector3 localSpacePlayerForward = previousGround.transform.InverseTransformDirection(playerTransform.forward);
+            var localSpacePlayerForward = previousGround.transform.InverseTransformDirection(playerTransform.forward);
 
             //Quaternion targetRotation = Quaternion.LookRotation(groundInfo.currentGround.transform.forward, groundInfo.currentGround.transform.up);
             //playerTransform.rotation = targetRotation;
 
-            Vector3 wordlSpaceForward = currentGround.transform.TransformDirection(localSpacePlayerForward);
-            playerTransform.rotation = Quaternion.LookRotation(wordlSpaceForward, currentGround.transform.up);
+            var worldSpaceForward = currentGround.transform.TransformDirection(localSpacePlayerForward);
+            playerTransform.rotation = Quaternion.LookRotation(worldSpaceForward, currentGround.transform.up);
         }
 
         /*

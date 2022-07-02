@@ -71,5 +71,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         }
 
         #endregion
+
+        #region Fuel
+
+        
+        #endregion
     }
 }
