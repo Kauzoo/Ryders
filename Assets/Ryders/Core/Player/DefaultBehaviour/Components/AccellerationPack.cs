@@ -198,8 +198,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 var CubedMultiplier =
                     Mathf.Pow(Mathf.Abs(_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis), 3);
                 speedLossPerFrame = CubedMultiplier * LinearMultiplier;
-                Debug.Log("TurnSpeedLoss (InGame): " + speedLossPerFrame);
-                Debug.Log("TurnSpeedLoss (Speedometer): " + Formula.RidersSpeedToSpeed(speedLossPerFrame));
+                //Debug.Log("TurnSpeedLoss (InGame): " + speedLossPerFrame);
+                //Debug.Log("TurnSpeedLoss (Speedometer): " + Formula.RidersSpeedToSpeed(speedLossPerFrame));
             }
 
             return Formula.RidersSpeedToSpeed(speedLossPerFrame);
@@ -207,7 +207,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         public virtual void AddAdditiveSpeedSingleExternal(float additiveSpeed)
         {
-            Debug.Log("Is this being exectuted? " + additiveSpeed);
+            //Debug.Log("Is this being exectuted? " + additiveSpeed);
             additiveSpeedSingleExternal += additiveSpeed;
         }
 

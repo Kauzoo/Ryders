@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Ryders.Core.Player.DefaultBehaviour;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Ryders.Core.Player.ExtremeGear.Movement
 {
@@ -13,105 +16,62 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
     public abstract class GravityPack : MonoBehaviour
     {
         // TODO: Implement Gravity Pack
-        public static bool Grounded(Transform playerTransform, float maxGroundDistance, int groundLayerMask)
+        protected PlayerBehaviour _playerBehaviour;
+        protected Transform _playerTransform;
+
+        [System.Serializable]
+        public class RayCastSettings
         {
-            int layerMask = 1 << groundLayerMask;
-            if (Physics.Raycast(playerTransform.position, playerTransform.up * (-1), out RaycastHit hit, maxGroundDistance, layerMask))
-            {
-                //if (//HasGroundChanged(hit.transform.gameObject))
-                {
-                    //HandleGroundChanged(hit.transform.gameObject);
-                    //NewGroundChanged(hit.transform.gameObject);
-                }
-                //CorrectGroundDistance(hit.distance);
-                return true;
-            }
-            /*
-            else if (Physics.Raycast(playerTransform.position, Vector3.down, out RaycastHit hitAlt, grounded.maxDistance, layerMask))
-            {
-                {
-                    if (HasGroundChanged(hitAlt.transform.gameObject))
-                    {
-                        // HandleGroundChanged(hitAlt.transform.gameObject);
-                        NewGroundChanged(hitAlt.transform.gameObject);
-                    }
-                    CorrectGroundDistance(hitAlt.distance);
-                    movement.grounded = true;
-                }
-            }
-            */
-            return false;
+            [Header("GroundSettings")] public LayerMask Mask;
+            public float DistanceGround;
+            public Transform GroundedOrigin;
+            [Header("GroundAlignment")] public float DistanceAlignment;
+            public Transform RaycastOriginLeftFront;
+            public Transform RaycastOriginRightFront;
+            public Transform RaycastOriginLeftBack;
+            public Transform RaycastOriginRightBack;
         }
 
-        public virtual bool Grounded()
+        public RayCastSettings _rayCastSettings = new();
+
+        private void Start()
         {
-            throw new NotImplementedException();
+            _playerBehaviour = GetComponent<PlayerBehaviour>();
+            _playerTransform = _playerBehaviour.transform;
         }
 
-        /*
-        private void CorrectGroundDistance(float distance)
+        public virtual void GravityPackMaster()
         {
-            if (distance < grounded.maxDistance - grounded.tollerance)
-            {
-                Debug.Log("Code is reached");
-                playerRigidbody.isKinematic = true;
-
-                playerTransform.Translate(groundInfo.currentGround.transform.up * ((grounded.maxDistance - grounded.tollerance * 0.5f) - distance));
-                Debug.Log("Angle less than 90");
-
-                //playerRigidbody.MovePosition(playerTransform.up * (grounded.maxDistance - distance));
-                playerRigidbody.isKinematic = false;
-            }
-        }*/
-
-        private int Gravity(bool grounded)
-        {
-            if (grounded)
-            {
-                return 0;
-            }
-            else
-            {
-                return 1;
-            }
+            Grounded();
+            GroundAlignment();
         }
 
-        private bool HasGroundChanged(GameObject newGround, GameObject currentGround, Transform playerTransform)
+        protected virtual void Grounded()
         {
-            if (currentGround == null)
+            if (Physics.Raycast(_rayCastSettings.GroundedOrigin.position, -_playerBehaviour.playerTransform.up,
+                    out var hit, _rayCastSettings.DistanceGround, _rayCastSettings.Mask))
             {
-                currentGround = playerTransform.gameObject;
+                Debug.Log("Grounded");
+                //GroundAlignment();
+                Gravity(true);
+                _playerBehaviour.movement.Grounded = true;
+                return;
             }
-            if (!currentGround.Equals(newGround))
-            {
-                return true;
-            }
-            return false;
+            Gravity(false);
+            _playerBehaviour.movement.Grounded = false;
         }
+
+        protected virtual void Gravity(bool grounded) => _playerBehaviour.movement.Gravity = grounded ? 0 : 1;
 
         /// <summary>
-        /// Handles Ground allignment
-        /// WIP: Make it work with ground that is not world axis alligned
+        /// Allignment Magic is done here
         /// </summary>
         /// <param name="newGround"></param>
-        private void HandleGroundChanged(GameObject newGround, GameObject previousGround, GameObject currentGround, Transform playerTransform)
-        {
-            Debug.Log("HandleGroundChanged is being executed");
-            previousGround = currentGround;
-            currentGround = newGround;
-
-            float currentRotationAngle = playerTransform.rotation.eulerAngles.y; //+ groundInfo.previousGround.transform.rotation.eulerAngles.y;
-            Vector3 currentRotationVector = new Vector3(0, currentRotationAngle, 0);
-
-            // Alligns player to the new ground
-            Quaternion targetRotation = Quaternion.LookRotation(currentGround.transform.forward, currentGround.transform.up);
-            playerTransform.rotation = targetRotation;
-
-            //playerTransform.rotation = Quaternion.LookRotation(groundInfo.previousGround.transform.forward, groundInfo.currentGround.transform.up);
-            playerTransform.Rotate(currentRotationVector, Space.Self);
-        }
-
-        private void NewGroundChanged(GameObject newGround, GameObject previousGround, GameObject currentGround, Transform playerTransform)
+        /// <param name="previousGround"></param>
+        /// <param name="currentGround"></param>
+        /// <param name="playerTransform"></param>
+        private void NewGroundChanged(GameObject newGround, GameObject previousGround, GameObject currentGround,
+            Transform playerTransform)
         {
             previousGround = currentGround;
             currentGround = newGround;
@@ -125,24 +85,44 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             playerTransform.rotation = Quaternion.LookRotation(worldSpaceForward, currentGround.transform.up);
         }
 
-        /*
-        private void ConstantGroundAllignment()
+        protected virtual void GroundAlignment()
         {
-            if (groundInfo.currentGround != null)
-                playerTransform.rotation = Quaternion.LookRotation(playerTransform.forward, groundInfo.currentGround.transform.up);
-        }*/
-
-        /*
-        private bool TryGetGroundObject(out GameObject groundObject)
-        {
-            int layerMask = 1 << grounded.layerMask;
-            if (Physics.Raycast(visualPlayerTransform.position, playerTransform.up * (-1), out RaycastHit hit, grounded.maxDistance, layerMask))
+            var hits = new List<RaycastHit>();
+            if (Physics.Raycast(_rayCastSettings.RaycastOriginLeftFront.position, -_playerBehaviour.playerTransform.up,
+                    out var hitLeftFront, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
             {
-                groundObject = hit.transform.gameObject;
-                return true;
+                hits.Add(hitLeftFront);
             }
-            groundObject = null;
-            return false;
-        }*/
+
+            if (Physics.Raycast(_rayCastSettings.RaycastOriginRightFront.position, -_playerBehaviour.playerTransform.up,
+                    out var hitRightFront, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+            {
+                hits.Add(hitRightFront);
+            }
+
+            if (Physics.Raycast(_rayCastSettings.RaycastOriginLeftBack.position, -_playerBehaviour.playerTransform.up,
+                    out var hitLeftBack, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+            {
+                hits.Add(hitLeftBack);
+            }
+
+            if (Physics.Raycast(_rayCastSettings.RaycastOriginRightBack.position,
+                    -_playerBehaviour.playerTransform.up,
+                    out var hitRightBack, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+            {
+                hits.Add(hitRightBack);
+            }
+
+            if (hits.Count != 0)
+            {
+                var newUp = new Vector3(0f, 0f, 0f);
+                hits.ForEach((hit) => newUp += hit.normal);
+                var rot = _playerBehaviour.playerTransform.rotation.eulerAngles.y;
+                newUp.Normalize();
+                var newRot = Quaternion.Lerp(_playerTransform.rotation, Quaternion.FromToRotation(Vector3.up, newUp),
+                    0.1f);
+                _playerBehaviour.playerTransform.rotation = Quaternion.Euler( newRot.eulerAngles.x, rot, newRot.eulerAngles.z);
+            }
+        }
     }
 }

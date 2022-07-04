@@ -9,6 +9,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     public abstract class CorneringPack : MonoBehaviour
     {
         // TODO Look into SpeedHandlingMultiplier and TurnLowSpeedMultiplier
+        // TODO All of this is ugly and needs to be reworked completely
         private PlayerBehaviour _playerBehaviour;
 
         private void Start()
@@ -55,19 +56,21 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO Factor in SpeedHandlingMultiplier and TurnLowSpeedMultiplier
             var turnAccelerationRaw = _playerBehaviour.turnStats.Turnrate *
                                       _playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
-            var turnAccelerationHandling =
-                turnAccelerationRaw * (1 - _playerBehaviour.speedStats.SpeedHandlingMultiplier);
-            var turnLowSpeed = _playerBehaviour.turnStats.TurnLowSpeedMultiplier /
-                               Formula.SpeedToRidersSpeed(_playerBehaviour.movement.Speed);
-            var turnRateIntermediate = turnAccelerationHandling + turnLowSpeed;
+            /*var turnAccelerationHandling =
+                turnAccelerationRaw * (1 - _playerBehaviour.speedStats.SpeedHandlingMultiplier);*/
+            var turnLowSpeed = (_playerBehaviour.turnStats.TurnLowSpeedMultiplier /
+                                Formula.SpeedToRidersSpeed(_playerBehaviour.movement.Speed)) *
+                               _playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis * 0;
+            //var turnRateIntermediate = turnAccelerationHandling + turnLowSpeed;
+            var turnRateIntermediate = (turnAccelerationRaw + turnLowSpeed);
             if (turnRateIntermediate < 0)
             {
-                _playerBehaviour.movement.Turning = Mathf.Min(Mathf.Abs(turnRateIntermediate),
+                _playerBehaviour.movement.Turning = Mathf.Min(Mathf.Abs(turnRateIntermediate + _playerBehaviour.movement.Turning),
                     _playerBehaviour.turnStats.TurnRateMax) * (-1);
             }
             else
             {
-                _playerBehaviour.movement.Turning = Mathf.Min(turnRateIntermediate,
+                _playerBehaviour.movement.Turning = Mathf.Min(turnRateIntermediate + _playerBehaviour.movement.Turning,
                     _playerBehaviour.turnStats.TurnRateMax);
             }
         }

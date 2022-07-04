@@ -249,7 +249,8 @@ namespace Ryders.Core.Player.DefaultBehaviour
         public virtual void MasterMoveTest()
         {
             playerTransform.position += Formula.SpeedToRidersSpeed(movement.Speed) * playerTransform.forward;
-            
+            playerTransform.position += (-1) * movement.Gravity * 0.2f * playerTransform.up;
+
             //var forwardVector = movement.Speed * Time.fixedDeltaTime * 3f * playerTransform.forward;
             //playerRigidbody.velocity = forwardVector;
         }
@@ -259,6 +260,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
             inputPlayer.GetInput();
             statLoaderPack.LoadStatsMaster();
             fuelPack.MasterFuelPack();
+            gravityPack.GravityPackMaster();
             TestMove();
             MasterTurnTest();
             MasterMoveTest();
@@ -410,6 +412,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
             [Header("Gravity")] public float Gravity;
 
+            [Header("Grounded")] public GameObject currentGround;
+
             [Header("MovementStates")] public bool Grounded;
             public MaxSpeedState MaxSpeedState = MaxSpeedState.Cruising;
             public TranslationStates TranslationState = TranslationStates.Stationary;
@@ -427,7 +431,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                                             + $"{Environment.NewLine}DriftTimer: {DriftTimer}"
                                             + $"{Environment.NewLine}DriftState: {DriftState}"
                                             + $"{Environment.NewLine}CorneringState: {CorneringState}"
-                                            + $"{Environment.NewLine}TurnRate: {Turning}";
+                                            + $"{Environment.NewLine}TurnRate: {Turning}"
+                                            + $"{Environment.NewLine}Grounded: {Grounded}"
+                                            + $"{Environment.NewLine}Gravity: {Gravity}";
                 return str;
             }
         }
