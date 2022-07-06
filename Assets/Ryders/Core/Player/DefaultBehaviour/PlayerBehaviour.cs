@@ -56,6 +56,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public Transform playerTransform;
         public Rigidbody playerRigidbody;
+        public Transform rotationAnchor;
 
         [Header("Input")] public PlayerSignifier playerSignifier;
         [SerializeReference] public MasterInput masterInput;
@@ -104,6 +105,9 @@ namespace Ryders.Core.Player.DefaultBehaviour
             
             // TRANSFORM
             playerTransform = GetComponent<Transform>();
+            
+            // ROTATION ANCHOR
+            rotationAnchor.SetParent(null);
 
             // STAT CONTAINERS
             if(TryGetComponent<SpeedStats>(out var speedStatsOut))
@@ -235,12 +239,13 @@ namespace Ryders.Core.Player.DefaultBehaviour
             if (movement.CorneringState is (CorneringStates.CorneringL or CorneringStates.CorneringR))
             {
                 Debug.Log("Entered method");
-                playerTransform.Rotate(0, movement.Turning, 0, Space.Self);
+                // playerTransform.Rotate(0, movement.Turning, 0, Space.Self);
+                rotationAnchor.Rotate(0, movement.Turning, 0, Space.Self);
                 return;
             }
             if (movement.DriftState is DriftStates.DriftingL or DriftStates.DriftingR)
             {
-                playerTransform.Rotate(0, movement.DriftTurning, 0, Space.Self);
+                rotationAnchor.Rotate(0, movement.DriftTurning, 0, Space.Self);
                 return;
             }
             //playerRigidbody.MoveRotation(playerTransform.rotation);
@@ -249,7 +254,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         public virtual void MasterMoveTest()
         {
             playerTransform.position += Formula.SpeedToRidersSpeed(movement.Speed) * playerTransform.forward;
-            playerTransform.position += (-1) * movement.Gravity * 0.2f * playerTransform.up;
+            playerTransform.position += movement.Gravity * 0.5f * Vector3.down;
 
             //var forwardVector = movement.Speed * Time.fixedDeltaTime * 3f * playerTransform.forward;
             //playerRigidbody.velocity = forwardVector;
@@ -411,6 +416,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             public float JumpAccelleration;
 
             [Header("Gravity")] public float Gravity;
+            public float NormalForce;
 
             [Header("Grounded")] public GameObject currentGround;
 
