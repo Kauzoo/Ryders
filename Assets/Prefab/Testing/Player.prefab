@@ -579,6 +579,7 @@ GameObject:
   - component: {fileID: 5951800588325241419}
   - component: {fileID: 5951800588325241418}
   - component: {fileID: 5951800588325241417}
+  - component: {fileID: 1541404427899254551}
   m_Layer: 0
   m_Name: PlayerMainCamera
   m_TagString: Player
@@ -594,7 +595,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5951800588325241413}
   m_LocalRotation: {x: 0.02085516, y: 0, z: 0, w: 0.9997825}
-  m_LocalPosition: {x: 0.1, y: 1.07, z: -7.41}
+  m_LocalPosition: {x: 0, y: 0.51, z: -3.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -776,6 +777,19 @@ MonoBehaviour:
       enableFptlForForwardOpaque: 0
       enableBigTilePrepass: 0
       isFptlEnabled: 0
+--- !u!114 &1541404427899254551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5951800588325241413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7156f83690e4ddda67d0c7e046a61ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTransform: {fileID: 5951800586870077055}
 --- !u!1 &6841293950386279644
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,6 +956,7 @@ GameObject:
   - component: {fileID: 3640254986515431080}
   - component: {fileID: 5535078994545664748}
   - component: {fileID: 7911150471114462111}
+  - component: {fileID: 3541447755683133226}
   m_Layer: 0
   m_Name: VisualPlayer
   m_TagString: Untagged
@@ -1015,6 +1030,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3541447755683133226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8963428219530311039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10b5a7eb657346dca72266da3dbd78d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTransform: {fileID: 5951800586870077055}
 --- !u!1001 &7011234890734867346
 PrefabInstance:
   m_ObjectHideFlags: 0
