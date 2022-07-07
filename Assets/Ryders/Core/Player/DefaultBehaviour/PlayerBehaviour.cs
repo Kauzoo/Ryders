@@ -253,6 +253,8 @@ namespace Ryders.Core.Player.DefaultBehaviour
             
         public virtual void MasterMoveTest()
         {
+            Debug.Log("Speed: " + movement.Speed);
+            Debug.Log("Coverted Speed: " + Formula.SpeedToRidersSpeed(movement.Speed));
             playerTransform.position += Formula.SpeedToRidersSpeed(movement.Speed) * playerTransform.forward;
             playerTransform.position += movement.Gravity * 0.5f * Vector3.down;
 

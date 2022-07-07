@@ -163,8 +163,14 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO Add other Accelerations and Decelerations
             // TODO Make sure Standards only accelerate / decelerate to MaxSpeed
             SetMaxSpeed();
-            _playerBehaviour.movement.Speed += StandardAcceleration() + StandardDeceleration() +
-                                               TurnSpeedLoss() + additiveSpeedSingleExternal;
+            var standardAccel = StandardAcceleration();
+            var standardDecel = StandardDeceleration();
+            var turnSpeedLoss = TurnSpeedLoss();
+            Debug.Log("StandardAccel: " + standardAccel);
+            Debug.Log("StandardDecel: " + standardDecel);
+            Debug.Log("TurnSpeedLoss: " + turnSpeedLoss);
+            _playerBehaviour.movement.Speed += standardAccel + standardDecel +
+                                               turnSpeedLoss + additiveSpeedSingleExternal;
         }
 
         protected virtual float StandardAcceleration()
