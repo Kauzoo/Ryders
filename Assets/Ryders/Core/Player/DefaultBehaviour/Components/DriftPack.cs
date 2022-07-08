@@ -11,7 +11,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     /// and DriftTimer (including applying SpeedBoost / BreakDeceleration), but does not handle any of the Cornering
     /// behaviour associated with drifting
     /// </summary>
-    public abstract class DriftPack : MonoBehaviour
+    public abstract class DriftPack : RydersPlayerEventPublisher, IRydersPlayerComponent
     {
         /*
             List of things that should end DriftState
@@ -31,26 +31,40 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         // how much you can turn. Higher = turn less).
         
         private const float DriftInputThreshold = 0;
-        public PlayerBehaviour playerBehaviour;
+        [SerializeReference] protected PlayerBehaviour _playerBehaviour;
 
         private void Start()
         {
-            playerBehaviour = GetComponent<PlayerBehaviour>();
+            Setup();
+        }
+        
+        public virtual void Setup()
+        {
+            if (TryGetComponent<PlayerBehaviour>(out var pb))
+                _playerBehaviour = pb;
+            else
+                Debug.LogError("Missing PlayerBehaviour", this);
+        }
+
+        public virtual void Master()
+        {
+            MasterDrift();
+            MasterDriftTurn();
         }
 
         /// <summary>
         /// Call this method for all Drift or Break related things
         /// Determines everything related to entering / staying in / exiting Drift / Break-State
         /// </summary>
-        public virtual void MasterDrift()
+        protected virtual void MasterDrift()
         {
             // TODO this logic can probably be refined
             // Can not Drift while Airborne
-            if (!playerBehaviour.movement.Grounded)
+            if (!_playerBehaviour.movement.Grounded)
             {
                 // Exit Drift / Break State and set DriftTimer to 0
-                playerBehaviour.movement.DriftState = DriftStates.None;
-                playerBehaviour.movement.DriftTimer = 0;
+                _playerBehaviour.movement.DriftState = DriftStates.None;
+                _playerBehaviour.movement.DriftTimer = 0;
                 return;
             }
             // TODO HardBonks
@@ -61,13 +75,13 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO CleanUp Logic
             // Behaviour primarily depends on if Drift is held or not
             // Entering / Staying in Drift or Break (if DriftInput is held)
-            if (playerBehaviour.inputPlayer.GetInputContainer().Drift)
+            if (_playerBehaviour.inputPlayer.GetInputContainer().Drift)
             {
                 // ENTER_DRIFT: If Axis is greater 0 Drift to the right 
                 // CONTINUE_DRIFT: If in DriftRight State and still holding Drift, continue DriftRight
-                if ((playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis > DriftInputThreshold ||
-                    playerBehaviour.movement.DriftState == DriftStates.DriftingR) &&
-                    playerBehaviour.movement.DriftState is not (DriftStates.Break or DriftStates.DriftingL))
+                if ((_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis > DriftInputThreshold ||
+                    _playerBehaviour.movement.DriftState == DriftStates.DriftingR) &&
+                    _playerBehaviour.movement.DriftState is not (DriftStates.Break or DriftStates.DriftingL))
                 {
                     DriftRight();
                     return;
@@ -75,17 +89,17 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
                 // ENTER_DRIFT: If Axis less than DriftInputThreshold Drift to the left
                 // CONTINUE_DRIFT: If in DriftLeft State and still holding Drift, continue DriftLeft
-                if ((playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis < DriftInputThreshold * (-1) ||
-                    playerBehaviour.movement.DriftState == DriftStates.DriftingL) &&
-                    playerBehaviour.movement.DriftState is not (DriftStates.Break or DriftStates.DriftingR))
+                if ((_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis < DriftInputThreshold * (-1) ||
+                    _playerBehaviour.movement.DriftState == DriftStates.DriftingL) &&
+                    _playerBehaviour.movement.DriftState is not (DriftStates.Break or DriftStates.DriftingR))
                 {
                     DriftLeft();
                     return;
                 }
 
                 // Otherwise Break
-                if (MathF.Abs(playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis) <= DriftInputThreshold ||
-                    playerBehaviour.movement.DriftState == DriftStates.Break)
+                if (MathF.Abs(_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis) <= DriftInputThreshold ||
+                    _playerBehaviour.movement.DriftState == DriftStates.Break)
                 {
                     Break();
                     return;
@@ -96,7 +110,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // EXIT_DRIFT (if DriftInput is released)
             else
             {
-                switch (playerBehaviour.movement.DriftState)
+                switch (_playerBehaviour.movement.DriftState)
                 {
                     case DriftStates.DriftingL or DriftStates.DriftingR:
                         ReleaseDrift();
@@ -105,7 +119,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                         ReleaseBreak();
                         return;
                     default:
-                        playerBehaviour.movement.DriftState = DriftStates.None;
+                        _playerBehaviour.movement.DriftState = DriftStates.None;
                         break;
                 }
             }
@@ -118,8 +132,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// </summary>
         protected virtual void DriftLeft()
         {
-            playerBehaviour.movement.DriftState = DriftStates.DriftingL;
-            playerBehaviour.movement.DriftTimer++;
+            _playerBehaviour.movement.DriftState = DriftStates.DriftingL;
+            _playerBehaviour.movement.DriftTimer++;
         }
 
         /// <summary>
@@ -127,8 +141,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// </summary>
         protected virtual void DriftRight()
         {
-            playerBehaviour.movement.DriftState = DriftStates.DriftingR;
-            playerBehaviour.movement.DriftTimer++;
+            _playerBehaviour.movement.DriftState = DriftStates.DriftingR;
+            _playerBehaviour.movement.DriftTimer++;
         }
 
         /// <summary>
@@ -137,14 +151,14 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// </summary>
         protected virtual void ReleaseDrift()
         {
-            playerBehaviour.movement.DriftState = DriftStates.None;
+            _playerBehaviour.movement.DriftState = DriftStates.None;
             // If DriftTimer >= DriftDashFrames the DriftDash has been sufficiently charged
-            if (playerBehaviour.speedStats.DriftDashFrames <= playerBehaviour.movement.DriftTimer)
+            if (_playerBehaviour.speedStats.DriftDashFrames <= _playerBehaviour.movement.DriftTimer)
             {
                 DriftDash();
             }
             // Reset DriftTimer
-            playerBehaviour.movement.DriftTimer = 0;
+            _playerBehaviour.movement.DriftTimer = 0;
         }
 
         // TODO Implement a static function style version
@@ -157,13 +171,14 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             // TODO speed probably shouldn't be modified directly
             // Can not gain any Speed if already moving faster than DriftCap (but also wont lose Speed)
-            if (playerBehaviour.movement.Speed < playerBehaviour.speedStats.DriftCap)
+            if (_playerBehaviour.movement.Speed < _playerBehaviour.speedStats.DriftCap)
             {
-                playerBehaviour.movement.Speed += playerBehaviour.speedStats.DriftDashSpeed;
+                RaiseSpeedBoostEvent(EventArgs.Empty);
+                _playerBehaviour.movement.Speed += _playerBehaviour.speedStats.DriftDashSpeed;
                 // Can not gain Speed beyond the DriftCap
-                if (playerBehaviour.movement.Speed > playerBehaviour.speedStats.DriftCap)
+                if (_playerBehaviour.movement.Speed > _playerBehaviour.speedStats.DriftCap)
                 {
-                    playerBehaviour.movement.Speed = playerBehaviour.speedStats.DriftCap;
+                    _playerBehaviour.movement.Speed = _playerBehaviour.speedStats.DriftCap;
                 }
             }
         }
@@ -178,11 +193,11 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             // TODO potential interactions with automatic accel
             // TODO special interaction for boost while breaking
-            playerBehaviour.movement.DriftState = DriftStates.Break;
+            _playerBehaviour.movement.DriftState = DriftStates.Break;
             //playerBehaviour.movement.Speed -= playerBehaviour.speedStats.BreakeDecelleration;
-            if (playerBehaviour.movement.Speed < 0)
+            if (_playerBehaviour.movement.Speed < 0)
             {
-                playerBehaviour.movement.Speed = 0;
+                _playerBehaviour.movement.Speed = 0;
             }
         }
 
@@ -191,7 +206,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// </summary>
         protected virtual void ReleaseBreak()
         {
-            playerBehaviour.movement.DriftState = DriftStates.None;
+            _playerBehaviour.movement.DriftState = DriftStates.None;
         }
 
         #endregion
@@ -200,9 +215,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// <summary>
         /// 
         /// </summary>
-        public virtual void MasterDriftTurn()
+        protected virtual void MasterDriftTurn()
         {
-            switch (playerBehaviour.movement.DriftState)
+            switch (_playerBehaviour.movement.DriftState)
             {
                 case DriftStates.DriftingL:
                     DriftTurnLeft();
@@ -220,34 +235,34 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         protected virtual void DriftTurnLeft()
         {
             // STEP 0: Calculate new additive offset
-            var driftTurnOffset = playerBehaviour.turnStats.DriftTurnrate *
-                                  playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
+            var driftTurnOffset = _playerBehaviour.turnStats.DriftTurnrate *
+                                  _playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
             // STEP 1: Add offset
-            playerBehaviour.movement.DriftTurning += driftTurnOffset;
+            _playerBehaviour.movement.DriftTurning += driftTurnOffset;
             // STEP 2: Makes abs for Min / Max evaluations
-            var driftTurningAbs = Mathf.Abs(playerBehaviour.movement.DriftTurning);
+            var driftTurningAbs = Mathf.Abs(_playerBehaviour.movement.DriftTurning);
             // STEP 3: Make sure the absolute value of the DriftTurning doesn't exceed the DriftTurnRateMax
             driftTurningAbs = Mathf.Min(driftTurningAbs,
-                playerBehaviour.turnStats.DriftTurnrateMax);
+                _playerBehaviour.turnStats.DriftTurnrateMax);
             // STEP 4: Make sure the absolute value of the DriftTurning doesn't underflow the DriftTurnRateMin
             // STEP 5: Multiply with (-1) again because TurningLeft
-            playerBehaviour.movement.DriftTurning = Mathf.Max(driftTurningAbs,
-                playerBehaviour.turnStats.DriftTurnrateMin) * (-1);
+            _playerBehaviour.movement.DriftTurning = Mathf.Max(driftTurningAbs,
+                _playerBehaviour.turnStats.DriftTurnrateMin) * (-1);
         }
 
         protected virtual void DriftTurnRight()
         {
             // STEP 0: Calculate new additive offset
-            var driftTurnOffset = playerBehaviour.turnStats.DriftTurnrate *
-                                  playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
+            var driftTurnOffset = _playerBehaviour.turnStats.DriftTurnrate *
+                                  _playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis;
             // STEP 1: Add offset
-            playerBehaviour.movement.DriftTurning += driftTurnOffset;
+            _playerBehaviour.movement.DriftTurning += driftTurnOffset;
             // STEP 2: Make sure the absolute value of the DriftTurning doesn't exceed the DriftTurnRateMax
-            playerBehaviour.movement.DriftTurning = Mathf.Min(playerBehaviour.movement.DriftTurning,
-                playerBehaviour.turnStats.DriftTurnrateMax);
+            _playerBehaviour.movement.DriftTurning = Mathf.Min(_playerBehaviour.movement.DriftTurning,
+                _playerBehaviour.turnStats.DriftTurnrateMax);
             // STEP 3: Make sure the absolute value of the DriftTurning doesn't underflow the DriftTurnRateMin
-            playerBehaviour.movement.DriftTurning = Mathf.Max(playerBehaviour.movement.DriftTurning,
-                playerBehaviour.turnStats.DriftTurnrateMin);
+            _playerBehaviour.movement.DriftTurning = Mathf.Max(_playerBehaviour.movement.DriftTurning,
+                _playerBehaviour.turnStats.DriftTurnrateMin);
         }
         #endregion
     }

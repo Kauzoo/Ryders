@@ -4,29 +4,30 @@ using UnityEngine;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Visuals
 {
-    public class PlayerCameraBehaviour : MonoBehaviour, IRydersPlayerEvents
+    public class PlayerCameraBehaviour : MonoBehaviour, IRydersPlayerComponent, IRydersPlayerEvents
     {
         public Transform playerTransform;
         [SerializeReference] protected PlayerBehaviour _playerBehaviour;
         [SerializeReference] protected BoostPack _boostPack;
+        [SerializeReference] protected DriftPack _driftPack;
 
         private Vector3 offset;
+        private IRydersPlayerComponent _rydersPlayerComponentImplementation;
 
-        private void OnEnable()
+        private void Awake()
         {
-            
+            Setup();
         }
-
-        private void OnDisable()
-        {
-            
-        }
-        
 
         private void Start()
         {
             offset = transform.localPosition;
             transform.SetParent(null);
+        }
+
+        private void OnDisable()
+        {
+            (this as IRydersPlayerEvents).Unsubscribe(_boostPack);
         }
 
         private void FixedUpdate()
@@ -39,16 +40,32 @@ namespace Ryders.Core.Player.DefaultBehaviour.Visuals
             transform.rotation = Quaternion.Lerp(oldRot, newRot, 0.4f);
         }
 
-        protected virtual void Setup()
+        public virtual void Setup()
         {
-            _playerBehaviour ??= (GetComponentInParent<PlayerBehaviour>() ?? throw new MissingReferenceException());
-            _boostPack ??= (_playerBehaviour.boostPack ?? throw new MissingComponentException());
-            IRydersPlayerEvents.Subscribe(_boostPack, this);
+            if(_playerBehaviour == null)
+                _playerBehaviour = GetComponentInParent<PlayerBehaviour>() != null
+                    ? GetComponentInParent<PlayerBehaviour>()
+                    : throw new MissingReferenceException();
+            if(_boostPack == null)
+                _boostPack = (_playerBehaviour.boostPack != null)
+                    ? _playerBehaviour.boostPack
+                    : throw new MissingComponentException();
+            if (_driftPack == null)
+                _driftPack = (_playerBehaviour.boostPack != null)
+                    ? _playerBehaviour.driftPack
+                    : throw new MissingReferenceException();
+            (this as IRydersPlayerEvents).Subscribe(_boostPack);
+            (this as IRydersPlayerEvents).Subscribe(_driftPack);
         }
 
-        void IRydersPlayerEvents.OnSpeedBoost(object sender, EventArgs e)
+        public virtual void Master()
         {
-            Debug.Log("it works");
+            throw new NotImplementedException();
+        }
+
+        public virtual void OnSpeedBoost(object sender, EventArgs e)
+        {
+            Debug.LogWarning("Event received");
         }
     }
 }

@@ -791,8 +791,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 5951800586870077055}
-  _playerBehaviour: {fileID: 0}
-  _accelerationPack: {fileID: 0}
+  _playerBehaviour: {fileID: 5951800586870077050}
+  _boostPack: {fileID: 5951800586870076996}
+  _driftPack: {fileID: 5951800586870076997}
 --- !u!1 &6841293950386279644
 GameObject:
   m_ObjectHideFlags: 0

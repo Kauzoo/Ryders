@@ -211,14 +211,12 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public virtual void TestBoost()
         {
-            boostPack.DetermineBoostState();
-            boostPack.Boost();
+            boostPack.Master();
         }
 
         public virtual void TestDrift()
         {
-            driftPack.MasterDrift();
-            driftPack.MasterDriftTurn();
+            driftPack.Master();
         }
 
         public virtual void TestCornering()

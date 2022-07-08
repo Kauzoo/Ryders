@@ -1,14 +1,21 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Ryders.Core.Player
 {
     public interface IRydersPlayerEvents
     {
-        public void Subscribe(IRydersPlayerComponent publisher) => publisher.SpeedBoostEvent += OnSpeedBoost;
+        void Subscribe(IRydersPlayerEventPublisher publisher) => publisher.SpeedBoostEvent += OnSpeedBoost;
+        void Unsubscribe(IRydersPlayerEventPublisher publisher) => publisher.SpeedBoostEvent -= OnSpeedBoost;
 
-        public static void Subscribe(IRydersPlayerComponent publisher, IRydersPlayerEvents subscriber) =>
+        public static void Subscribe(IRydersPlayerEventPublisher publisher, IRydersPlayerEvents subscriber) =>
             publisher.SpeedBoostEvent += subscriber.OnSpeedBoost;
+        
+        public static void Unsubscribe(IRydersPlayerEventPublisher publisher, IRydersPlayerEvents subscriber) =>
+            publisher.SpeedBoostEvent -= subscriber.OnSpeedBoost;
 
-        protected virtual void OnSpeedBoost(object sender, EventArgs e) { }
+        void OnSpeedBoost(object sender, EventArgs e) => Debug.LogWarning("OnSpeedBoost was not overwritten", this as UnityEngine.Object);
+
+        void OnDrift(object sender, EventArgs e) => Debug.LogWarning("OnDrift was not overwritten", this as UnityEngine.Object);
     }
 }

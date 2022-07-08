@@ -20,7 +20,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     /// The non-static methods that can be overridden if needed all contain a default Implementation
     /// that uses their static Variant
     /// </summary>
-    public abstract class AccelerationPack : RydersPlayerComponent
+    public abstract class AccelerationPack : MonoBehaviour, IRydersPlayerComponent
     {
         [SerializeReference] protected PlayerBehaviour _playerBehaviour;
 
@@ -269,6 +269,16 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             // TODO Implement OffRoad
             return float.PositiveInfinity;
+        }
+
+        public virtual void Setup()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void Master()
+        {
+            throw new NotImplementedException();
         }
     }
 }

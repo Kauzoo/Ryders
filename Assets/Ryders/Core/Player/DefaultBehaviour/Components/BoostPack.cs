@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
@@ -15,13 +16,24 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     /// A Boost is Reset when the Timer is reset to 0, but IMPORTANT, whenever the BoostTimer is reset to 0
     /// the MaxSpeed is also reset it CruisingValue 
     /// </summary>
-    public abstract class BoostPack : RydersPlayerComponent
+    public abstract class BoostPack : RydersPlayerEventPublisher, IRydersPlayerComponent
     {
         public PlayerBehaviour playerBehaviour;
 
         public void Start()
         {
+            Setup();
+        }
+        
+        public virtual void Setup()
+        {
             playerBehaviour = GetComponent<PlayerBehaviour>();
+        }
+
+        public virtual void Master()
+        {
+            DetermineBoostState();
+            Boost();
         }
 
         /// <summary>
@@ -31,12 +43,13 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// BoostState. It's not responsible for exiting BoostState again.
         /// Behaviour depends on BoostInput, TranslationState as well as DriftState 
         /// </summary>
-        public virtual void Boost()
+        protected virtual void Boost()
         {
             if (playerBehaviour.inputPlayer.GetInputContainer().Boost &&
                 playerBehaviour.movement.MaxSpeedState != MaxSpeedState.Boosting)
             {
                 RaiseSpeedBoostEvent(EventArgs.Empty);
+                Debug.LogWarning("After raise event");
                 playerBehaviour.movement.MaxSpeedState = MaxSpeedState.Boosting;
                 //playerBehaviour.movement.MaxSpeed = playerBehaviour.speedStats.BoostSpeed;
                 playerBehaviour.movement.Speed = playerBehaviour.speedStats.BoostSpeed;
@@ -48,12 +61,18 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             }
         }
 
+        public override void RaiseSpeedBoostEvent(EventArgs e)
+        {
+            Debug.LogWarning("in overwriten raise method");
+            base.RaiseSpeedBoostEvent(e);
+        }
+
         /// <summary>
         /// Responsible for Resetting the BoostTimer to 0 / Counting it down and resetting the MaxSpeed to it's cruising
         /// Speed value when the BoostTimer is reset
         /// Thereby basically responsible for Resetting Boost
         /// </summary>
-        public virtual void DetermineBoostState()
+        protected virtual void DetermineBoostState()
         {
             // TODO Implement other things that should reset the BoostTimer to 0. Look into Bonks
             // TODO Bonks

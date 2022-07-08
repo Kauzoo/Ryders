@@ -8,8 +8,12 @@ namespace Ryders.Core.Player
         public void Setup();
         public void Master();
 
-        public event EventHandler SpeedBoostEvent;
+        void OnEnter()
+        {
+        }
 
-        public void RaiseSpeedBoostEvent(EventArgs e);
+        void OnExit()
+        {
+        }
     }
 }
