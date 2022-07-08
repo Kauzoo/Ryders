@@ -20,9 +20,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     /// The non-static methods that can be overridden if needed all contain a default Implementation
     /// that uses their static Variant
     /// </summary>
-    public abstract class AccelerationPack : MonoBehaviour
+    public abstract class AccelerationPack : RydersPlayerComponent
     {
-        private PlayerBehaviour _playerBehaviour;
+        [SerializeReference] protected PlayerBehaviour _playerBehaviour;
+
         private const int JumpChargeTargetSpeed = 80;
         private const int CorneringTargetSpeed = 130;
 
