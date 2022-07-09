@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEditor.Rendering;
+using UnityEngine;
 
 namespace Ryders.Core.Player
 {
@@ -8,12 +9,8 @@ namespace Ryders.Core.Player
         public void Setup();
         public void Master();
 
-        void OnEnter()
-        {
-        }
+        void OnEnter() => Debug.LogWarning($"@{this}: OnEnter is used but not overwritten");
 
-        void OnExit()
-        {
-        }
+        void OnExit() =>  Debug.LogWarning($"@{this}: OnExit is used but not overwritten");
     }
 }

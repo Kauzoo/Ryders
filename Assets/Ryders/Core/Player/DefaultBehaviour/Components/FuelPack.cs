@@ -4,34 +4,44 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
+using Nyr.UnityDev;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
     /// <summary>
     /// Handles all things level, rings and fuel
     /// </summary>
-    public abstract class FuelPack : MonoBehaviour
+    public abstract class FuelPack : MonoBehaviour, IRydersPlayerComponent
     {
         // TODO Implement FuelPack
-        protected PlayerBehaviour _playerBehaviour;
+        [SerializeReference] protected PlayerBehaviour _playerBehaviour;
 
         private void Start()
         {
-            _playerBehaviour = GetComponent<PlayerBehaviour>();
         }
 
-        public virtual void MasterFuelPack()
+        public virtual void Setup()
+        {
+            GetComponentSafe.GetComponent(this, ref _playerBehaviour);
+            _playerBehaviour = TryGetComponent<PlayerBehaviour>(out var playerBehaviour)
+                ? playerBehaviour
+                : throw new MissingReferenceException();
+        }
+
+        public virtual void Master()
         {
             DetermineLevel();
         }
-
+        
         #region Rings
 
         public virtual void AddRing() =>
-            _playerBehaviour.fuel.Rings = Math.Min(_playerBehaviour.fuel.Rings + 1, _playerBehaviour.fuelStats.MaxRings);
+            _playerBehaviour.fuel.Rings =
+                Math.Min(_playerBehaviour.fuel.Rings + 1, _playerBehaviour.fuelStats.MaxRings);
 
         public virtual void RemoveRing() =>
-            _playerBehaviour.fuel.Rings = Math.Max(_playerBehaviour.fuel.Rings - 1, _playerBehaviour.fuelStats.MinRings);
+            _playerBehaviour.fuel.Rings =
+                Math.Max(_playerBehaviour.fuel.Rings - 1, _playerBehaviour.fuelStats.MinRings);
 
         public virtual void AddRings(int rings) =>
             _playerBehaviour.fuel.Rings =
@@ -74,7 +84,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         #region Fuel
 
-        
         #endregion
     }
 }

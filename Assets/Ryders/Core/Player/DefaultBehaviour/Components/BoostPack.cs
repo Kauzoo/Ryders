@@ -49,7 +49,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 playerBehaviour.movement.MaxSpeedState != MaxSpeedState.Boosting)
             {
                 RaiseSpeedBoostEvent(EventArgs.Empty);
-                Debug.LogWarning("After raise event");
                 playerBehaviour.movement.MaxSpeedState = MaxSpeedState.Boosting;
                 //playerBehaviour.movement.MaxSpeed = playerBehaviour.speedStats.BoostSpeed;
                 playerBehaviour.movement.Speed = playerBehaviour.speedStats.BoostSpeed;
@@ -60,13 +59,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 }
             }
         }
-
-        public override void RaiseSpeedBoostEvent(EventArgs e)
-        {
-            Debug.LogWarning("in overwriten raise method");
-            base.RaiseSpeedBoostEvent(e);
-        }
-
+        
         /// <summary>
         /// Responsible for Resetting the BoostTimer to 0 / Counting it down and resetting the MaxSpeed to it's cruising
         /// Speed value when the BoostTimer is reset

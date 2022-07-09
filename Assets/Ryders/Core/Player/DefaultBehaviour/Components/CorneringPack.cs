@@ -6,7 +6,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
      *  Notes for Cornering:
      *  
      */
-    public abstract class CorneringPack : MonoBehaviour
+    public abstract class CorneringPack : MonoBehaviour, IRydersPlayerComponent
     {
         // TODO Look into SpeedHandlingMultiplier and TurnLowSpeedMultiplier
         // TODO All of this is ugly and needs to be reworked completely
@@ -17,7 +17,15 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             _playerBehaviour = GetComponent<PlayerBehaviour>();
         }
 
-        public virtual void MasterCornering()
+        public virtual void Setup()
+        {
+            if (TryGetComponent<PlayerBehaviour>(out var playerBehaviour))
+            {
+                
+            }
+        }
+
+        public virtual void Master()
         {
             DetermineCorneringState();
             CalculateTurning();

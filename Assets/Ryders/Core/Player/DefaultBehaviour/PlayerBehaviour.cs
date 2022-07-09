@@ -221,7 +221,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         public virtual void TestCornering()
         {
-            corneringPack.MasterCornering();
+            corneringPack.Master();
         }
 
         public virtual void TestMove()
@@ -264,8 +264,8 @@ namespace Ryders.Core.Player.DefaultBehaviour
         {
             inputPlayer.GetInput();
             statLoaderPack.LoadStatsMaster();
-            fuelPack.MasterFuelPack();
-            gravityPack.GravityPackMaster();
+            fuelPack.Master();
+            gravityPack.Master();
             TestMove();
             MasterTurnTest();
             MasterMoveTest();
