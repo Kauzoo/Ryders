@@ -6,6 +6,8 @@ namespace Ryders.Core.Player
     public abstract class RydersPlayerEventPublisher : MonoBehaviour, IRydersPlayerEventPublisher
     {
         public event EventHandler SpeedBoostEvent;
+        public event EventHandler LevelUpEvent;
+        public event EventHandler LevelDownEvent;
 
         public virtual void RaiseSpeedBoostEvent(EventArgs e)
         {

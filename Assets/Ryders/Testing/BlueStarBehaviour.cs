@@ -11,7 +11,7 @@ namespace Ryders.Core.Player
     public class BlueStarBehaviour : PlayerBehaviour
     {
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             Application.targetFrameRate = 120;
             base.Setup();
@@ -20,7 +20,6 @@ namespace Ryders.Core.Player
         
         private void FixedUpdate()
         {
-            
             base.FixedUpdateTest();   
         }
 

@@ -1,62 +1,59 @@
 ﻿using System;
 using Ryders.Core.Player.DefaultBehaviour.Components;
 using UnityEngine;
-using Nyr.UnityDev;
+using Nyr.UnityDev.Component;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Visuals
 {
+    [RequireComponent(typeof(Camera))]
+    [RequireComponent(typeof(Transform))]
     public class PlayerCameraBehaviour : MonoBehaviour, IRydersPlayerComponent, IRydersPlayerEvents
     {
-        public Transform playerTransform;
-        [SerializeReference] protected PlayerBehaviour _playerBehaviour;
-        [SerializeReference] protected BoostPack _boostPack;
-        [SerializeReference] protected DriftPack _driftPack;
+        protected Transform cameraTransform;
+        protected Camera cam;
+        // EXTERNAL
+        protected Transform playerTransform;
+        protected PlayerBehaviour playerBehaviour;
+        protected BoostPack boostPack;
+        protected DriftPack driftPack;
 
-        private Vector3 offset;
-        private IRydersPlayerComponent _rydersPlayerComponentImplementation;
+        private Vector3 _offset;
 
         private void Awake()
         {
             Setup();
         }
-
-        private void Start()
-        {
-            offset = transform.localPosition;
-            transform.SetParent(null);
-        }
-
+        
         private void OnDisable()
         {
-            (this as IRydersPlayerEvents).Unsubscribe(_boostPack);
+            (this as IRydersPlayerEvents).Unsubscribe(boostPack);
+            (this as IRydersPlayerEvents).Unsubscribe(driftPack);
         }
 
         private void FixedUpdate()
         {
-            transform.position = Vector3.Lerp(transform.position, playerTransform.TransformPoint(offset), 0.9f);
+            cameraTransform.position = Vector3.Lerp(transform.position, playerTransform.TransformPoint(_offset), 0.9f);
             var oldRot = transform.rotation;
-            transform.LookAt(playerTransform);
-            var newRot = transform.rotation;
-            transform.rotation = oldRot;
-            transform.rotation = Quaternion.Lerp(oldRot, newRot, 0.4f);
+            cameraTransform.LookAt(playerTransform);
+            var rotation = cameraTransform.rotation;
+            var newRot = rotation;
+            rotation = oldRot;
+            rotation = Quaternion.Lerp(oldRot, newRot, 0.4f);
+            cameraTransform.rotation = rotation;
         }
 
         public virtual void Setup()
         {
-            if(_playerBehaviour == null)
-                _playerBehaviour = GetComponentInParent<PlayerBehaviour>() != null
-                    ? GetComponentInParent<PlayerBehaviour>()
-                    : throw new MissingReferenceException();
-            if(_boostPack == null)
-                _boostPack = (_playerBehaviour.boostPack != null)
-                    ? _playerBehaviour.boostPack
-                    : throw new MissingComponentException();
-            if (_driftPack == null)
-                _driftPack = (_playerBehaviour.boostPack != null)
-                    ? _playerBehaviour.driftPack
-                    : throw new MissingReferenceException();
-            (this as IRydersPlayerEvents).Subscribe(_boostPack);
-            (this as IRydersPlayerEvents).Subscribe(_driftPack);
+            cameraTransform = GetComponent<Transform>();
+            cam = GetComponent<Camera>();
+            GetComponentSafe.GetComponentInParent(this, ref playerBehaviour);
+            playerTransform = playerBehaviour.transform;
+            GetComponentSafe.SafeGetComponent(playerBehaviour, ref boostPack);
+            GetComponentSafe.SafeGetComponent(playerBehaviour, ref driftPack);
+            (this as IRydersPlayerEvents).Subscribe(boostPack);
+            (this as IRydersPlayerEvents).Subscribe(driftPack);
+            _offset = transform.localPosition;
+            transform.SetParent(null);
         }
 
         public virtual void Master()

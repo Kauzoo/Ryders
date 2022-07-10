@@ -1,20 +1,14 @@
 
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Ryders.Core.InputManagement;
 using UnityEngine;
 using Ryders.Core.Player.Character;
 using Ryders.Core.Player.ExtremeGear.Movement;
 using Ryders.Core.Player.ExtremeGear;
 using Ryders.Core.Player.DefaultBehaviour.Components;
-using Ryders.Core.Player.DefaultBehaviour;
 using Ryders.Core.Player.DefaultBehaviour.Telemetry;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEditor;
+using static Nyr.UnityDev.Component.GetComponentSafe;
 
 
 namespace Ryders.Core.Player.DefaultBehaviour
@@ -33,6 +27,13 @@ namespace Ryders.Core.Player.DefaultBehaviour
     [RequireComponent(typeof(FuelStats))]
     [RequireComponent(typeof(Movement))]
     [RequireComponent(typeof(Fuel))]
+    [RequireComponent(typeof(GravityPack))]
+    [RequireComponent(typeof(AccelerationPack))]
+    [RequireComponent(typeof(BoostPack))]
+    [RequireComponent(typeof(CorneringPack))]
+    [RequireComponent(typeof(DriftPack))]
+    [RequireComponent(typeof(FuelPack))]
+    [RequireComponent(typeof(StatLoaderPack))]
     // TODO Update RequireComponents
     public abstract partial class PlayerBehaviour : MonoBehaviour
     {
@@ -110,102 +111,64 @@ namespace Ryders.Core.Player.DefaultBehaviour
             rotationAnchor.SetParent(null);
 
             // STAT CONTAINERS
-            if(TryGetComponent<SpeedStats>(out var speedStatsOut))
-                speedStats = speedStatsOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find SpeedStats");
-            if(TryGetComponent<TurnStats>(out var turnStatsOut))
-                turnStats = turnStatsOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find TurnStats");
-            if(TryGetComponent<JumpStats>(out var jumpStatsOut))
-                jumpStats = jumpStatsOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find JumpStats");
-            if(TryGetComponent<FuelStats>(out var fuelStatsOut))
-                fuelStats = fuelStatsOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find FuelStats");
+            SafeGetComponent(this, ref speedStats);
+            SafeGetComponent(this, ref turnStats);
+            SafeGetComponent(this, ref jumpStats);
+            SafeGetComponent(this, ref fuelStats);
             
             // PACKS
-            if(TryGetComponent<AccelerationPack>(out var accelerationPackOut))
-                accelerationPack = accelerationPackOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find AccelerationPack");
-            if(TryGetComponent<StatLoaderPack>(out var statLoaderPackPackOut))
-                statLoaderPack = statLoaderPackPackOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find StatLoaderPack");
-            if(TryGetComponent<GravityPack>(out var gravityPackOut))
-                gravityPack = gravityPackOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find GravityPack");
-            if(TryGetComponent<StateDeterminationPack>(out var stateDeterminationPackOut))
-                stateDeterminationPack = stateDeterminationPackOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find StateDeterminationPack");
-            if(TryGetComponent<JumpPack>(out var jumpPackOut))
-                jumpPack = jumpPackOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find JumpPack");
-            if(TryGetComponent<WallCollisionPack>(out var wallCollisionPackOut))
-                wallCollisionPack = wallCollisionPackOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find WallCollisionPack");
-            if(TryGetComponent<FuelPack>(out var fuelPackOut))
-                fuelPack = fuelPackOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find FuelPack");
-            if (TryGetComponent<DriftPack>(out var driftPackOut))
-                driftPack = driftPackOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find DriftPack");
-            if (TryGetComponent<BoostPack>(out var boostPackOut))
-                boostPack = boostPackOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find BoostPack");
-            if (TryGetComponent<CorneringPack>(out var corneringPackOut))
-                corneringPack = corneringPackOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find CorneringPack");
+            SafeGetComponent(this, ref accelerationPack);
+            SafeGetComponent(this, ref statLoaderPack);
+            SafeGetComponent(this, ref gravityPack);
+            try
+            {
+                SafeGetComponent(this, ref stateDeterminationPack);
+            }
+            catch (MissingReferenceException e)
+            {
+                Debug.LogError(e);
+            }
+            try
+            {
+                SafeGetComponent(this, ref jumpPack);
+            }
+            catch (MissingReferenceException e)
+            {
+                Debug.LogError(e);
+            }
+            try
+            {
+                SafeGetComponent(this, ref wallCollisionPack);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+            SafeGetComponent(this, ref fuelPack);
+            SafeGetComponent(this, ref driftPack);
+            SafeGetComponent(this, ref boostPack);
+            SafeGetComponent(this, ref corneringPack);
             
             // RUNTIME
-            if(TryGetComponent<Movement>(out var movementOut))
-                movement = movementOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find Movement");
-            if(TryGetComponent<Fuel>(out var fuelOut))
-                fuel = fuelOut;
-            else
-                Debug.LogError($"@{this.ToString()}.Setup(): Failed to find Fuel");
+            SafeGetComponent(this, ref movement);
+            SafeGetComponent(this, ref fuel);
 
+            // TODO Rework this along side the entire InputManagement
             masterInput = FindObjectOfType<MasterInput>();
-            Debug.Log("hello");
-            if (!masterInput.Equals(null))
+            if (masterInput != null)
             {
-                if (masterInput.players.Equals(null))
-                {
-                    Debug.Log("Wtf");
-                }
                 if (masterInput.players.TryGetValue(playerSignifier, out var inputPlayerOut))
-                {
                     inputPlayer = inputPlayerOut;
-                    Debug.Log("Was geht");
-                }
                 else
-                {
                     Debug.LogError($"@{this.ToString()}.Setup(): Failed to retrieve InputPlayer");
-                }
             }
             else
-            {
                 Debug.LogError($"@{this.ToString()}.Setup(): Failed to find MastInput Object in Scene");
-            }
         }
 
         public virtual void TestAcceleration()
         {
-            accelerationPack.MasterAcceleration();
+            accelerationPack.Master();
             accelerationPack.OnExitPack();
         }
 
@@ -236,8 +199,6 @@ namespace Ryders.Core.Player.DefaultBehaviour
         {
             if (movement.CorneringState is (CorneringStates.CorneringL or CorneringStates.CorneringR))
             {
-                Debug.Log("Entered method");
-                // playerTransform.Rotate(0, movement.Turning, 0, Space.Self);
                 rotationAnchor.Rotate(0, movement.Turning, 0, Space.Self);
                 return;
             }
@@ -246,18 +207,12 @@ namespace Ryders.Core.Player.DefaultBehaviour
                 rotationAnchor.Rotate(0, movement.DriftTurning, 0, Space.Self);
                 return;
             }
-            //playerRigidbody.MoveRotation(playerTransform.rotation);
         }
             
         public virtual void MasterMoveTest()
         {
-            Debug.Log("Speed: " + movement.Speed);
-            Debug.Log("Coverted Speed: " + Formula.SpeedToRidersSpeed(movement.Speed));
             playerTransform.position += Formula.SpeedToRidersSpeed(movement.Speed) * playerTransform.forward;
             playerTransform.position += movement.Gravity * 0.5f * Vector3.down;
-
-            //var forwardVector = movement.Speed * Time.fixedDeltaTime * 3f * playerTransform.forward;
-            //playerRigidbody.velocity = forwardVector;
         }
 
         public virtual void FixedUpdateTest()

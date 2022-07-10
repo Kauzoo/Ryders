@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Nyr.UnityDev.Component;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
@@ -16,9 +17,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     /// A Boost is Reset when the Timer is reset to 0, but IMPORTANT, whenever the BoostTimer is reset to 0
     /// the MaxSpeed is also reset it CruisingValue 
     /// </summary>
+    [RequireComponent(typeof(PlayerBehaviour))]
     public abstract class BoostPack : RydersPlayerEventPublisher, IRydersPlayerComponent
     {
-        public PlayerBehaviour playerBehaviour;
+        protected PlayerBehaviour playerBehaviour;
 
         public void Start()
         {
@@ -27,7 +29,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         
         public virtual void Setup()
         {
-            playerBehaviour = GetComponent<PlayerBehaviour>();
+            GetComponentSafe.SafeGetComponent(this, ref playerBehaviour);
         }
 
         public virtual void Master()

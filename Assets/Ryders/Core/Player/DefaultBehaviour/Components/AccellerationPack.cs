@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.PlayerLoop;
+using Nyr.UnityDev.Component;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
@@ -20,9 +21,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     /// The non-static methods that can be overridden if needed all contain a default Implementation
     /// that uses their static Variant
     /// </summary>
+    [RequireComponent(typeof(PlayerBehaviour))]
     public abstract class AccelerationPack : MonoBehaviour, IRydersPlayerComponent
     {
-        [SerializeReference] protected PlayerBehaviour _playerBehaviour;
+        protected PlayerBehaviour playerBehaviour;
 
         private const int JumpChargeTargetSpeed = 80;
         private const int CorneringTargetSpeed = 130;
@@ -38,8 +40,28 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         // TODO Look into SpeedHandlingMultiplier and TurnLowSpeedMultiplier
         private void Start()
         {
-            _playerBehaviour = GetComponent<PlayerBehaviour>();
+            Setup();
+        }
+        
+        public virtual void Setup()
+        {
+            GetComponentSafe.SafeGetComponent(this, ref playerBehaviour);
             additiveSpeedSingleExternal = 0f;
+        }
+
+        public virtual void Master()
+        {
+            // TODO Add other Accelerations and Decelerations
+            // TODO Make sure Standards only accelerate / decelerate to MaxSpeed
+            SetMaxSpeed();
+            var standardAccel = StandardAcceleration();
+            var standardDecel = StandardDeceleration();
+            var turnSpeedLoss = TurnSpeedLoss();
+            /*Debug.Log("StandardAccel: " + standardAccel);
+            Debug.Log("StandardDecel: " + standardDecel);
+            Debug.Log("TurnSpeedLoss: " + turnSpeedLoss);*/
+            playerBehaviour.movement.Speed += standardAccel + standardDecel +
+                                               turnSpeedLoss + additiveSpeedSingleExternal;
         }
 
         public virtual void OnEnterPack()
@@ -158,52 +180,37 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO: Implement OffRoadDeceleration
             throw new NotImplementedException();
         }
-
-        public virtual void MasterAcceleration()
-        {
-            // TODO Add other Accelerations and Decelerations
-            // TODO Make sure Standards only accelerate / decelerate to MaxSpeed
-            SetMaxSpeed();
-            var standardAccel = StandardAcceleration();
-            var standardDecel = StandardDeceleration();
-            var turnSpeedLoss = TurnSpeedLoss();
-            Debug.Log("StandardAccel: " + standardAccel);
-            Debug.Log("StandardDecel: " + standardDecel);
-            Debug.Log("TurnSpeedLoss: " + turnSpeedLoss);
-            _playerBehaviour.movement.Speed += standardAccel + standardDecel +
-                                               turnSpeedLoss + additiveSpeedSingleExternal;
-        }
-
+        
         protected virtual float StandardAcceleration()
         {
-            return StandardAcceleration(_playerBehaviour.movement.Speed, _playerBehaviour.movement.MaxSpeed,
-                _playerBehaviour.speedStats.AccelerationLow, _playerBehaviour.speedStats.AccelerationMedium,
-                _playerBehaviour.speedStats.AccelerationHigh, _playerBehaviour.speedStats.AccelerationLowThreshold,
-                _playerBehaviour.speedStats.AccelerationMediumThreshold,
-                _playerBehaviour.speedStats.AccelerationOffRoadThreshold, _playerBehaviour.movement.CorneringState,
-                _playerBehaviour.movement.DriftState, _playerBehaviour.movement.GroundedState);
+            return StandardAcceleration(playerBehaviour.movement.Speed, playerBehaviour.movement.MaxSpeed,
+                playerBehaviour.speedStats.AccelerationLow, playerBehaviour.speedStats.AccelerationMedium,
+                playerBehaviour.speedStats.AccelerationHigh, playerBehaviour.speedStats.AccelerationLowThreshold,
+                playerBehaviour.speedStats.AccelerationMediumThreshold,
+                playerBehaviour.speedStats.AccelerationOffRoadThreshold, playerBehaviour.movement.CorneringState,
+                playerBehaviour.movement.DriftState, playerBehaviour.movement.GroundedState);
         }
 
         protected virtual float StandardDeceleration()
         {
-            return StandardDeceleration(_playerBehaviour.movement.Speed, _playerBehaviour.movement.MaxSpeed);
+            return StandardDeceleration(playerBehaviour.movement.Speed, playerBehaviour.movement.MaxSpeed);
         }
 
         protected virtual float TurnSpeedLoss()
         {
             float speedLossPerFrame = 0;
-            if (IsCornering() && _playerBehaviour.movement.Speed > CorneringTargetSpeed)
+            if (IsCornering() && playerBehaviour.movement.Speed > CorneringTargetSpeed)
             {
                 var TurningSpeedLossMultiplier =
-                    (_playerBehaviour.speedStats.TurnSpeedLoss + 0.8f) * TurningSpeedLossMultiplierMul;
+                    (playerBehaviour.speedStats.TurnSpeedLoss + 0.8f) * TurningSpeedLossMultiplierMul;
                 var MagicStickValue =
                     Mathf.Pow(
-                        (Formula.SpeedToRidersSpeed(_playerBehaviour.movement.MaxSpeed * MagicStickPercentageModifier)),
+                        (Formula.SpeedToRidersSpeed(playerBehaviour.movement.MaxSpeed * MagicStickPercentageModifier)),
                         2.0f) *
-                    Mathf.Abs(_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis);
+                    Mathf.Abs(playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis);
                 var LinearMultiplier = (MagicStickValue / TurningSpeedLossMultiplier) * (-0.000462963f);
                 var CubedMultiplier =
-                    Mathf.Pow(Mathf.Abs(_playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis), 3);
+                    Mathf.Pow(Mathf.Abs(playerBehaviour.inputPlayer.GetInputContainer().HorizontalAxis), 3);
                 speedLossPerFrame = CubedMultiplier * LinearMultiplier;
                 //Debug.Log("TurnSpeedLoss (InGame): " + speedLossPerFrame);
                 //Debug.Log("TurnSpeedLoss (Speedometer): " + Formula.RidersSpeedToSpeed(speedLossPerFrame));
@@ -214,7 +221,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         public virtual void AddAdditiveSpeedSingleExternal(float additiveSpeed)
         {
-            //Debug.Log("Is this being exectuted? " + additiveSpeed);
             additiveSpeedSingleExternal += additiveSpeed;
         }
 
@@ -230,11 +236,11 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         protected virtual void SetMaxSpeed()
         {
-            _playerBehaviour.movement.MaxSpeed = _playerBehaviour.movement.MaxSpeedState switch
+            playerBehaviour.movement.MaxSpeed = playerBehaviour.movement.MaxSpeedState switch
             {
                 // Differentiate between Type 0 and Type 1
-                MaxSpeedState.Cruising => _playerBehaviour.speedStats.TopSpeed,
-                MaxSpeedState.Boosting => _playerBehaviour.speedStats.BoostSpeed,
+                MaxSpeedState.Cruising => playerBehaviour.speedStats.TopSpeed,
+                MaxSpeedState.Boosting => playerBehaviour.speedStats.BoostSpeed,
                 _ => throw new ArgumentOutOfRangeException()
             };
 
@@ -245,12 +251,12 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             if (!float.IsPositiveInfinity(JumpChargeMaxSpeed) || !float.IsPositiveInfinity(BreakMaxSpeed) ||
                 !float.IsPositiveInfinity(OffRoadMaxSpeed))
             {
-                _playerBehaviour.movement.MaxSpeed = Mathf.Min(JumpChargeMaxSpeed, BreakMaxSpeed, OffRoadMaxSpeed);
+                playerBehaviour.movement.MaxSpeed = Mathf.Min(JumpChargeMaxSpeed, BreakMaxSpeed, OffRoadMaxSpeed);
             }
         }
 
         protected virtual float JumpCharge() =>
-            (_playerBehaviour.inputPlayer.GetInputContainer().Jump && _playerBehaviour.movement.Grounded)
+            (playerBehaviour.inputPlayer.GetInputContainer().Jump && playerBehaviour.movement.Grounded)
                 ? JumpChargeTargetSpeed
                 : float.PositiveInfinity;
 
@@ -259,26 +265,16 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// is not done here.
         /// </summary>
         /// <returns></returns>
-        protected virtual bool IsCornering() => (_playerBehaviour.movement.CorneringState is (CorneringStates.CorneringL
+        protected virtual bool IsCornering() => (playerBehaviour.movement.CorneringState is (CorneringStates.CorneringL
             or CorneringStates.CorneringR));
 
         protected virtual float Break() =>
-            (_playerBehaviour.movement.DriftState is DriftStates.Break) ? 0f : float.PositiveInfinity;
+            (playerBehaviour.movement.DriftState is DriftStates.Break) ? 0f : float.PositiveInfinity;
 
         protected virtual float OffRoad()
         {
             // TODO Implement OffRoad
             return float.PositiveInfinity;
-        }
-
-        public virtual void Setup()
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual void Master()
-        {
-            throw new NotImplementedException();
         }
     }
 }

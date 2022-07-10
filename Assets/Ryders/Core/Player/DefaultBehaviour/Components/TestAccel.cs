@@ -15,14 +15,4 @@ public class TestAccel : AccelerationPack
     {
         return base.StandardDeceleration();
     }
-
-    public override void Setup()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Master()
-    {
-        throw new System.NotImplementedException();
-    }
 }

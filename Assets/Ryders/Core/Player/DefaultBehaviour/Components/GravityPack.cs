@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Nyr.UnityDev.Component;
 using Ryders.Core.Player.DefaultBehaviour;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,13 +14,14 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
     /// If you are implementing ExtremeGear that uses different Ground/Gravity Behaviour,
     /// derive from this class
     /// </summary>
+    [RequireComponent(typeof(PlayerBehaviour))]
     public abstract class GravityPack : MonoBehaviour, IRydersPlayerComponent
     {
-        [SerializeReference] protected PlayerBehaviour _playerBehaviour;
-        [SerializeReference] protected Transform _playerTransform;
-        [SerializeReference] protected Transform _rotationAnchor;
+        protected PlayerBehaviour playerBehaviour;
+        protected Transform playerTransform;
+        protected Transform rotationAnchor;
 
-        private Vector3 normalSum = Vector3.up;
+        private Vector3 _normalSum = Vector3.up;
 
         [System.Serializable]
         public class RayCastSettings
@@ -34,24 +36,18 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             public Transform RaycastOriginRightBack;
         }
 
-        [SerializeReference] protected RayCastSettings _rayCastSettings = new();
+        [SerializeField] protected RayCastSettings rayCastSettings = new();
 
         private void Awake()
         {
-            _playerBehaviour = GetComponent<PlayerBehaviour>();
-            _playerTransform = _playerBehaviour.transform;
+            Setup();
         }
-
-        private void Start()
-        {
-            _playerBehaviour = GetComponent<PlayerBehaviour>();
-            _playerTransform = _playerBehaviour.transform;
-            _rotationAnchor = _playerBehaviour.rotationAnchor;
-        }
-
+        
         public virtual void Setup()
         {
-            
+            GetComponentSafe.SafeGetComponent(this, ref playerBehaviour);
+            GetComponentSafe.SafeGetComponent(playerBehaviour, ref playerTransform);
+            rotationAnchor = playerBehaviour.rotationAnchor;
         }
 
         public virtual void Master()
@@ -62,26 +58,26 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
         
         protected virtual void Grounded()
         {
-            if (Physics.Raycast(_rayCastSettings.GroundedOrigin.position, -_playerBehaviour.playerTransform.up,
-                    out var hit, _rayCastSettings.DistanceGround, _rayCastSettings.Mask))
+            if (Physics.Raycast(rayCastSettings.GroundedOrigin.position, -playerBehaviour.playerTransform.up,
+                    out var hit, rayCastSettings.DistanceGround, rayCastSettings.Mask))
             {
                 NormalForce(hit);
                 Gravity(true);
-                _playerBehaviour.movement.Grounded = true;
+                playerBehaviour.movement.Grounded = true;
                 return;
             }
 
             Gravity(false);
-            _playerBehaviour.movement.Grounded = false;
+            playerBehaviour.movement.Grounded = false;
         }
 
-        protected virtual void Gravity(bool grounded) => _playerBehaviour.movement.Gravity = grounded ? 0 : 1;
+        protected virtual void Gravity(bool grounded) => playerBehaviour.movement.Gravity = grounded ? 0 : 1;
         
         protected virtual void NormalForce(RaycastHit hit)
         {
-            if (hit.distance < (_rayCastSettings.DistanceGround - 0.5f))
+            if (hit.distance < (rayCastSettings.DistanceGround - 0.5f))
             {
-                _playerTransform.position += (_rayCastSettings.DistanceGround - (hit.distance - 0.1f)) * Vector3.up;
+                playerTransform.position += (rayCastSettings.DistanceGround - (hit.distance - 0.1f)) * Vector3.up;
             }
         }
         
@@ -89,59 +85,59 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
         {
             var hits = new List<RaycastHit>();
 
-            if (Physics.Raycast(_rayCastSettings.RaycastOriginLeftFront.position, -_playerBehaviour.playerTransform.up,
-                    out var hitLeftFront, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+            if (Physics.Raycast(rayCastSettings.RaycastOriginLeftFront.position, -playerBehaviour.playerTransform.up,
+                    out var hitLeftFront, rayCastSettings.DistanceAlignment, rayCastSettings.Mask))
             {
                 hits.Add(hitLeftFront);
             }
 
-            if (Physics.Raycast(_rayCastSettings.RaycastOriginRightFront.position, -_playerBehaviour.playerTransform.up,
-                    out var hitRightFront, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+            if (Physics.Raycast(rayCastSettings.RaycastOriginRightFront.position, -playerBehaviour.playerTransform.up,
+                    out var hitRightFront, rayCastSettings.DistanceAlignment, rayCastSettings.Mask))
             {
                 hits.Add(hitRightFront);
             }
 
-            if (Physics.Raycast(_rayCastSettings.RaycastOriginLeftBack.position, -_playerBehaviour.playerTransform.up,
-                    out var hitLeftBack, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+            if (Physics.Raycast(rayCastSettings.RaycastOriginLeftBack.position, -playerBehaviour.playerTransform.up,
+                    out var hitLeftBack, rayCastSettings.DistanceAlignment, rayCastSettings.Mask))
             {
                 hits.Add(hitLeftBack);
             }
 
-            if (Physics.Raycast(_rayCastSettings.RaycastOriginRightBack.position,
-                    -_playerBehaviour.playerTransform.up,
-                    out var hitRightBack, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+            if (Physics.Raycast(rayCastSettings.RaycastOriginRightBack.position,
+                    -playerBehaviour.playerTransform.up,
+                    out var hitRightBack, rayCastSettings.DistanceAlignment, rayCastSettings.Mask))
             {
                 hits.Add(hitRightBack);
             }
 
-            if (Physics.Raycast(_rayCastSettings.RaycastOriginLeftFront.position, Vector3.down,
-                    out var hit0, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+            if (Physics.Raycast(rayCastSettings.RaycastOriginLeftFront.position, Vector3.down,
+                    out var hit0, rayCastSettings.DistanceAlignment, rayCastSettings.Mask))
             {
                 hits.Add(hit0);
             }
 
-            if (Physics.Raycast(_rayCastSettings.RaycastOriginRightFront.position, Vector3.down,
-                    out var hit1, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+            if (Physics.Raycast(rayCastSettings.RaycastOriginRightFront.position, Vector3.down,
+                    out var hit1, rayCastSettings.DistanceAlignment, rayCastSettings.Mask))
             {
                 hits.Add(hit1);
             }
 
-            if (Physics.Raycast(_rayCastSettings.RaycastOriginLeftBack.position, Vector3.down,
-                    out var hit2, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+            if (Physics.Raycast(rayCastSettings.RaycastOriginLeftBack.position, Vector3.down,
+                    out var hit2, rayCastSettings.DistanceAlignment, rayCastSettings.Mask))
             {
                 hits.Add(hit2);
             }
 
-            if (Physics.Raycast(_rayCastSettings.RaycastOriginRightBack.position,
+            if (Physics.Raycast(rayCastSettings.RaycastOriginRightBack.position,
                     Vector3.down,
-                    out var hit3, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+                    out var hit3, rayCastSettings.DistanceAlignment, rayCastSettings.Mask))
             {
                 hits.Add(hit3);
             }
 
-            if (Physics.Raycast(_rayCastSettings.GroundedOrigin.position,
+            if (Physics.Raycast(rayCastSettings.GroundedOrigin.position,
                     Vector3.down,
-                    out var hit4, _rayCastSettings.DistanceAlignment, _rayCastSettings.Mask))
+                    out var hit4, rayCastSettings.DistanceAlignment, rayCastSettings.Mask))
             {
                 hits.Add(hit4);
             }
@@ -151,32 +147,32 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
                 var newUp = new Vector3(0f, 0f, 0f);
                 hits.ForEach((hit) => newUp += hit.normal);
                 newUp.Normalize();
-                normalSum = newUp;
-                _playerTransform.rotation = Quaternion.Lerp(_playerTransform.rotation,
+                _normalSum = newUp;
+                playerTransform.rotation = Quaternion.Lerp(playerTransform.rotation,
                     Quaternion.FromToRotation(Vector3.up, newUp), 1f);
-                _playerTransform.Rotate(0f, _rotationAnchor.rotation.eulerAngles.y, 0f, Space.Self);
+                playerTransform.Rotate(0f, rotationAnchor.rotation.eulerAngles.y, 0f, Space.Self);
             }
         }
 
         private void OnDrawGizmos()
         {
-            Gizmos.DrawRay(_rayCastSettings.RaycastOriginLeftFront.position,
-                Vector3.down * _rayCastSettings.DistanceAlignment);
-            Gizmos.DrawRay(_rayCastSettings.RaycastOriginRightFront.position,
-                Vector3.down * _rayCastSettings.DistanceAlignment);
-            Gizmos.DrawRay(_rayCastSettings.RaycastOriginRightBack.position,
-                Vector3.down * _rayCastSettings.DistanceAlignment);
-            Gizmos.DrawRay(_rayCastSettings.RaycastOriginLeftBack.position,
-                Vector3.down * _rayCastSettings.DistanceAlignment);
-            Gizmos.DrawRay(_rayCastSettings.RaycastOriginLeftFront.position,
-                -_playerTransform.up * _rayCastSettings.DistanceAlignment);
-            Gizmos.DrawRay(_rayCastSettings.RaycastOriginRightFront.position,
-                -_playerTransform.up * _rayCastSettings.DistanceAlignment);
-            Gizmos.DrawRay(_rayCastSettings.RaycastOriginRightBack.position,
-                -_playerTransform.up * _rayCastSettings.DistanceAlignment);
-            Gizmos.DrawRay(_rayCastSettings.RaycastOriginLeftBack.position,
-                -_playerTransform.up * _rayCastSettings.DistanceAlignment);
-            Gizmos.DrawRay(_playerTransform.position, normalSum * 2);
+            Gizmos.DrawRay(rayCastSettings.RaycastOriginLeftFront.position,
+                Vector3.down * rayCastSettings.DistanceAlignment);
+            Gizmos.DrawRay(rayCastSettings.RaycastOriginRightFront.position,
+                Vector3.down * rayCastSettings.DistanceAlignment);
+            Gizmos.DrawRay(rayCastSettings.RaycastOriginRightBack.position,
+                Vector3.down * rayCastSettings.DistanceAlignment);
+            Gizmos.DrawRay(rayCastSettings.RaycastOriginLeftBack.position,
+                Vector3.down * rayCastSettings.DistanceAlignment);
+            Gizmos.DrawRay(rayCastSettings.RaycastOriginLeftFront.position,
+                -playerTransform.up * rayCastSettings.DistanceAlignment);
+            Gizmos.DrawRay(rayCastSettings.RaycastOriginRightFront.position,
+                -playerTransform.up * rayCastSettings.DistanceAlignment);
+            Gizmos.DrawRay(rayCastSettings.RaycastOriginRightBack.position,
+                -playerTransform.up * rayCastSettings.DistanceAlignment);
+            Gizmos.DrawRay(rayCastSettings.RaycastOriginLeftBack.position,
+                -playerTransform.up * rayCastSettings.DistanceAlignment);
+            Gizmos.DrawRay(playerTransform.position, _normalSum * 2);
         }
         
         /// <summary>

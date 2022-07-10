@@ -211,7 +211,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed8ff9d5b888ce54e981a2e3605bbab9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerBehaviour: {fileID: 0}
   additiveSpeedSingleExternal: 0
   TurningSpeedLossMultiplierMul: 0
   MagicStickPercentageModifier: 0
@@ -292,7 +291,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1d424a5a71c88640be7a910b5fbf699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerBehaviour: {fileID: 0}
 --- !u!114 &5951800586870076998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -394,7 +392,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b26d30c008b800a458203298ce3e5255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerBehaviour: {fileID: 0}
 --- !u!114 &5951800586870076997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,7 +404,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 847dd0db305f48540b5ef05e5c60994b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerBehaviour: {fileID: 0}
 --- !u!114 &5951800586870077002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,7 +442,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e32efaa381f8ea6418aa5ccc5672fc14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerBehaviour: {fileID: 0}
 --- !u!114 &594319224053301537
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,27 +454,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 496d3011e5fe13f428741fcf4073d554, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerBehaviour: {fileID: 0}
-  _playerTransform: {fileID: 5951800586870077055}
-  _rotationAnchor: {fileID: 0}
-  _rayCastSettings:
-    rid: 1000
-  references:
-    version: 2
-    RefIds:
-    - rid: 1000
-      type: {class: GravityPack/RayCastSettings, ns: Ryders.Core.Player.ExtremeGear.Movement, asm: Assembly-CSharp}
-      data:
-        Mask:
-          serializedVersion: 2
-          m_Bits: 0
-        DistanceGround: 0
-        GroundedOrigin: {fileID: 0}
-        DistanceAlignment: 0
-        RaycastOriginLeftFront: {fileID: 0}
-        RaycastOriginRightFront: {fileID: 0}
-        RaycastOriginLeftBack: {fileID: 0}
-        RaycastOriginRightBack: {fileID: 0}
+  rayCastSettings:
+    Mask:
+      serializedVersion: 2
+      m_Bits: 8
+    DistanceGround: 1
+    GroundedOrigin: {fileID: 1005649242769943492}
+    DistanceAlignment: 3
+    RaycastOriginLeftFront: {fileID: 6298361242931044281}
+    RaycastOriginRightFront: {fileID: 9152579665187278151}
+    RaycastOriginLeftBack: {fileID: 1816351303139968373}
+    RaycastOriginRightBack: {fileID: 8548935702207989943}
 --- !u!1 &5951800587405041786
 GameObject:
   m_ObjectHideFlags: 0
@@ -799,10 +784,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7156f83690e4ddda67d0c7e046a61ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerTransform: {fileID: 5951800586870077055}
-  _playerBehaviour: {fileID: 5951800586870077050}
-  _boostPack: {fileID: 5951800586870076996}
-  _driftPack: {fileID: 5951800586870076997}
 --- !u!1 &6841293950386279644
 GameObject:
   m_ObjectHideFlags: 0
