@@ -29,7 +29,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         
         public virtual void Setup()
         {
-            GetComponentSafe.SafeGetComponent(this, ref playerBehaviour);
+            this.SafeGetComponent(ref playerBehaviour);
         }
 
         public virtual void Master()

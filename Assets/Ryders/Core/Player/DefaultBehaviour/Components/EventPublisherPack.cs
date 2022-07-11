@@ -1,23 +1,25 @@
 ﻿using System;
 using UnityEngine;
+using static Nyr.UnityDev.Component.GetComponentSafe;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
     public abstract class EventPublisherPack : MonoBehaviour, IRydersPlayerComponent, IRydersPlayerEventPublisher
     {
+        protected PlayerBehaviour playerBehaviour;
+        
         public event EventHandler SpeedBoostEvent;
         public event EventHandler LevelUpEvent;
         public event EventHandler LevelDownEvent;
         public event EventHandler LevelChangeEvent;
         
-        public void Setup()
+        public virtual void Setup()
         {
-            throw new System.NotImplementedException();
+            this.SafeGetComponent(ref playerBehaviour);
         }
 
-        public void Master()
+        public virtual void Master()
         {
-            throw new System.NotImplementedException();
         }
 
         public virtual void RaiseSpeedBoostEvent(EventArgs e)

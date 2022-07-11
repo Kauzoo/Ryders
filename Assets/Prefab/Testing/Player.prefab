@@ -44,12 +44,10 @@ GameObject:
   - component: {fileID: 5951800586870077049}
   - component: {fileID: 5951800586870077051}
   - component: {fileID: 5951800586870077050}
-  - component: {fileID: 5951800586870077052}
   - component: {fileID: 5951800586870077053}
   - component: {fileID: 5951800586870076994}
   - component: {fileID: 5951800586870076995}
   - component: {fileID: 5951800586870076998}
-  - component: {fileID: 5951800586870076993}
   - component: {fileID: 5951800586870076992}
   - component: {fileID: 5951800586870076999}
   - component: {fileID: 5951800586870076996}
@@ -59,6 +57,10 @@ GameObject:
   - component: {fileID: 3528305456211521214}
   - component: {fileID: 594319224053301537}
   - component: {fileID: 8524117035459382340}
+  - component: {fileID: 7552255125940697925}
+  - component: {fileID: 6844505111069864732}
+  - component: {fileID: 5143939639441193176}
+  - component: {fileID: 3942688447716853647}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -191,7 +193,6 @@ MonoBehaviour:
   accelerationPack: {fileID: 0}
   statLoaderPack: {fileID: 0}
   gravityPack: {fileID: 0}
-  stateDeterminationPack: {fileID: 0}
   jumpPack: {fileID: 0}
   wallCollisionPack: {fileID: 0}
   fuelPack: {fileID: 0}
@@ -201,21 +202,6 @@ MonoBehaviour:
   eventPublisherPack: {fileID: 0}
   movement: {fileID: 0}
   fuel: {fileID: 0}
---- !u!114 &5951800586870077052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5951800586870077045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed8ff9d5b888ce54e981a2e3605bbab9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  additiveSpeedSingleExternal: 0
-  TurningSpeedLossMultiplierMul: 0
-  MagicStickPercentageModifier: 0
 --- !u!114 &5951800586870077053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,7 +258,7 @@ MonoBehaviour:
   JumpAccelleration: 0
   Gravity: 0
   NormalForce: 0
-  Grounded: 1
+  Grounded: 0
   MaxSpeedState: 0
   TranslationState: 0
   DriftState: 0
@@ -311,31 +297,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5951800586870076993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5951800586870077045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d17d4d7f6bce8d7449d0bc848e04089a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FuelType: 0
-  JumpChargeMultiplier: 0
-  TrickFuelGain: 0
-  TypeFuelGain: 0
-  QTEFuelGain: 0
-  PassiveDrain: 0
-  TankSize: 0
-  BoostCost: 0
-  DriftCost: 0
-  TorandoCost: 0
-  MinRings: 0
-  MaxRings: 0
-  LevelCaps: 
 --- !u!114 &5951800586870076992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -478,6 +439,70 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ed68aefe21942bbabed8285027e0b61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7552255125940697925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5951800586870077045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34aece025595463eaa7da84b532f002a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6844505111069864732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5951800586870077045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2d1b04a3c674a439099e0a89eae2789, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5143939639441193176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5951800586870077045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42b9f33f18b3427ab213e4c354cb7df6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  additiveSpeedSingleExternal: 0
+  TurningSpeedLossMultiplierMul: 2
+  MagicStickPercentageModifier: 0.98
+--- !u!114 &3942688447716853647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5951800586870077045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d17d4d7f6bce8d7449d0bc848e04089a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FuelType: 0
+  JumpChargeMultiplier: 0
+  TrickFuelGain: 0
+  TypeFuelGain: 0
+  QTEFuelGain: 0
+  PassiveDrain: 0
+  TankSize: 0
+  BoostCost: 0
+  DriftCost: 0
+  TorandoCost: 0
+  MinRings: 0
+  MaxRings: 0
+  LevelCaps: 
 --- !u!1 &5951800587405041786
 GameObject:
   m_ObjectHideFlags: 0

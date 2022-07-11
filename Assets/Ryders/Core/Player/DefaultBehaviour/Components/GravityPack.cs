@@ -18,7 +18,9 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
     public abstract class GravityPack : MonoBehaviour, IRydersPlayerComponent
     {
         protected PlayerBehaviour playerBehaviour;
+        // ReSharper disable once MemberCanBePrivate.Global
         protected Transform playerTransform;
+        // ReSharper disable once MemberCanBePrivate.Global
         protected Transform rotationAnchor;
 
         private Vector3 _normalSum = Vector3.up;
@@ -35,18 +37,17 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
             public Transform RaycastOriginLeftBack;
             public Transform RaycastOriginRightBack;
         }
+        public RayCastSettings rayCastSettings = new();
 
-        [SerializeField] protected RayCastSettings rayCastSettings = new();
-
-        private void Awake()
+        private void Start()
         {
             Setup();
         }
         
         public virtual void Setup()
         {
-            GetComponentSafe.SafeGetComponent(this, ref playerBehaviour);
-            GetComponentSafe.SafeGetComponent(playerBehaviour, ref playerTransform);
+            this.SafeGetComponent(ref playerBehaviour);
+            playerTransform = playerBehaviour.transform;
             rotationAnchor = playerBehaviour.rotationAnchor;
         }
 

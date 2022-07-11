@@ -31,7 +31,7 @@ namespace Ryders.Core.Player.Collectible
         public virtual void Setup()
         {
             _collider = GetComponent<Collider>();
-            GetComponentSafe.GetComponentInChildren(this, ref _meshRendererTorus);
+            GetComponentSafe.SafeGetComponentInChildren(this, ref _meshRendererTorus);
             _collider.isTrigger = true;
         }
 

@@ -1,22 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Nyr.UnityDev.Component;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
-    public abstract class WallCollisionPack : MonoBehaviour
+    public abstract class WallCollisionPack : MonoBehaviour, IRydersPlayerComponent
     {
         // TODO Implement WallCollisionPack
-        private PlayerBehaviour _playerBehaviour;
+        // ReSharper disable once MemberCanBePrivate.Global
+        protected PlayerBehaviour playerBehaviour;
         
         private void Start()
         {
-            _playerBehaviour = GetComponent<PlayerBehaviour>();
+            Setup();
+        }
+        
+        public virtual void Setup()
+        {
+            this.SafeGetComponent(ref playerBehaviour);
         }
 
-        public virtual void OnCollision(UnityEngine.Collision collision)
+        public virtual void Master()
         {
-            
+            throw new System.NotImplementedException();
         }
     }
 }

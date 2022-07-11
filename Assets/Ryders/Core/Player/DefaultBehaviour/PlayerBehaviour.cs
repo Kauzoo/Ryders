@@ -1,5 +1,3 @@
-
-
 using System;
 using Ryders.Core.InputManagement;
 using UnityEngine;
@@ -7,14 +5,14 @@ using Ryders.Core.Player.Character;
 using Ryders.Core.Player.ExtremeGear.Movement;
 using Ryders.Core.Player.ExtremeGear;
 using Ryders.Core.Player.DefaultBehaviour.Components;
+using Ryders.Core.Player.DefaultBehaviour.Components.DefaultComponents;
 using Ryders.Core.Player.DefaultBehaviour.Telemetry;
 using static System.Environment;
-using static Nyr.UnityDev.Component.GetComponentSafe;
+using Nyr.UnityDev.Component;
 
 
 namespace Ryders.Core.Player.DefaultBehaviour
 {
-
     /// <summary>
     /// This class represents the default case for an ExtremeGear.
     /// All movement is calculated here. The character only contributes stats, not custom code.
@@ -45,16 +43,15 @@ namespace Ryders.Core.Player.DefaultBehaviour
         [System.Serializable]
         public class PBDebug
         {
-            [Header("Toggles")]
-            public bool printTransformTelemetry;
+            [Header("Toggles")] public bool printTransformTelemetry;
             public bool printRigidbodyTelemetry;
             public bool printMovementTelemetry;
-            [Header("TelemetryText")]
-            public TMPro.TextMeshProUGUI playerTransformTelemetry;
+            [Header("TelemetryText")] public TMPro.TextMeshProUGUI playerTransformTelemetry;
             public TMPro.TextMeshProUGUI playerRigidbodyTelemetry;
             public TMPro.TextMeshProUGUI playerMovementTelemetry;
             [System.NonSerialized] public Canvas debugCanvas;
         }
+
         public PBDebug pbDebug = new();
 
         [HideInInspector] public Transform playerTransform;
@@ -75,7 +72,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         // Contains basic extreme gear data
         public ExtremeGearData extremeGearData;
-        
+
         // STATS
         [HideInInspector] public SpeedStats speedStats;
         [HideInInspector] public TurnStats turnStats;
@@ -86,7 +83,6 @@ namespace Ryders.Core.Player.DefaultBehaviour
         [HideInInspector] public AccelerationPack accelerationPack;
         [HideInInspector] public StatLoaderPack statLoaderPack;
         [HideInInspector] public GravityPack gravityPack;
-        [HideInInspector] public StateDeterminationPack stateDeterminationPack;
         [HideInInspector] public JumpPack jumpPack;
         [HideInInspector] public WallCollisionPack wallCollisionPack;
         [HideInInspector] public FuelPack fuelPack;
@@ -94,7 +90,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         [HideInInspector] public BoostPack boostPack;
         [HideInInspector] public CorneringPack corneringPack;
         [HideInInspector] public EventPublisherPack eventPublisherPack;
-        
+
         // RUNTIME VAR CONTAINERS
         [HideInInspector] public Movement movement;
         [HideInInspector] public Fuel fuel;
@@ -109,56 +105,50 @@ namespace Ryders.Core.Player.DefaultBehaviour
             playerRigidbody = GetComponent<Rigidbody>();
             playerRigidbody.useGravity = false;
             playerRigidbody.isKinematic = true;
-            
+
             // TRANSFORM
             playerTransform = GetComponent<Transform>();
-            
+
             // ROTATION ANCHOR
             rotationAnchor.SetParent(null);
 
             // STAT CONTAINERS
-            SafeGetComponent(this, ref speedStats);
-            SafeGetComponent(this, ref turnStats);
-            SafeGetComponent(this, ref jumpStats);
-            SafeGetComponent(this, ref fuelStats);
-            
+            this.SafeGetComponent(ref speedStats);
+            this.SafeGetComponent(ref turnStats);
+            this.SafeGetComponent(ref jumpStats);
+            this.SafeGetComponent(ref fuelStats);
+
             // PACKS
-            SafeGetComponent(this, ref accelerationPack);
-            SafeGetComponent(this, ref statLoaderPack);
-            SafeGetComponent(this, ref gravityPack);
+            this.SafeGetComponent(ref accelerationPack);
+            this.SafeGetComponent(ref statLoaderPack);
+            this.SafeGetComponent(ref gravityPack);
             try
             {
-                SafeGetComponent(this, ref stateDeterminationPack);
+                this.SafeGetComponent(ref jumpPack);
             }
             catch (MissingReferenceException e)
             {
                 Debug.LogError(e);
             }
+
             try
             {
-                SafeGetComponent(this, ref jumpPack);
-            }
-            catch (MissingReferenceException e)
-            {
-                Debug.LogError(e);
-            }
-            try
-            {
-                SafeGetComponent(this, ref wallCollisionPack);
+                this.SafeGetComponent(ref wallCollisionPack);
             }
             catch (Exception e)
             {
                 Debug.LogError(e);
             }
-            SafeGetComponent(this, ref fuelPack);
-            SafeGetComponent(this, ref driftPack);
-            SafeGetComponent(this, ref boostPack);
-            SafeGetComponent(this, ref corneringPack);
-            SafeGetComponent(this, ref eventPublisherPack);
-            
+
+            this.SafeGetComponent(ref fuelPack);
+            this.SafeGetComponent(ref driftPack);
+            this.SafeGetComponent(ref boostPack);
+            this.SafeGetComponent(ref corneringPack);
+            this.SafeGetComponent(ref eventPublisherPack);
+
             // RUNTIME
-            SafeGetComponent(this, ref movement);
-            SafeGetComponent(this, ref fuel);
+            this.SafeGetComponent(ref movement);
+            this.SafeGetComponent(ref fuel);
 
             // TODO Rework this along side the entire InputManagement
             masterInput = FindObjectOfType<MasterInput>();
@@ -172,7 +162,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
             else
                 Debug.LogError($"@{this.ToString()}.Setup(): Failed to find MastInput Object in Scene");
         }
-
+        
         public virtual void TestAcceleration()
         {
             accelerationPack.Master();
@@ -209,13 +199,14 @@ namespace Ryders.Core.Player.DefaultBehaviour
                 rotationAnchor.Rotate(0, movement.Turning, 0, Space.Self);
                 return;
             }
+
             if (movement.DriftState is DriftStates.DriftingL or DriftStates.DriftingR)
             {
                 rotationAnchor.Rotate(0, movement.DriftTurning, 0, Space.Self);
                 return;
             }
         }
-            
+
         public virtual void MasterMoveTest()
         {
             playerTransform.position += Formula.SpeedToRidersSpeed(movement.Speed) * playerTransform.forward;
@@ -239,6 +230,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         }
 
         #region Utility
+
         public virtual string GetTransformTelemetry()
         {
             // TODO Expand this
@@ -253,13 +245,16 @@ namespace Ryders.Core.Player.DefaultBehaviour
             var str = $"Velocity: {TelemetryHelper.GetVector3Formated(playerRigidbody.velocity)}";
             return str;
         }
+
         #endregion
 
         #region Debug
+
         public virtual void UpdateDebug()
         {
             PrintTelemetry();
         }
+
         private void SetupDebug()
         {
             if (pbDebug.printMovementTelemetry && pbDebug.playerMovementTelemetry is null)
@@ -269,194 +264,196 @@ namespace Ryders.Core.Player.DefaultBehaviour
             if (pbDebug.printTransformTelemetry && pbDebug.playerTransformTelemetry is null)
                 Debug.LogWarning("@SetupDebug: Missing playerMovementTelemetry Object.");
         }
+
         private void PrintTelemetry()
         {
             if (pbDebug.printMovementTelemetry)
                 pbDebug.playerMovementTelemetry.text = "Movement" + NewLine + movement.GetTelemetry();
-            if(pbDebug.printRigidbodyTelemetry)
+            if (pbDebug.printRigidbodyTelemetry)
                 pbDebug.playerRigidbodyTelemetry.text = "Rigidbody" + NewLine + GetRigidbodyTelemetry();
-            if(pbDebug.printTransformTelemetry)
+            if (pbDebug.printTransformTelemetry)
                 pbDebug.playerTransformTelemetry.text = "Transform" + NewLine + GetTransformTelemetry();
         }
+
         #endregion
     }
 }
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
+{
+    public abstract class SpeedStats : MonoBehaviour
     {
-        public abstract class SpeedStats : MonoBehaviour
-        {
-            [Header("Speed")] public float TopSpeed;
-            public float SpeedHandlingMultiplier;
-            [Header("Acceleration")] public float AccelerationLow;
-            public float AccelerationMedium;
-            public float AccelerationHigh;
-            public float AccelerationLowThreshold;
-            public float AccelerationMediumThreshold;
-            public float AccelerationOffRoadThreshold;
+        [Header("Speed")] public float TopSpeed;
+        public float SpeedHandlingMultiplier;
+        [Header("Acceleration")] public float AccelerationLow;
+        public float AccelerationMedium;
+        public float AccelerationHigh;
+        public float AccelerationLowThreshold;
+        public float AccelerationMediumThreshold;
+        public float AccelerationOffRoadThreshold;
 
-            /// <summary>
-            /// Affected by Level (<see cref="ExtremeGear.ExtremeGearData"/>).
-            /// BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.BoostSpeedLvl
-            /// From SRDX Datasheets
-            /// </summary>
-            [Header("Boost")] public float BoostSpeed;
-
-            /// <summary>
-            /// BoostChainModifier = CharacterData.BoostChainModifier + ExtremeGearData.BoostChainModifier
-            /// From SRDX Datasheets
-            /// </summary>
-            public float BoostChainModifier;
-            public float BoostDuration;
-
-            [Header("Break")] public float BreakeDecelleration;
-            [Header("Drift")] public float DriftDashSpeed;
-            public float DriftCap;
-            public float DriftDashFrames;
-            [Header("Turning")] public float TurnSpeedLoss;
-            [Header("Jump")] public float JumpChargeMinSpeed;
-            public float JumpChargeDecelleration;
-        }
-
-        // TURN STATS
         /// <summary>
-        /// All the stats that affect the calculations for rotation (around local y-axis)
-        /// Contains stats for regular Turning as well as Drifting
+        /// Affected by Level (<see cref="ExtremeGear.ExtremeGearData"/>).
+        /// BoostSpeed = CharacterData.BoostSpeed + ExtremeGearData.BoostSpeedLvl
+        /// From SRDX Datasheets
         /// </summary>
-        public abstract class TurnStats : MonoBehaviour
+        [Header("Boost")] public float BoostSpeed;
+
+        /// <summary>
+        /// BoostChainModifier = CharacterData.BoostChainModifier + ExtremeGearData.BoostChainModifier
+        /// From SRDX Datasheets
+        /// </summary>
+        public float BoostChainModifier;
+
+        public float BoostDuration;
+
+        [Header("Break")] public float BreakeDecelleration;
+        [Header("Drift")] public float DriftDashSpeed;
+        public float DriftCap;
+        public float DriftDashFrames;
+        [Header("Turning")] public float TurnSpeedLoss;
+        [Header("Jump")] public float JumpChargeMinSpeed;
+        public float JumpChargeDecelleration;
+    }
+
+    // TURN STATS
+    /// <summary>
+    /// All the stats that affect the calculations for rotation (around local y-axis)
+    /// Contains stats for regular Turning as well as Drifting
+    /// </summary>
+    public abstract class TurnStats : MonoBehaviour
+    {
+        [Header("Turning")] public float Turnrate;
+        public float TurnRateMax;
+        public float TurnLowSpeedMultiplier;
+        public AnimationCurve TurnSpeedLossCurve;
+        public AnimationCurve TurnrateCurve;
+        [Header("Drift")] public float DriftTurnrateMin;
+        public float DriftTurnrateMax;
+        public float DriftTurnrate;
+    }
+
+    public abstract class JumpStats : MonoBehaviour
+    {
+        public float JumpSpeedMax;
+        public AnimationCurve JumpAccelleration;
+    }
+
+    public abstract class FuelStats : MonoBehaviour
+    {
+        [Header("Fuel Stats")] public FuelType FuelType;
+        public float JumpChargeMultiplier;
+        public float TrickFuelGain;
+        public float TypeFuelGain;
+        public float QTEFuelGain;
+        public float PassiveDrain;
+        public float TankSize;
+        public float BoostCost;
+        public float DriftCost;
+        public float TorandoCost;
+        public int MinRings;
+        public int MaxRings;
+        public int[] LevelCaps;
+    }
+
+    public abstract class Movement : MonoBehaviour
+    {
+        [Header("Speed")] public float Speed;
+        public float MaxSpeed;
+
+        [Header("Boost")] public float BoostTimer;
+
+        [Header("Turning")] public float Turning;
+
+        [Header("Drift")] public float DriftTurning;
+        public float DriftTimer;
+
+        [Header("Jump")] public float JumpChargeDuration;
+        public float JumpCharge;
+        public float JumpSpeed;
+        public float JumpAccelleration;
+
+        [Header("Gravity")] public float Gravity;
+        public float NormalForce;
+
+        [Header("MovementStates")] public bool Grounded;
+        public MaxSpeedState MaxSpeedState = MaxSpeedState.Cruising;
+        public TranslationStates TranslationState = TranslationStates.Stationary;
+        public DriftStates DriftState = DriftStates.None;
+        public JumpStates JumpState = JumpStates.None;
+        public CorneringStates CorneringState = CorneringStates.None;
+        public SpeedStates SpeedState = SpeedStates.LowSpeed;
+        public GroundedStates GroundedState = GroundedStates.None;
+
+        // TODO Add more stuff to Telemetry
+        public virtual string GetTelemetry()
         {
-            [Header("Turning")] public float Turnrate;
-            public float TurnRateMax;
-            public float TurnLowSpeedMultiplier;
-            public AnimationCurve TurnSpeedLossCurve;
-            public AnimationCurve TurnrateCurve;
-            [Header("Drift")]
-            public float DriftTurnrateMin;
-            public float DriftTurnrateMax;
-            public float DriftTurnrate;
-        }
-
-        public abstract class JumpStats : MonoBehaviour
-        {
-            public float JumpSpeedMax;
-            public AnimationCurve JumpAccelleration;
-        }
-
-        public abstract class FuelStats : MonoBehaviour
-        {
-            [Header("Fuel Stats")] public FuelType FuelType;
-            public float JumpChargeMultiplier;
-            public float TrickFuelGain;
-            public float TypeFuelGain;
-            public float QTEFuelGain;
-            public float PassiveDrain;
-            public float TankSize;
-            public float BoostCost;
-            public float DriftCost;
-            public float TorandoCost;
-            public int MinRings;
-            public int MaxRings;
-            public int[] LevelCaps;
-        }
-
-        public abstract class Movement : MonoBehaviour
-        {
-            [Header("Speed")] public float Speed;
-            public float MaxSpeed;
-            
-            [Header("Boost")] public float BoostTimer;
-
-            [Header("Turning")]
-            public float Turning;
-
-            [Header("Drift")] public float DriftTurning;
-            public float DriftTimer;
-
-            [Header("Jump")] public float JumpChargeDuration;
-            public float JumpCharge;
-            public float JumpSpeed;
-            public float JumpAccelleration;
-
-            [Header("Gravity")] public float Gravity;
-            public float NormalForce;
-
-            [Header("MovementStates")] public bool Grounded;
-            public MaxSpeedState MaxSpeedState = MaxSpeedState.Cruising;
-            public TranslationStates TranslationState = TranslationStates.Stationary;
-            public DriftStates DriftState = DriftStates.None;
-            public JumpStates JumpState = JumpStates.None;
-            public CorneringStates CorneringState = CorneringStates.None;
-            public SpeedStates SpeedState = SpeedStates.LowSpeed;
-            public GroundedStates GroundedState = GroundedStates.None;
-
-            // TODO Add more stuff to Telemetry
-            public virtual string GetTelemetry()
-            {
-                var str = $"Speed: {Speed}" + $"{NewLine}MaxSpeed: {MaxSpeed}"
-                                            + $"{NewLine}BoostTimer: {BoostTimer}"
-                                            + $"{NewLine}DriftTimer: {DriftTimer}"
-                                            + $"{NewLine}DriftState: {DriftState}"
-                                            + $"{NewLine}CorneringState: {CorneringState}"
-                                            + $"{NewLine}TurnRate: {Turning}"
-                                            + $"{NewLine}Grounded: {Grounded}"
-                                            + $"{NewLine}Gravity: {Gravity}";
-                return str;
-            }
-        }
-
-        public abstract class Fuel : MonoBehaviour
-        {
-            public float CurrentFuel;
-            public int Level;
-            public int Rings;
-        }
-
-        public enum TranslationStates
-        {
-            Stationary,
-            Cruising,
-            Boosting,
-            EnteredBoost
-        }
-
-        public enum SpeedStates
-        {
-            LowSpeed,
-            MediumSpeed,
-            HighSpeed
-        }
-
-        public enum DriftStates
-        {
-            None,
-            DriftingL,
-            DriftingR,
-            Break
-        }
-
-        public enum JumpStates
-        {
-            None,
-            JumpCharging,
-            Jumping,
-            JumpLanding
-        }
-
-        public enum CorneringStates
-        {
-            None,
-            CorneringL,
-            CorneringR
-        }
-
-        public enum GroundedStates
-        {
-            None,
-            Grounded
-        }
-
-        public enum MaxSpeedState
-        {
-            Cruising, Boosting
+            var str = $"Speed: {Speed}" + $"{NewLine}MaxSpeed: {MaxSpeed}"
+                                        + $"{NewLine}BoostTimer: {BoostTimer}"
+                                        + $"{NewLine}DriftTimer: {DriftTimer}"
+                                        + $"{NewLine}DriftState: {DriftState}"
+                                        + $"{NewLine}CorneringState: {CorneringState}"
+                                        + $"{NewLine}TurnRate: {Turning}"
+                                        + $"{NewLine}Grounded: {Grounded}"
+                                        + $"{NewLine}Gravity: {Gravity}";
+            return str;
         }
     }
+
+    public abstract class Fuel : MonoBehaviour
+    {
+        public float CurrentFuel;
+        public int Level;
+        public int Rings;
+    }
+
+    public enum TranslationStates
+    {
+        Stationary,
+        Cruising,
+        Boosting,
+        EnteredBoost
+    }
+
+    public enum SpeedStates
+    {
+        LowSpeed,
+        MediumSpeed,
+        HighSpeed
+    }
+
+    public enum DriftStates
+    {
+        None,
+        DriftingL,
+        DriftingR,
+        Break
+    }
+
+    public enum JumpStates
+    {
+        None,
+        JumpCharging,
+        Jumping,
+        JumpLanding
+    }
+
+    public enum CorneringStates
+    {
+        None,
+        CorneringL,
+        CorneringR
+    }
+
+    public enum GroundedStates
+    {
+        None,
+        Grounded
+    }
+
+    public enum MaxSpeedState
+    {
+        Cruising,
+        Boosting
+    }
+}

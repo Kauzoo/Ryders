@@ -1,14 +1,40 @@
 ﻿#nullable enable
 using System;
-using JetBrains.Annotations;
-using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Nyr.UnityDev.Component;
+using Ryders.Core.Player.DefaultBehaviour.Components;
+using Ryders.Core.Player.DefaultBehaviour.Components.DefaultComponents;
+using Ryders.Core.Player.ExtremeGear.Movement;
+
 
 namespace Ryders.Core.Player.DefaultBehaviour
 {
     public abstract partial class PlayerBehaviour
     {
+        /// <summary>
+        /// This does not work as intended right now
+        /// </summary>
+        [ContextMenu("Setup with DefaultPacks")]
+        private void SetupDefaultComponents()
+        {
+            accelerationPack = this.SafeGetComponentNullable<AccelerationPack>() ??
+                               gameObject.AddComponent<AccelerationPackDefault>();
+            statLoaderPack = this.SafeGetComponentNullable<StatLoaderPack>() ??
+                             gameObject.AddComponent<StatLoaderPackDefault>();
+            gravityPack = this.SafeGetComponentNullable<GravityPack>() ?? gameObject.AddComponent<GravityPackDefault>();
+            jumpPack = this.SafeGetComponentNullable<JumpPack>() ?? gameObject.AddComponent<JumpPackDefault>();
+            wallCollisionPack = this.SafeGetComponentNullable<WallCollisionPack>() ??
+                                gameObject.AddComponent<WallCollisionPackDefault>();
+            fuelPack = this.SafeGetComponentNullable<FuelPack>() ?? gameObject.AddComponent<FuelPackDefault>();
+            driftPack = this.SafeGetComponentNullable<DriftPack>() ?? gameObject.AddComponent<DriftPackDefault>();
+            boostPack = this.SafeGetComponentNullable<BoostPack>() ?? gameObject.AddComponent<BoostPackDefault>();
+            corneringPack = this.SafeGetComponentNullable<CorneringPack>() ??
+                            gameObject.AddComponent<CorneringPackDefault>();
+            eventPublisherPack = this.SafeGetComponentNullable<EventPublisherPack>() ??
+                                 gameObject.AddComponent<EventPublisherPackDefault>();
+        }
+        
         public static bool IsPlayerBehaviour(dynamic? input) => (input ?? new Object()) is PlayerBehaviour;
 
         public static PlayerBehaviour DynamicToPlayerBehaviour(dynamic input) =>

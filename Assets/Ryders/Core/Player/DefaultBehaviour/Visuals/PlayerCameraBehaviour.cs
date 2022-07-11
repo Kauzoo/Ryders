@@ -9,12 +9,17 @@ namespace Ryders.Core.Player.DefaultBehaviour.Visuals
     [RequireComponent(typeof(Transform))]
     public class PlayerCameraBehaviour : MonoBehaviour, IRydersPlayerComponent, IRydersPlayerEvents
     {
+        // ReSharper disable once MemberCanBePrivate.Global
         protected Transform cameraTransform;
         protected Camera cam;
         // EXTERNAL
+        // ReSharper disable once MemberCanBePrivate.Global
         protected Transform playerTransform;
+        // ReSharper disable once MemberCanBePrivate.Global
         protected PlayerBehaviour playerBehaviour;
+        // ReSharper disable once MemberCanBePrivate.Global
         protected BoostPack boostPack;
+        // ReSharper disable once MemberCanBePrivate.Global
         protected DriftPack driftPack;
 
         private Vector3 _offset;
@@ -46,10 +51,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Visuals
         {
             cameraTransform = GetComponent<Transform>();
             cam = GetComponent<Camera>();
-            GetComponentSafe.GetComponentInParent(this, ref playerBehaviour);
+            this.SafeGetComponentInParent(ref playerBehaviour);
             playerTransform = playerBehaviour.transform;
-            GetComponentSafe.SafeGetComponent(playerBehaviour, ref boostPack);
-            GetComponentSafe.SafeGetComponent(playerBehaviour, ref driftPack);
+            playerBehaviour.SafeGetComponent(ref boostPack);
+            playerBehaviour.SafeGetComponent(ref driftPack);
             (this as IRydersPlayerEvents).Subscribe(boostPack);
             (this as IRydersPlayerEvents).Subscribe(driftPack);
             _offset = transform.localPosition;

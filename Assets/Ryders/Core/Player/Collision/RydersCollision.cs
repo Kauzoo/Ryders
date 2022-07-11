@@ -7,11 +7,11 @@ namespace Ryders.Core.Player.Collision
     [RequireComponent(typeof(Collider))]
     public abstract class RydersCollision : MonoBehaviour
     {
-        protected Collider collider;
+        protected Collider mCollider;
 
         public void Start()
         {
-            collider = GetComponent<Collider>();
+            mCollider = GetComponent<Collider>();
         }
         
         

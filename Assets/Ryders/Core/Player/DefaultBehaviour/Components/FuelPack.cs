@@ -30,8 +30,8 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         [ContextMenu("Setup References")]
         public virtual void Setup()
         {
-            SafeGetComponent(this, ref playerBehaviour);
-            SafeGetComponent(this, ref eventPublisherPack);
+            this.SafeGetComponent(ref playerBehaviour);
+            this.SafeGetComponent(ref eventPublisherPack);
         }
 
         public virtual void Master()

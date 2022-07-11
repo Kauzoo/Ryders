@@ -1,4 +1,5 @@
 ﻿using System;
+using Ryders.Core.Player.DefaultBehaviour;
 using UnityEditor.Rendering;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ namespace Ryders.Core.Player
 {
     public interface IRydersPlayerComponent
     {
+
         public void Setup();
         public void Master();
 
