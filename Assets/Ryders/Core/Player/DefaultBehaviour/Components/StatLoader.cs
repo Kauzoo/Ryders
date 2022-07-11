@@ -2,13 +2,14 @@ using System;
 using Ryders.Core.Player.Character;
 using Ryders.Core.Player.ExtremeGear;
 using UnityEngine;
-using Nyr.UnityDev.Component;
+using static Nyr.UnityDev.Component.GetComponentSafe;
 
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
     [RequireComponent(typeof(PlayerBehaviour))]
-    public abstract class StatLoaderPack : MonoBehaviour, IRydersPlayerComponent, IRydersPlayerEvents
+    [RequireComponent(typeof(EventPublisherPack))]
+    public abstract class StatLoaderPack : MonoBehaviour, IRydersPlayerComponent
     {
         /*
         * NOTES
@@ -32,14 +33,17 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         // ReSharper disable once MemberCanBePrivate.Global
         protected PlayerBehaviour playerBehaviour;
+        // ReSharper disable once MemberCanBePrivate.Global
+        protected EventPublisherPack eventPublisherPack;
 
         // TODO Implement FastAccel for SpeedTypes and Off-Road resistance for PowerType
         // TODO CleanUp which stat is retrieved from where
 
         public virtual void Setup()
         {
-            playerBehaviour = GetComponent<PlayerBehaviour>();
-            (this as IRydersPlayerEvents).Subscribe(GetComponentSafe.GetComponent<FuelPack>(this));
+            SafeGetComponent(this, ref playerBehaviour);
+            SafeGetComponent(this, ref eventPublisherPack);
+            eventPublisherPack.LevelChangeEvent += OnLevelChange;
             LoadStatsMaster();
         }
 
@@ -47,6 +51,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
         }
 
+        /// <summary>
+        /// Load all stats
+        /// </summary>
         public virtual void LoadStatsMaster()
         {
             // SPEED STATS
@@ -97,6 +104,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             LoadLevelCap();
         }
 
+        /// <summary>
+        /// Only Load stats that are affected by current level
+        /// </summary>
         public virtual void LoadLevelAffectedStats()
         {
             LoadTopSpeed();
@@ -696,8 +706,9 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         #endregion
 
-        public void OnLevelChange(object sender, EventArgs e)
+        protected void OnLevelChange(object sender, EventArgs e)
         {
+            Debug.Log("Test Level stuff");
             LoadLevelAffectedStats();
         }
     }

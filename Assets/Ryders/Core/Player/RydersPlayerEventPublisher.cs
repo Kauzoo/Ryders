@@ -15,5 +15,23 @@ namespace Ryders.Core.Player
             var raiseEvent = SpeedBoostEvent;
             raiseEvent?.Invoke(this, e);
         }
+        
+        public virtual void RaiseLevelUpEvent(EventArgs e)
+        {
+            var raiseEvent = LevelUpEvent;
+            raiseEvent?.Invoke(this, e);
+        }
+        
+        public virtual void RaiseLevelDownEvent(EventArgs e)
+        {
+            var raiseEvent = LevelDownEvent;
+            raiseEvent?.Invoke(this, e);
+        }
+        
+        public virtual void RaiseLevelChangeEvent(EventArgs e)
+        {
+            var raiseEvent = LevelChangeEvent;
+            raiseEvent?.Invoke(this, e);
+        }
     }
 }

@@ -2,8 +2,9 @@
 using System.Collections;
 using Ryders.Core.Player.Collectible.Item;
 using Ryders.Core.Player.DefaultBehaviour;
-using UnityEditor;
 using UnityEngine;
+using static Nyr.UnityDev.Component.GetComponentSafe;
+using Nyr.UnityDev.Component;
 
 namespace Ryders.Core.Player.Collectible
 {
@@ -11,35 +12,35 @@ namespace Ryders.Core.Player.Collectible
     /// Behaviour for Ring collectibles
     /// </summary>
     [RequireComponent(typeof(Collider))]
-    public class Ring : MonoBehaviour
+    public class Ring : MonoBehaviour, IPlayerCollectible
     {
         [Header("Settings")]
         [Tooltip("Toggle Ring as respawning")]
         public bool respawn;
         [Tooltip("Respawn Timer in Seconds")]
         public float respawnTimer;
-
-        private float _respawnTimer;
+        
         private Collider _collider;
         private MeshRenderer _meshRendererTorus;
 
         private void Start()
         {
-            _collider = GetComponent<Collider>();
-            _meshRendererTorus = GetComponentInChildren<MeshRenderer>();
+            Setup();
+        }
 
+        public virtual void Setup()
+        {
+            _collider = GetComponent<Collider>();
+            GetComponentSafe.GetComponentInChildren(this, ref _meshRendererTorus);
             _collider.isTrigger = true;
         }
 
         private void OnTriggerEnter(UnityEngine.Collider other)
         {
-            if (other.gameObject.TryGetComponent<PlayerBehaviour>(out var playerBehaviour))
-            {
-                playerBehaviour.fuelPack.AddRing();
-                if(respawn)
-                    StartCoroutine(Respawn());
-            }
-            
+            if (!other.gameObject.TryGetComponent<PlayerBehaviour>(out var playerBehaviour)) return;
+            playerBehaviour.fuelPack.AddRing();
+            if(respawn)
+                StartCoroutine(Respawn());
         }
 
         private IEnumerator Respawn()

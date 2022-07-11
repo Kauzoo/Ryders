@@ -58,6 +58,7 @@ GameObject:
   - component: {fileID: 969534238710381586}
   - component: {fileID: 3528305456211521214}
   - component: {fileID: 594319224053301537}
+  - component: {fileID: 8524117035459382340}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -197,6 +198,7 @@ MonoBehaviour:
   driftPack: {fileID: 0}
   boostPack: {fileID: 0}
   corneringPack: {fileID: 0}
+  eventPublisherPack: {fileID: 0}
   movement: {fileID: 0}
   fuel: {fileID: 0}
 --- !u!114 &5951800586870077052
@@ -270,7 +272,6 @@ MonoBehaviour:
   JumpAccelleration: 0
   Gravity: 0
   NormalForce: 0
-  currentGround: {fileID: 0}
   Grounded: 1
   MaxSpeedState: 0
   TranslationState: 0
@@ -465,6 +466,18 @@ MonoBehaviour:
     RaycastOriginRightFront: {fileID: 9152579665187278151}
     RaycastOriginLeftBack: {fileID: 1816351303139968373}
     RaycastOriginRightBack: {fileID: 8548935702207989943}
+--- !u!114 &8524117035459382340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5951800586870077045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ed68aefe21942bbabed8285027e0b61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5951800587405041786
 GameObject:
   m_ObjectHideFlags: 0

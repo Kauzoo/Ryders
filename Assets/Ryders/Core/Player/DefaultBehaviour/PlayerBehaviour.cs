@@ -8,6 +8,7 @@ using Ryders.Core.Player.ExtremeGear.Movement;
 using Ryders.Core.Player.ExtremeGear;
 using Ryders.Core.Player.DefaultBehaviour.Components;
 using Ryders.Core.Player.DefaultBehaviour.Telemetry;
+using static System.Environment;
 using static Nyr.UnityDev.Component.GetComponentSafe;
 
 
@@ -34,6 +35,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
     [RequireComponent(typeof(DriftPack))]
     [RequireComponent(typeof(FuelPack))]
     [RequireComponent(typeof(StatLoaderPack))]
+    [RequireComponent(typeof(EventPublisherPack))]
     // TODO Update RequireComponents
     public abstract partial class PlayerBehaviour : MonoBehaviour
     {
@@ -55,8 +57,8 @@ namespace Ryders.Core.Player.DefaultBehaviour
         }
         public PBDebug pbDebug = new();
 
-        public Transform playerTransform;
-        public Rigidbody playerRigidbody;
+        [HideInInspector] public Transform playerTransform;
+        [HideInInspector] public Rigidbody playerRigidbody;
         public Transform rotationAnchor;
 
         [Header("Input")] public PlayerSignifier playerSignifier;
@@ -73,30 +75,34 @@ namespace Ryders.Core.Player.DefaultBehaviour
 
         // Contains basic extreme gear data
         public ExtremeGearData extremeGearData;
-
-        [Header("Stats")] [Tooltip("Contains all stats that are used for Translation at runtime")]
-        public SpeedStats speedStats;
-        public TurnStats turnStats;
-        public JumpStats jumpStats;
-        public FuelStats fuelStats;
-
-        [Header("Packs")] public AccelerationPack accelerationPack;
-        public StatLoaderPack statLoaderPack;
-        public GravityPack gravityPack;
-        public StateDeterminationPack stateDeterminationPack;
-        public JumpPack jumpPack;
-        public WallCollisionPack wallCollisionPack;
-        public FuelPack fuelPack;
-        public DriftPack driftPack;
-        public BoostPack boostPack;
-        public CorneringPack corneringPack;
         
-        [Header("RuntimeVarContainers")] public Movement movement;
-        [Tooltip("Contains info about fuel")] public Fuel fuel;
+        // STATS
+        [HideInInspector] public SpeedStats speedStats;
+        [HideInInspector] public TurnStats turnStats;
+        [HideInInspector] public JumpStats jumpStats;
+        [HideInInspector] public FuelStats fuelStats;
+
+        // PACKS
+        [HideInInspector] public AccelerationPack accelerationPack;
+        [HideInInspector] public StatLoaderPack statLoaderPack;
+        [HideInInspector] public GravityPack gravityPack;
+        [HideInInspector] public StateDeterminationPack stateDeterminationPack;
+        [HideInInspector] public JumpPack jumpPack;
+        [HideInInspector] public WallCollisionPack wallCollisionPack;
+        [HideInInspector] public FuelPack fuelPack;
+        [HideInInspector] public DriftPack driftPack;
+        [HideInInspector] public BoostPack boostPack;
+        [HideInInspector] public CorneringPack corneringPack;
+        [HideInInspector] public EventPublisherPack eventPublisherPack;
+        
+        // RUNTIME VAR CONTAINERS
+        [HideInInspector] public Movement movement;
+        [HideInInspector] public Fuel fuel;
 
         /// <summary>
         /// Assigns all RequiredComponents
         /// </summary>
+        [ContextMenu("Setup References")]
         protected virtual void Setup()
         {
             // RIGIDBODY
@@ -148,6 +154,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
             SafeGetComponent(this, ref driftPack);
             SafeGetComponent(this, ref boostPack);
             SafeGetComponent(this, ref corneringPack);
+            SafeGetComponent(this, ref eventPublisherPack);
             
             // RUNTIME
             SafeGetComponent(this, ref movement);
@@ -236,7 +243,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
         {
             // TODO Expand this
             var str = $"Position: {TelemetryHelper.GetVector3Formated(playerTransform.position)}"
-                      + $"{Environment.NewLine}Rotation: {TelemetryHelper.GetVector3Formated(playerTransform.rotation.eulerAngles)}";
+                      + $"{NewLine}Rotation: {TelemetryHelper.GetVector3Formated(playerTransform.rotation.eulerAngles)}";
             return str;
         }
 
@@ -265,11 +272,11 @@ namespace Ryders.Core.Player.DefaultBehaviour
         private void PrintTelemetry()
         {
             if (pbDebug.printMovementTelemetry)
-                pbDebug.playerMovementTelemetry.text = "Movement" + Environment.NewLine + movement.GetTelemetry();
+                pbDebug.playerMovementTelemetry.text = "Movement" + NewLine + movement.GetTelemetry();
             if(pbDebug.printRigidbodyTelemetry)
-                pbDebug.playerRigidbodyTelemetry.text = "Rigidbody" + Environment.NewLine + GetRigidbodyTelemetry();
+                pbDebug.playerRigidbodyTelemetry.text = "Rigidbody" + NewLine + GetRigidbodyTelemetry();
             if(pbDebug.printTransformTelemetry)
-                pbDebug.playerTransformTelemetry.text = "Transform" + Environment.NewLine + GetTransformTelemetry();
+                pbDebug.playerTransformTelemetry.text = "Transform" + NewLine + GetTransformTelemetry();
         }
         #endregion
     }
@@ -373,8 +380,6 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             [Header("Gravity")] public float Gravity;
             public float NormalForce;
 
-            [Header("Grounded")] public GameObject currentGround;
-
             [Header("MovementStates")] public bool Grounded;
             public MaxSpeedState MaxSpeedState = MaxSpeedState.Cruising;
             public TranslationStates TranslationState = TranslationStates.Stationary;
@@ -387,14 +392,14 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
             // TODO Add more stuff to Telemetry
             public virtual string GetTelemetry()
             {
-                var str = $"Speed: {Speed}" + $"{Environment.NewLine}MaxSpeed: {MaxSpeed}"
-                                            + $"{Environment.NewLine}BoostTimer: {BoostTimer}"
-                                            + $"{Environment.NewLine}DriftTimer: {DriftTimer}"
-                                            + $"{Environment.NewLine}DriftState: {DriftState}"
-                                            + $"{Environment.NewLine}CorneringState: {CorneringState}"
-                                            + $"{Environment.NewLine}TurnRate: {Turning}"
-                                            + $"{Environment.NewLine}Grounded: {Grounded}"
-                                            + $"{Environment.NewLine}Gravity: {Gravity}";
+                var str = $"Speed: {Speed}" + $"{NewLine}MaxSpeed: {MaxSpeed}"
+                                            + $"{NewLine}BoostTimer: {BoostTimer}"
+                                            + $"{NewLine}DriftTimer: {DriftTimer}"
+                                            + $"{NewLine}DriftState: {DriftState}"
+                                            + $"{NewLine}CorneringState: {CorneringState}"
+                                            + $"{NewLine}TurnRate: {Turning}"
+                                            + $"{NewLine}Grounded: {Grounded}"
+                                            + $"{NewLine}Gravity: {Gravity}";
                 return str;
             }
         }
