@@ -8,6 +8,7 @@ namespace Ryders.Core.Player
         public event EventHandler SpeedBoostEvent;
         public event EventHandler LevelUpEvent;
         public event EventHandler LevelDownEvent;
+        public event EventHandler LevelChangeEvent;
 
         public virtual void RaiseSpeedBoostEvent(EventArgs e)
         {

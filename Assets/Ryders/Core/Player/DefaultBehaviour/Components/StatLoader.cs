@@ -1,19 +1,14 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Ryders.Core.InputManagement;
 using Ryders.Core.Player.Character;
-using Ryders.Core.Player.DefaultBehaviour;
 using Ryders.Core.Player.ExtremeGear;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Nyr.UnityDev.Component;
 
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {
     [RequireComponent(typeof(PlayerBehaviour))]
-    public abstract class StatLoaderPack : MonoBehaviour, IRydersPlayerComponent
+    public abstract class StatLoaderPack : MonoBehaviour, IRydersPlayerComponent, IRydersPlayerEvents
     {
         /*
         * NOTES
@@ -34,7 +29,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         private const int PowerTypeSpeedLoss = -4;
         private const int GlobalBoostDuration = 120; // BaseBoostDuration if Frames
-        
+
         // ReSharper disable once MemberCanBePrivate.Global
         protected PlayerBehaviour playerBehaviour;
 
@@ -44,11 +39,12 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         public virtual void Setup()
         {
             playerBehaviour = GetComponent<PlayerBehaviour>();
+            (this as IRydersPlayerEvents).Subscribe(GetComponentSafe.GetComponent<FuelPack>(this));
+            LoadStatsMaster();
         }
 
         public virtual void Master()
         {
-            LoadStatsMaster();
         }
 
         public virtual void LoadStatsMaster()
@@ -103,7 +99,23 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
 
         public virtual void LoadLevelAffectedStats()
         {
-            
+            LoadTopSpeed();
+            LoadAccelerationLow();
+            LoadAccelerationMedium();
+            LoadAccelerationHigh();
+            LoadAccelerationLowThreshold();
+            LoadAccelerationMediumThreshold();
+            LoadAccelerationOffRoadThreshold();
+            LoadBoostSpeed();
+            LoadBoostDuration();
+            LoadDriftDashSpeed();
+            LoadDriftCap();
+            // Fuel
+            LoadPassiveDrain();
+            LoadTankSize();
+            LoadBoostCost();
+            LoadDriftCost();
+            LoadTornadoCost();
         }
 
         #region StaticMethods
@@ -683,5 +695,10 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 playerBehaviour.extremeGearData.fuelVars.Level3Cap);
 
         #endregion
+
+        public void OnLevelChange(object sender, EventArgs e)
+        {
+            LoadLevelAffectedStats();
+        }
     }
 }

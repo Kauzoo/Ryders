@@ -12,10 +12,15 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
     /// Handles all things level, rings and fuel
     /// </summary>
     [RequireComponent(typeof(PlayerBehaviour))]
-    public abstract class FuelPack : MonoBehaviour, IRydersPlayerComponent
+    public abstract class FuelPack : MonoBehaviour, IRydersPlayerComponent, IRydersPlayerEventPublisher
     {
         // TODO Implement FuelPack
         protected PlayerBehaviour playerBehaviour;
+        
+        public event EventHandler SpeedBoostEvent;
+        public event EventHandler LevelUpEvent;
+        public event EventHandler LevelDownEvent;
+        public event EventHandler LevelChangeEvent;
 
         private void Start()
         {
@@ -67,17 +72,28 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         {
             for (var i = 0; i < playerBehaviour.fuelStats.LevelCaps.Length; i++)
             {
+                var level = -1;
                 if (playerBehaviour.fuel.Rings >= playerBehaviour.fuelStats.LevelCaps[i])
-                    playerBehaviour.fuel.Level = i + 1;
+                    level = i + 1;
+                if(level != playerBehaviour.fuel.Level)
+                    RaiseLevelChangeEvent(EventArgs.Empty);
             }
         }
 
         public virtual void SetLevel(int level)
         {
+            RaiseLevelChangeEvent(EventArgs.Empty);
         }
 
         public virtual void IncrementLevel()
         {
+            RaiseLevelChangeEvent(EventArgs.Empty);
+        }
+
+        public virtual void RaiseLevelChangeEvent(EventArgs e)
+        {
+            var raiseEvent = LevelChangeEvent;
+            raiseEvent?.Invoke(this, e);
         }
 
         #endregion
