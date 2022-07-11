@@ -1,9 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using Ryders.Core.Player.DefaultBehaviour.Components;
-using UnityEngine;
 
-public class BlueStarFuel : Fuel
+namespace Ryders.Testing.ExtremeGear.BlueStar
 {
+    public class BlueStarFuel : Fuel
+    {
 
+    }
 }

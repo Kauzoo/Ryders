@@ -1,6 +1,6 @@
 ﻿using Ryders.Core.Player.DefaultBehaviour.Components;
 
-namespace Ryders.Core.Player.BlueStarAssets
+namespace Ryders.Testing.ExtremeGear.BlueStar
 {
     public class BlueStarEventPublisher : EventPublisherPack
     {

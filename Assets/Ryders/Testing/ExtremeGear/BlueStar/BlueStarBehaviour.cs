@@ -1,12 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Ryders.Core.Player.DefaultBehaviour;
 using UnityEngine;
-using Ryders.Core.Player.ExtremeGear;
-using Ryders.Core.Player.ExtremeGear.Movement;
 
-namespace Ryders.Core.Player
+namespace Ryders.Testing.ExtremeGear.BlueStar
 {
     public class BlueStarBehaviour : PlayerBehaviour
     {

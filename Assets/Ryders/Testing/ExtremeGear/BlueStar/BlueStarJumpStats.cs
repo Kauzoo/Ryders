@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using Ryders.Core.Player.DefaultBehaviour.Components;
-using UnityEngine;
 
-public class BlueStarJumpStats : JumpStats
+namespace Ryders.Testing.ExtremeGear.BlueStar
 {
+    public class BlueStarJumpStats : JumpStats
+    {
+    }
 }
