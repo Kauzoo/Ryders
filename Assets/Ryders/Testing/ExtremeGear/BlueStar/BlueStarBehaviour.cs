@@ -6,7 +6,7 @@ namespace Ryders.Testing.ExtremeGear.BlueStar
     public class BlueStarBehaviour : PlayerBehaviour
     {
         // Start is called before the first frame update
-        private void Start()
+        private void Awake()
         {
             Application.targetFrameRate = 120;
             base.Setup();

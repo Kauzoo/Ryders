@@ -39,6 +39,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         // TODO Implement FastAccel for SpeedTypes and Off-Road resistance for PowerType
         // TODO CleanUp which stat is retrieved from where
 
+        [ContextMenu("Setup")]
         public virtual void Setup()
         {
             this.SafeGetComponent(ref playerBehaviour);
@@ -54,6 +55,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// <summary>
         /// Load all stats
         /// </summary>
+        [ContextMenu("Load all Stats")]
         public virtual void LoadStatsMaster()
         {
             // SPEED STATS
@@ -107,6 +109,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
         /// <summary>
         /// Only Load stats that are affected by current level
         /// </summary>
+        [ContextMenu("Load Level affected Stats")]
         public virtual void LoadLevelAffectedStats()
         {
             LoadTopSpeed();

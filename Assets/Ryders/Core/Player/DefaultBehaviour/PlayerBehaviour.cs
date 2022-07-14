@@ -37,22 +37,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
     // TODO Update RequireComponents
     public abstract partial class PlayerBehaviour : MonoBehaviour
     {
-        /**
-         * DEBUG 
-         */
-        [System.Serializable]
-        public class PBDebug
-        {
-            [Header("Toggles")] public bool printTransformTelemetry;
-            public bool printRigidbodyTelemetry;
-            public bool printMovementTelemetry;
-            [Header("TelemetryText")] public TMPro.TextMeshProUGUI playerTransformTelemetry;
-            public TMPro.TextMeshProUGUI playerRigidbodyTelemetry;
-            public TMPro.TextMeshProUGUI playerMovementTelemetry;
-            [System.NonSerialized] public Canvas debugCanvas;
-        }
-
-        public PBDebug pbDebug = new();
+        public PbDebug pbDebug = new();
 
         [HideInInspector] public Transform playerTransform;
         [HideInInspector] public Rigidbody playerRigidbody;
@@ -154,6 +139,7 @@ namespace Ryders.Core.Player.DefaultBehaviour
             masterInput = FindObjectOfType<MasterInput>();
             if (masterInput != null)
             {
+                masterInput.Setup();
                 if (masterInput.players.TryGetValue(playerSignifier, out var inputPlayerOut))
                     inputPlayer = inputPlayerOut;
                 else

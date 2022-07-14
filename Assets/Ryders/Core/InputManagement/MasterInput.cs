@@ -23,7 +23,7 @@ namespace Ryders.Core.InputManagement
 
         private void Awake()
         {
-            Setup();
+            //Setup();
         }
 
         // Start is called before the first frame update
@@ -38,7 +38,7 @@ namespace Ryders.Core.InputManagement
             
         }
         
-        private void Setup()
+        public virtual void Setup()
         {
             players = new Dictionary<PlayerSignifier, InputPlayer>();
             for (var i = 0; i < initialPlayers.Length; i++)

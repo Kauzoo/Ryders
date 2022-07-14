@@ -47,7 +47,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
         public virtual void Setup()
         {
             this.SafeGetComponent(ref playerBehaviour);
-            playerTransform = playerBehaviour.transform;
+            playerTransform = playerBehaviour.playerTransform;
             rotationAnchor = playerBehaviour.rotationAnchor;
         }
 
@@ -157,7 +157,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
 
         private void OnDrawGizmos()
         {
-            Gizmos.DrawRay(rayCastSettings.RaycastOriginLeftFront.position,
+            /*Gizmos.DrawRay(rayCastSettings.RaycastOriginLeftFront.position,
                 Vector3.down * rayCastSettings.DistanceAlignment);
             Gizmos.DrawRay(rayCastSettings.RaycastOriginRightFront.position,
                 Vector3.down * rayCastSettings.DistanceAlignment);
@@ -173,7 +173,7 @@ namespace Ryders.Core.Player.ExtremeGear.Movement
                 -playerTransform.up * rayCastSettings.DistanceAlignment);
             Gizmos.DrawRay(rayCastSettings.RaycastOriginLeftBack.position,
                 -playerTransform.up * rayCastSettings.DistanceAlignment);
-            Gizmos.DrawRay(playerTransform.position, _normalSum * 2);
+            Gizmos.DrawRay(playerTransform.position, _normalSum * 2);*/
         }
         
         /// <summary>

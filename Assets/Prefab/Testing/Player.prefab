@@ -173,10 +173,11 @@ MonoBehaviour:
   pbDebug:
     printTransformTelemetry: 0
     printRigidbodyTelemetry: 0
-    printMovementTelemetry: 0
+    printMovementTelemetry: 1
     playerTransformTelemetry: {fileID: 5951800588455295496}
     playerRigidbodyTelemetry: {fileID: 5951800588657407588}
     playerMovementTelemetry: {fileID: 5951800587743201144}
+    debugCanvas: {fileID: 0}
   playerTransform: {fileID: 0}
   playerRigidbody: {fileID: 0}
   rotationAnchor: {fileID: 8699634016939445553}
