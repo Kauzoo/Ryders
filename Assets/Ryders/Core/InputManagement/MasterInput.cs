@@ -123,9 +123,18 @@ namespace Ryders.Core.InputManagement
             public bool Right;
 
             // FUNCTIONS
+            // Jump
+            public bool JumpPressed;
             public bool Jump;
+            public bool JumpReleased;
+            // Boost
+            public bool BoostPressed;
             public bool Boost;
+            public bool BoostReleased;
+            // Drift
+            public bool DriftPressed;
             public bool Drift;
+            public bool DriftReleased;
         }
     }
     
