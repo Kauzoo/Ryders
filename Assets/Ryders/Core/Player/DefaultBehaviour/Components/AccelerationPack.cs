@@ -256,7 +256,7 @@ namespace Ryders.Core.Player.DefaultBehaviour.Components
                 : float.PositiveInfinity;
 
         /// <summary>
-        /// Determines if the player is Cornering based of the CorneringState. The actual CorneringState determincation
+        /// Determines if the player is Cornering based of the CorneringState. The actual CorneringState determination
         /// is not done here.
         /// </summary>
         /// <returns></returns>
