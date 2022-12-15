@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-using static Nyr.UnityDev.Component.GetComponentSafe;
+using static Nyr.UnityDev.Util.GetComponentSafe;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {

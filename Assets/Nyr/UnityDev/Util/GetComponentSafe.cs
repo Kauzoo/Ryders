@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Nyr.UnityDev.Component
+namespace Nyr.UnityDev.Util
 {
     [UsedImplicitly]
     public static class GetComponentSafe
@@ -188,5 +188,11 @@ namespace Nyr.UnityDev.Component
             target = IsNotNullCSharp<T>(source.GetComponentInParent<T>());
         }
         #endregion
+
+        [UsedImplicitly]
+        public static T2 SafeGetNullable<T1, T2>(this T1 item) where T1 : MonoBehaviour where T2 : Object =>
+        item.TryGetComponent<T2>(out var component)
+                ? component
+                : throw new MissingReferenceException($"@{item.gameObject.name}: Failed to find {typeof(T2)}");
     }
 }

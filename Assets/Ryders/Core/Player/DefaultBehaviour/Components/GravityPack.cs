@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Nyr.UnityDev.Component;
+using Nyr.UnityDev.Util;
 using Ryders.Core.Player.DefaultBehaviour;
 using UnityEngine;
 using UnityEngine.UI;

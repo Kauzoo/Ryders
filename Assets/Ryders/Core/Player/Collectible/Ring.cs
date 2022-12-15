@@ -3,8 +3,8 @@ using System.Collections;
 using Ryders.Core.Player.Collectible.Item;
 using Ryders.Core.Player.DefaultBehaviour;
 using UnityEngine;
-using static Nyr.UnityDev.Component.GetComponentSafe;
-using Nyr.UnityDev.Component;
+using static Nyr.UnityDev.Util.GetComponentSafe;
+using Nyr.UnityDev.Util;
 
 namespace Ryders.Core.Player.Collectible
 {

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Nyr.UnityDev.Component;
+using Nyr.UnityDev.Util;
 
 namespace Ryders.Core.Player.DefaultBehaviour.Components
 {

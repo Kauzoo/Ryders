@@ -8,7 +8,7 @@ using Ryders.Core.Player.DefaultBehaviour.Components;
 using Ryders.Core.Player.DefaultBehaviour.Components.DefaultComponents;
 using Ryders.Core.Player.DefaultBehaviour.Telemetry;
 using static System.Environment;
-using Nyr.UnityDev.Component;
+using Nyr.UnityDev.Util;
 
 
 namespace Ryders.Core.Player.DefaultBehaviour

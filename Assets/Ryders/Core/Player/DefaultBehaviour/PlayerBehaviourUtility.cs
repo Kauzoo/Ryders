@@ -2,7 +2,7 @@
 using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Nyr.UnityDev.Component;
+using Nyr.UnityDev.Util;
 using Ryders.Core.Player.DefaultBehaviour.Components;
 using Ryders.Core.Player.DefaultBehaviour.Components.DefaultComponents;
 using Ryders.Core.Player.ExtremeGear.Movement;
