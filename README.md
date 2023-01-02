@@ -1,3 +1,3 @@
 # Ryders
 
-This is a readme.
+This is a mess and will probably never get finished.
